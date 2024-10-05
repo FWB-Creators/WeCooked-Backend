@@ -10,4 +10,11 @@ export class AppService {
     console.log('create user!! - test service', createUserRequest);
     return 'User created!';
   }
+
+  getUsers(): Record<string, any>[] {
+    return [
+      { name: 'John Doe', age: 25 },
+      { name: 'Jane Doe', age: 26 },
+    ];
+  }
 }

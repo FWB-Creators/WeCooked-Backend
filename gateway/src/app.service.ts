@@ -12,7 +12,10 @@ export class AppService {
 
   createUser(createUserRequest: any): Observable<any> {
     this.users.push(createUserRequest);
-    // Emit an event to the 'TEST_SERVICE' microservice
     return this.client.emit('create user!!', { createUserRequest });
+  }
+
+  getUsers(): Observable<any> {
+    return this.client.send({ cmd: 'get users' }, {});
   }
 }

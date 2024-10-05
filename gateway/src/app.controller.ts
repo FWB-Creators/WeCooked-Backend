@@ -15,4 +15,9 @@ export class AppController {
   createUser(@Body() createUserRequest: any): Observable<any> {
     return this.appService.createUser(createUserRequest);
   }
+
+  @Get('users')
+  getUsers(): Observable<Record<string, any>[]> {
+    return this.appService.getUsers();
+  }
 }
