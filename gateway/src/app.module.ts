@@ -3,6 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
+const defaultPort: number = parseInt(process.env.PORT, 10) || 3000;
+const defaultHost: string = process.env.HOST || 'localhost';
+
 @Module({
   imports: [
     ClientsModule.register([
@@ -10,8 +13,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         name: 'TEST_SERVICE',
         transport: Transport.TCP,
         options: {
-          host: 'localhost',
-          port: 3000,
+          host: defaultHost,
+          port: defaultPort,
         },
       },
     ]),
