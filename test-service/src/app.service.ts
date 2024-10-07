@@ -32,10 +32,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
     });
   }
 
-  getUsers(): Record<string, any>[] {
-    return [
-      { name: 'John Doe', age: 25 },
-      { name: 'Jane Doe', age: 26 },
-    ];
+  async getUsers(): Promise<Record<string, any>[]> {
+    return await this.user.findMany();
   }
 }
