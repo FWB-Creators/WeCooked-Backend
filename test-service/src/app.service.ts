@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { AddUserRequest } from './interface/type';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -12,22 +13,24 @@ export class AppService extends PrismaClient implements OnModuleInit {
     return 'Hello World!';
   }
 
-  async createUser(createUserRequest: any): Promise<Record<string, any>> {
+  async createUser(
+    createUserRequest: AddUserRequest,
+  ): Promise<Record<string, any>> {
     // const { name, email } = createUserRequest; // Destructure the object
     console.log('create user!! - test service', createUserRequest);
-    console.log(createUserRequest.createUserRequest);
+    console.log(createUserRequest);
     console.log(
       'create user!! - test service',
-      createUserRequest.createUserRequest.name,
-      createUserRequest.createUserRequest.email,
+      createUserRequest.name,
+      createUserRequest.email,
     );
 
     // Wait until parameters are provided
 
     return this.user.create({
       data: {
-        name: createUserRequest.createUserRequest.name,
-        email: createUserRequest.createUserRequest.email,
+        name: createUserRequest.name,
+        email: createUserRequest.email,
       },
     });
   }

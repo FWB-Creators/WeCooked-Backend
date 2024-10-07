@@ -12,7 +12,7 @@ export class AppService {
 
   createUser(createUserRequest: any): Observable<any> {
     this.users.push(createUserRequest);
-    return this.client.emit('create user!!', { createUserRequest });
+    return this.client.emit('create user!!', createUserRequest);
   }
 
   getUsers(): Observable<any> {
