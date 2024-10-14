@@ -1,6 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { EventPattern, MessagePattern } from '@nestjs/microservices';
+import {
+  Ctx,
+  EventPattern,
+  MessagePattern,
+  NatsContext,
+} from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
@@ -18,6 +23,7 @@ export class AppController {
 
   @MessagePattern({ cmd: 'get users' })
   async getUsers() {
+    console.log('get users!! - test service');
     return this.appService.getUsers();
   }
 }

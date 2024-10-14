@@ -9,12 +9,19 @@ const defaultHost: string = process.env.HOST || 'localhost';
 @Module({
   imports: [
     ClientsModule.register([
+      // {
+      //   name: 'TEST_SERVICE',
+      //   transport: Transport.TCP,
+      //   options: {
+      //     host: defaultHost,
+      //     port: defaultPort,
+      //   },
+      // },
       {
         name: 'TEST_SERVICE',
-        transport: Transport.TCP,
+        transport: Transport.NATS,
         options: {
-          host: defaultHost,
-          port: defaultPort,
+          servers: ['nats://localhost:4222'],
         },
       },
     ]),

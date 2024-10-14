@@ -7,11 +7,17 @@ const logger = new Logger('Main Microservice');
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
+    // {
+    //   transport: Transport.TCP,
+    //   options: {
+    //     host: 'localhost',
+    //     port: 3000,
+    //   },
+    // },
     {
-      transport: Transport.TCP,
+      transport: Transport.NATS,
       options: {
-        host: 'localhost',
-        port: 3000,
+        servers: ['nats://localhost:4222'],
       },
     },
   );
