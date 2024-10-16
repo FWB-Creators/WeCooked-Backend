@@ -3,8 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
-const defaultPort: number = parseInt(process.env.PORT, 10) || 3000;
-const defaultHost: string = process.env.HOST || 'localhost';
+// const defaultPort: number = parseInt(process.env.PORT, 10) || 3000;
+// const defaultHost: string = process.env.HOST || 'localhost';
+const defaultNATsHost: string = process.env.NATS_HOST;
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ const defaultHost: string = process.env.HOST || 'localhost';
         name: 'TEST_SERVICE',
         transport: Transport.NATS,
         options: {
-          servers: ['nats://localhost:4222'],
+          servers: [defaultNATsHost],
         },
       },
     ]),

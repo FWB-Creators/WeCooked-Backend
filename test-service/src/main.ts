@@ -4,6 +4,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
 
 const logger = new Logger('Main Microservice');
+const defaultNATsHost: string = process.env.NATS_HOST;
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
@@ -17,7 +18,7 @@ async function bootstrap() {
     {
       transport: Transport.NATS,
       options: {
-        servers: ['nats://localhost:4222'],
+        servers: [defaultNATsHost],
       },
     },
   );

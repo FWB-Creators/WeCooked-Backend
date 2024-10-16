@@ -1,12 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
-import {
-  Ctx,
-  EventPattern,
-  MessagePattern,
-  NatsContext,
-} from '@nestjs/microservices';
+import { EventPattern, MessagePattern } from '@nestjs/microservices';
 
+const logger = new Logger('Test Microservice');
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -23,7 +19,7 @@ export class AppController {
 
   @MessagePattern({ cmd: 'get users' })
   async getUsers() {
-    console.log('get users!! - test service');
+    logger.log('get users!! - test service');
     return this.appService.getUsers();
   }
 }
