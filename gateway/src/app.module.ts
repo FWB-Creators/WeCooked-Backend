@@ -25,6 +25,13 @@ const defaultNATsHost: string = process.env.NATS_HOST;
           servers: [defaultNATsHost],
         },
       },
+      {
+        name: 'CHEF_SERVICE',
+        transport: Transport.NATS,
+        options: {
+          servers: [defaultNATsHost],
+        },
+      },
     ]),
   ],
   controllers: [AppController],
