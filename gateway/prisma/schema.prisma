@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../node_modules/.prisma/client"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -14,8 +14,148 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Course {
+  courseId         Int             @id @default(autoincrement())
+  courseTitle      String
+  picture          Bytes?
+  detail           String
+  price            Int
+  category         String
+  videoId          Int?
+  chefId           Int?
+  ingredientPackId Int?
+  video            Video?          @relation(fields: [videoId], references: [videoId])
+  chef             Chef?           @relation("CourseChef", fields: [chefId], references: [chefId])
+  ingredientPack   IngredientPack? @relation(fields: [ingredientPackId], references: [id])
+  reviews          Review[]
+  Order            Order[]
+  chefChefId       Int?
+  Chef             Chef?           @relation(fields: [chefChefId], references: [chefId])
+}
+
+model Video {
+  videoId    Int      @id @default(autoincrement())
+  path       String
+  videoTitle String
+  courses    Course[]
+}
+
+model Review {
+  reviewId      Int      @id @default(autoincrement())
+  userId        Int
+  rating        Int
+  reviewDetails String
+  timestamp     DateTime
+  courseId      Int
+  course        Course   @relation(fields: [courseId], references: [courseId])
+}
+
+model Group {
+  groupId           Int           @id @default(autoincrement())
+  groupCourseTitle  String
+  picture           String?
+  groupCourseDetail String
+  price             Int
+  numberOfGroup     Int
+  date              DateTime
+  category          String
+  linkZoom          String
+  chefId            Int?
+  ingredientPackId  String
+  chef              Chef?         @relation(fields: [chefId], references: [chefId])
+  members           GroupMember[]
+}
+
+model GroupMember {
+  sessionId Int   @id @default(autoincrement())
+  groupId   Int
+  userId    Int
+  group     Group @relation(fields: [groupId], references: [groupId])
+  user      User  @relation(fields: [userId], references: [userId])
+}
+
+model IngredientPack {
+  id           Int        @id @default(autoincrement())
+  ingredientId Int
+  quantity     Int
+  packCode     String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [ingredientId])
+  Course       Course[]
+}
+
+model Ingredient {
+  ingredientId    Int              @id @default(autoincrement())
+  ingredientTitle String
+  price           Float
+  ingredientPacks IngredientPack[]
+}
+
+model Pack {
+  packId String @id
+  name   String
+}
+
+model Order {
+  orderId         Int      @id @default(autoincrement())
+  paymentId       Int
+  courseId        Int
+  userId          Int
+  orderDate       DateTime
+  orderFormat     String
+  ingredientYesNo Boolean
+  price           Float
+  payment         Payment  @relation(fields: [paymentId], references: [paymentId])
+  course          Course   @relation(fields: [courseId], references: [courseId])
+  user            User     @relation(fields: [userId], references: [userId])
+}
+
+model Payment {
+  paymentId      Int     @id @default(autoincrement())
+  cardNo         Int
+  cardHolderName String
+  users          User[]
+  Order          Order[]
+}
+
+model Authen {
+  authenId Int    @id @default(autoincrement())
+  userId   Int    @unique
+  username String
+  password String
+  user     User   @relation(fields: [userId], references: [userId])
+}
+
 model User {
-  id    Int     @default(autoincrement()) @id
-  name  String  @unique
-  email String  @unique
+  userId       Int           @id @default(autoincrement())
+  name         String
+  lastName     String
+  address      String?
+  profilePic   String?
+  favoriteChef String?
+  phoneNo      Int?
+  email        String?
+  paymentId    Int?
+  username     String
+  password     String
+  payment      Payment?      @relation(fields: [paymentId], references: [paymentId])
+  authen       Authen?
+  groupMembers GroupMember[]
+  orders       Order[]
+}
+
+model Chef {
+  chefId        Int      @id @default(autoincrement())
+  name          String
+  lastName      String
+  bio           String?
+  chefSpecialty String?
+  experience    String?
+  profilePic    String?
+  email         String?
+  phoneNo       Int?
+  username      String
+  password      String
+  courses       Course[] @relation("CourseChef")
+  groups        Group[]
+  Course        Course[]
 }
