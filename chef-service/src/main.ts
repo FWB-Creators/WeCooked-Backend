@@ -16,6 +16,6 @@ async function bootstrap() {
     },
   );
   app.listen();
-  logger.log('Microservice is listening');
+  logger.log('Chef - Microservice is listening');
 }
 bootstrap();

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Observable } from 'rxjs';
 
@@ -6,16 +6,21 @@ import { Observable } from 'rxjs';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('chef/:action?')
+  handleChefAction(@Param('action') action: string): Observable<any> {
+    console.log(`Action: ${action}`);
+    if (!action) {
+      return this.appService.getChef();
+    }
+    // Handle other actions if needed
   }
 
-  @Get('chef')
-  getChef(): Observable<any> {
-    console.log('get chef');
-    return this.appService.getChef();
-    // return 'Chef is here!';
+  @Post('chef/:action')
+  handleChefPostAction(@Param('action') action: string): Observable<any> {
+    console.log(`Action: ${action}`);
+    if (action === 'signup') {
+      return this.appService.postSignUpChef();
+    }
   }
 
   // @Post()

@@ -10,7 +10,7 @@ async function bootstrap() {
     .setTitle('WeCooked API')
     .setDescription('The WeCooked API description')
     .setVersion('1.0')
-    .addTag('WeCookedAPI')
+    .addTag('WeCooked API')
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
