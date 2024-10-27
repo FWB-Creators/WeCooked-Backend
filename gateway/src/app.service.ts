@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 
 @Injectable()
 export class AppService {
@@ -20,5 +20,10 @@ export class AppService {
 
   getUsers(): Observable<any> {
     return this.testClient.send({ cmd: 'get users' }, {});
+  }
+
+  getChef(): Promise<any> {
+    console.log('get chef service');
+    return lastValueFrom(this.chefClient.send('chef', {}));
   }
 }

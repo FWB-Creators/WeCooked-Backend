@@ -11,13 +11,20 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Post()
-  createUser(@Body() createUserRequest: any): Observable<any> {
-    return this.appService.createUser(createUserRequest);
+  @Get('chef')
+  getChef(): Observable<any> {
+    console.log('get chef');
+    return this.appService.getChef();
+    // return 'Chef is here!';
   }
 
-  @Get('users')
-  getUsers(): Observable<Record<string, any>[]> {
-    return this.appService.getUsers();
-  }
+  // @Post()
+  // createUser(@Body() createUserRequest: any): Observable<any> {
+  //   return this.appService.createUser(createUserRequest);
+  // }
+
+  // @Get('users')
+  // getUsers(): Observable<Record<string, any>[]> {
+  //   return this.appService.getUsers();
+  // }
 }
