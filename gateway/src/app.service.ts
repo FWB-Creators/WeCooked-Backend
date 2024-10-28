@@ -20,9 +20,9 @@ export class AppService {
     });
   }
 
-  postSignUpChef(): Observable<any> {
+  postSignUpChef(body: any): Observable<any> {
     return new Observable((observer) => {
-      lastValueFrom(this.chefClient.send('chef/signup', {}))
+      lastValueFrom(this.chefClient.send('chef/signup', body))
         .then((result) => {
           observer.next(result);
           observer.complete();
