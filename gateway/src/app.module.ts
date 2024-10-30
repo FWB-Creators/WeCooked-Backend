@@ -5,7 +5,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 
 // const defaultPort: number = parseInt(process.env.PORT, 10) || 3000;
 // const defaultHost: string = process.env.HOST || 'localhost';
-const defaultNATsHost: string = process.env.NATS_HOST;
+const defaultNATsHost: string =
+  process.env.NATS_HOST || 'nats://localhost:4222';
+// process.env.NATS_HOST || 'nats://nats-streaming:4222';
 
 @Module({
   imports: [

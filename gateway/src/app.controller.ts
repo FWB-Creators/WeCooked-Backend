@@ -12,8 +12,8 @@ export class AppController {
   }
 
   @Post()
-  createUser(@Body() createUserRequest: any): Observable<any> {
-    return this.appService.createUser(createUserRequest);
+  async createUser(@Body() createUserRequest: any): Observable<any> {
+    return await this.appService.createUser(createUserRequest);
   }
 
   @Get('users')

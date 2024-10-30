@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: yourusername
+      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_DB: yourdatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  nats-streaming:
+    image: nats-streaming:latest
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+
+  nestjs-gateway:
+    image: gateway-nestjs-service-image
+    build:
+      context: ./gateway/
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgres://yourusername:yourpassword@postgres:5432/yourdatabase
+      NATS_URL: nats://nats-streaming:4222
+    depends_on:
+      - postgres
+      - nats-streaming
+    ports:
+      - "3001:3001"
+
+  nestjs-test-service:
+    image: test-service-nestjs-service-image
+    build:
+      context: ./test-service/
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgres://yourusername:yourpassword@postgres:5432/yourdatabase
+      NATS_URL: nats://nats-streaming:4222
+    depends_on:
+      - postgres
+      - nats-streaming
+    ports:
+      - "3002:3000"
+
+volumes:
+  postgres_data:

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, NatsRecordBuilder } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
+import * as nats from 'nats';
 
 @Injectable()
 export class AppService {
@@ -10,15 +11,19 @@ export class AppService {
     @Inject('CHEF_SERVICE') private readonly chefClient: ClientProxy,
   ) {}
   getHello(): string {
-    return 'Hello World!';
+    return `Hello World! ${process.env.NATS_HOST}`;
   }
 
-  createUser(createUserRequest: any): Observable<any> {
+  async createUser(createUserRequest: any): Promise<void> {
     this.users.push(createUserRequest);
-    return this.testClient.emit('create user!!', createUserRequest);
+    return this.testClient.emit('create user!!', createUserRequest).toPromise();
   }
 
   getUsers(): Observable<any> {
-    return this.testClient.send({ cmd: 'get users' }, {});
+    const headers = nats.headers();
+    headers.set('x-version', '1.0.0');
+
+    const record = new NatsRecordBuilder(':cat:').setHeaders(headers).build();
+    return this.testClient.send('get users', record);
   }
 }
