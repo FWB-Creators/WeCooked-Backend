@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
@@ -14,148 +8,109 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Chef {
+  ChefID         Int     @id @default(autoincrement())
+  chefName       String
+  chefSurname    String
+  chefBio        String?
+  chefSpecialty  String?
+  chefExperience String?
+  chefPicture    String?
+  chefEmail      String? @unique
+  chefPayment    Int?
+  chefPhone      Int?    @unique
+  chefUsername   String  @unique
+  chefPassword   String
+
+  Payment Payment?  @relation(fields: [chefPayment], references: [PaymentID])
+  courses Course[]  @relation("ChefCourses")
+  groups  GroupID[] @relation("ChefGroups")
+  users   User[]
+}
+
 model Course {
-  courseId         Int             @id @default(autoincrement())
-  courseTitle      String
-  picture          Bytes?
-  detail           String
-  price            Int
-  category         String
-  videoId          Int?
-  chefId           Int?
-  ingredientPackId Int?
-  video            Video?          @relation(fields: [videoId], references: [videoId])
-  chef             Chef?           @relation("CourseChef", fields: [chefId], references: [chefId])
-  ingredientPack   IngredientPack? @relation(fields: [ingredientPackId], references: [id])
-  reviews          Review[]
-  Order            Order[]
-  chefChefId       Int?
-  Chef             Chef?           @relation(fields: [chefChefId], references: [chefId])
+  courseID       Int       @id @default(autoincrement())
+  courseTitle    String
+  courseDetail   String
+  coursePrice    Int
+  courseCategory String
+  courseVideoId  Int?
+  courseChefId   Int?
+  coursePackId   String?
+  PackName       PackName? @relation(fields: [coursePackId], references: [PackID]) //pack linked
+  Video          Video?    @relation(fields: [courseVideoId], references: [VideoID])
+  Chef           Chef?     @relation("ChefCourses", fields: [courseChefId], references: [ChefID])
 }
 
-model Video {
-  videoId    Int      @id @default(autoincrement())
-  path       String
-  videoTitle String
-  courses    Course[]
-}
-
-model Review {
-  reviewId      Int      @id @default(autoincrement())
-  userId        Int
-  rating        Int
-  reviewDetails String
-  timestamp     DateTime
-  courseId      Int
-  course        Course   @relation(fields: [courseId], references: [courseId])
-}
-
-model Group {
-  groupId           Int           @id @default(autoincrement())
-  groupCourseTitle  String
-  picture           String?
-  groupCourseDetail String
-  price             Int
-  numberOfGroup     Int
-  date              DateTime
-  category          String
-  linkZoom          String
-  chefId            Int?
-  ingredientPackId  String
-  chef              Chef?         @relation(fields: [chefId], references: [chefId])
-  members           GroupMember[]
-}
-
-model GroupMember {
-  sessionId Int   @id @default(autoincrement())
-  groupId   Int
-  userId    Int
-  group     Group @relation(fields: [groupId], references: [groupId])
-  user      User  @relation(fields: [userId], references: [userId])
+model GroupID {
+  GroupID                   Int       @id @default(autoincrement())
+  groupTitle                String
+  groupDetail               String?
+  groupprice                Float?
+  groupNumberofparticipants Int?
+  groupDate                 DateTime?
+  groupCategory             String
+  groupLinkZoom             String?   @unique
+  groupPicture              String?
+  groupChefId               Int?
+  groupPackId               String?
+  Pack                      PackName? @relation(fields: [groupPackId], references: [PackID])
+  Chef                      Chef?     @relation("ChefGroups", fields: [groupChefId], references: [ChefID])
 }
 
 model IngredientPack {
-  id           Int        @id @default(autoincrement())
-  ingredientId Int
-  quantity     Int
+  ID           Int    @id @default(autoincrement())
+  quantity     Int?
   packCode     String
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [ingredientId])
-  Course       Course[]
+  ingredientId Int?
+
+  ingredient Ingredient? @relation(fields: [ingredientId], references: [IngredientID], onDelete: Cascade)
+  PackName   PackName?   @relation(fields: [packCode], references: [PackID], onDelete: Cascade)
 }
 
-model Ingredient {
-  ingredientId    Int              @id @default(autoincrement())
-  ingredientTitle String
-  price           Float
-  ingredientPacks IngredientPack[]
-}
-
-model Pack {
-  packId String @id
-  name   String
-}
-
-model Order {
-  orderId         Int      @id @default(autoincrement())
-  paymentId       Int
-  courseId        Int
-  userId          Int
-  orderDate       DateTime
-  orderFormat     String
-  ingredientYesNo Boolean
-  price           Float
-  payment         Payment  @relation(fields: [paymentId], references: [paymentId])
-  course          Course   @relation(fields: [courseId], references: [courseId])
-  user            User     @relation(fields: [userId], references: [userId])
+model PackName {
+  PackID         String           @id @unique
+  menuName       String?
+  course         Course[]
+  IngredientPack IngredientPack[]
+  Group          GroupID[]
 }
 
 model Payment {
-  paymentId      Int     @id @default(autoincrement())
-  cardNo         Int
-  cardHolderName String
-  users          User[]
-  Order          Order[]
-}
-
-model Authen {
-  authenId Int    @id @default(autoincrement())
-  userId   Int    @unique
-  username String
-  password String
-  user     User   @relation(fields: [userId], references: [userId])
+  PaymentID  Int     @id @default(autoincrement())
+  cardNo     Int?    @unique
+  cardHolder String?
+  users      User[]
+  chef       Chef[]
 }
 
 model User {
-  userId       Int           @id @default(autoincrement())
-  name         String
-  lastName     String
-  address      String?
-  profilePic   String?
-  favoriteChef String?
-  phoneNo      Int?
-  email        String?
-  paymentId    Int?
-  username     String
-  password     String
-  payment      Payment?      @relation(fields: [paymentId], references: [paymentId])
-  authen       Authen?
-  groupMembers GroupMember[]
-  orders       Order[]
+  UserID          Int      @id @default(autoincrement())
+  name            String?
+  surname         String?
+  userAddress     String?
+  userProfile     String?
+  favouriteChefId Int?
+  userPhone       Int?     @unique
+  userEmail       String?
+  userPayment     Int?
+  username        String   @unique
+  password        String
+  favChef         Chef?    @relation(fields: [favouriteChefId], references: [ChefID])
+  Payment         Payment? @relation(fields: [userPayment], references: [PaymentID])
 }
 
-model Chef {
-  chefId        Int      @id @default(autoincrement())
-  name          String
-  lastName      String
-  bio           String?
-  chefSpecialty String?
-  experience    String?
-  profilePic    String?
-  email         String?
-  phoneNo       Int?
-  username      String
-  password      String
-  courses       Course[] @relation("CourseChef")
-  groups        Group[]
-  Course        Course[]
+model Video {
+  VideoID    Int    @id @default(autoincrement())
+  videoPath  String
+  videoTitle String
+
+  course Course[]
+}
+
+model Ingredient {
+  IngredientID    Int              @id @default(autoincrement())
+  ingredientName  String?          @unique
+  ingredientPrice Float?
+  ingredientpack  IngredientPack[]
 }
