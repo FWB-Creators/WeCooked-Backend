@@ -17,34 +17,45 @@ services:
     ports:
       - "4222:4222"
       - "8222:8222"
+    networks:
+      - gateway-service
+      - user-service
 
-  nestjs-gateway:
-    image: gateway-nestjs-service-image
+  gateway-service:
+    image: gateway-service
     build:
-      context: ./gateway/
+      context: ./gateway-service/
       dockerfile: Dockerfile
     environment:
       DATABASE_URL: postgres://yourusername:yourpassword@postgres:5432/yourdatabase
       NATS_URL: nats://nats-streaming:4222
+    networks:
+      - gateway-service
     depends_on:
       - postgres
       - nats-streaming
     ports:
-      - "3001:3001"
+      - "3000:3000"
 
-  nestjs-test-service:
-    image: test-service-nestjs-service-image
+  user-service:
+    image: user-service
     build:
-      context: ./test-service/
+      context: ./user-service/
       dockerfile: Dockerfile
     environment:
       DATABASE_URL: postgres://yourusername:yourpassword@postgres:5432/yourdatabase
       NATS_URL: nats://nats-streaming:4222
+    networks:
+      - user-service
     depends_on:
       - postgres
       - nats-streaming
-    ports:
-      - "3002:3000"
+
+networks:
+  gateway-service:
+    driver: bridge
+  user-service:
+    driver: bridge
 
 volumes:
   postgres_data:
