@@ -9,27 +9,26 @@ datasource db {
 }
 
 model Chef {
-  ChefID         Int     @id @default(autoincrement())
+  chefId         Int       @id @default(autoincrement())
   chefName       String
   chefSurname    String
   chefBio        String?
   chefSpecialty  String?
   chefExperience String?
   chefPicture    String?
-  chefEmail      String? @unique
+  chefEmail      String?   @unique
   chefPayment    Int?
-  chefPhone      Int?    @unique
-  chefUsername   String  @unique
+  chefPhone      Int?      @unique
+  chefUsername   String    @unique
   chefPassword   String
-
-  Payment Payment?  @relation(fields: [chefPayment], references: [PaymentID])
-  courses Course[]  @relation("ChefCourses")
-  groups  GroupID[] @relation("ChefGroups")
-  users   User[]
+  payment        Payment?  @relation(fields: [chefPayment], references: [paymentId])
+  courses        Course[]  @relation("ChefCourses")
+  groups         GroupID[] @relation("ChefGroups")
+  users          User[]
 }
 
 model Course {
-  courseID       Int       @id @default(autoincrement())
+  courseId       Int       @id @default(autoincrement())
   courseTitle    String
   courseDetail   String
   coursePrice    Int
@@ -37,80 +36,109 @@ model Course {
   courseVideoId  Int?
   courseChefId   Int?
   coursePackId   String?
-  PackName       PackName? @relation(fields: [coursePackId], references: [PackID]) //pack linked
-  Video          Video?    @relation(fields: [courseVideoId], references: [VideoID])
-  Chef           Chef?     @relation("ChefCourses", fields: [courseChefId], references: [ChefID])
+  packName       PackName? @relation(fields: [coursePackId], references: [packId]) //pack linked
+  video          Video?    @relation(fields: [courseVideoId], references: [videoID])
+  chef           Chef?     @relation("ChefCourses", fields: [courseChefId], references: [chefId])
+  review         Review[]
+  order          Order[]
 }
 
 model GroupID {
-  GroupID                   Int       @id @default(autoincrement())
+  groupId                   Int       @id @default(autoincrement())
   groupTitle                String
-  groupDetail               String?
-  groupprice                Float?
-  groupNumberofparticipants Int?
-  groupDate                 DateTime?
+  groupDetail               String
+  groupPrice                Float
+  groupNumberofparticipants Int
+  groupDate                 DateTime
   groupCategory             String
   groupLinkZoom             String?   @unique
   groupPicture              String?
   groupChefId               Int?
   groupPackId               String?
-  Pack                      PackName? @relation(fields: [groupPackId], references: [PackID])
-  Chef                      Chef?     @relation("ChefGroups", fields: [groupChefId], references: [ChefID])
+  pack                      PackName? @relation(fields: [groupPackId], references: [packId])
+  chef                      Chef?     @relation("ChefGroups", fields: [groupChefId], references: [chefId])
 }
 
 model IngredientPack {
-  ID           Int    @id @default(autoincrement())
-  quantity     Int?
+  id           Int         @id @default(autoincrement())
+  ingredientId Int
+  quantity     Int
   packCode     String
-  ingredientId Int?
-
-  ingredient Ingredient? @relation(fields: [ingredientId], references: [IngredientID], onDelete: Cascade)
-  PackName   PackName?   @relation(fields: [packCode], references: [PackID], onDelete: Cascade)
+  ingredient   Ingredient? @relation(fields: [ingredientId], references: [ingredientId], onDelete: Cascade)
+  packName     PackName?   @relation(fields: [packCode], references: [packId], onDelete: Cascade)
 }
 
 model PackName {
-  PackID         String           @id @unique
-  menuName       String?
+  packId         String           @id @unique
+  menuName       String
   course         Course[]
-  IngredientPack IngredientPack[]
-  Group          GroupID[]
+  ingredientPack IngredientPack[]
+  group          GroupID[]
 }
 
 model Payment {
-  PaymentID  Int     @id @default(autoincrement())
-  cardNo     Int?    @unique
-  cardHolder String?
+  paymentId  Int     @id @default(autoincrement())
+  cardNo     Int     @unique
+  cardHolder String
   users      User[]
   chef       Chef[]
+  order      Order[]
 }
 
 model User {
-  UserID          Int      @id @default(autoincrement())
+  userId          Int      @id @default(autoincrement())
   name            String?
   surname         String?
   userAddress     String?
   userProfile     String?
   favouriteChefId Int?
+  sex             String?
   userPhone       Int?     @unique
-  userEmail       String?
+  userEmail       String?  @unique
   userPayment     Int?
   username        String   @unique
   password        String
-  favChef         Chef?    @relation(fields: [favouriteChefId], references: [ChefID])
-  Payment         Payment? @relation(fields: [userPayment], references: [PaymentID])
+  favChef         Chef?    @relation(fields: [favouriteChefId], references: [chefId])
+  payment         Payment? @relation(fields: [userPayment], references: [paymentId])
+  review          Review[]
+  order           Order[]
 }
 
 model Video {
-  VideoID    Int    @id @default(autoincrement())
+  videoID    Int      @id @default(autoincrement())
   videoPath  String
   videoTitle String
-
-  course Course[]
+  course     Course[]
 }
 
 model Ingredient {
-  IngredientID    Int              @id @default(autoincrement())
+  ingredientId    Int              @id @default(autoincrement())
   ingredientName  String?          @unique
   ingredientPrice Float?
   ingredientpack  IngredientPack[]
+}
+
+model Review {
+  reviewId        Int      @id @default(autoincrement())
+  reviewUserId    Int
+  reviewRating    Int
+  reviewDetail    String?
+  reviewTimestamp DateTime
+  reviewCourseId  Int
+  userId          User?    @relation(fields: [reviewUserId], references: [userId])
+  coursId         Course?  @relation(fields: [reviewCourseId], references: [courseId])
+}
+
+model Order {
+  orderId             Int      @id @default(autoincrement())
+  orderUserId         Int
+  orderCourseId       Int
+  orderPaymentId      Int
+  orderDate           DateTime
+  orderFormat         String
+  orderWithIngredient Boolean  @default(false)
+  orderPrice          Float
+  coursId             Course?  @relation(fields: [orderCourseId], references: [courseId])
+  userId              User?    @relation(fields: [orderUserId], references: [userId])
+  paymentId           Payment? @relation(fields: [orderPaymentId], references: [paymentId])
 }
