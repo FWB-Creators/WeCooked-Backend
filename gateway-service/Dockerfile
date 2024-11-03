@@ -1,40 +1,24 @@
-# Stage 1: Build the application
-FROM node:22 AS builder
+# Use an official Node.js runtime as a base image
+FROM node:18
 
-# Declare build-time arguments
-ARG DATABASE_URL
-ARG NATS_URL
-
-# Set environment variables in the Docker image
-ENV DATABASE_URL=$DATABASE_URL
-ENV NATS_URL=$NATS_URL
-
+# Set working directory
 WORKDIR /app
 
+# Copy package.json and package-lock.json files
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
+# Copy the rest of your application code
 COPY . .
-RUN npm run build
 
-# Stage 2: Run the application
-FROM node:22
+# Generate Prisma Client
+RUN npx prisma generate
 
-# Declare build-time arguments
-ARG DATABASE_URL
-ARG NATS_URL
-
-# Set environment variables in the Docker image
-ENV DATABASE_URL=$DATABASE_URL
-ENV NATS_URL=nats://nats-streaming:4222
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install --only=production
-
-COPY --from=builder /app/dist ./dist
-
+# Expose port 3000
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+# Start the NestJS application
+# CMD ["npm", "run", "start:prod"]
+CMD [ "sh" , "run.sh" ]
