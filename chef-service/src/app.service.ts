@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { PrismaClient } from '../../gateway/node_modules/.prisma/client';
+// import { ChefModel } from '../../gateway/src/model/chef.model';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -12,12 +13,33 @@ export class AppService extends PrismaClient implements OnModuleInit {
     return this.chef.findMany();
   }
 
-  async postSignUpChef(body: any): Promise<any> {
-    const { name, email, lastName, username, password } = body[0];
-    const payload = { name, email, lastName, username, password };
+  async postSignUpChef(body: any[]): Promise<any> {
+    const {
+      chefName,
+      chefSurname,
+      chefEmail,
+      chefPassword,
+      chefBio,
+      chefExperience,
+      chefSpecialty,
+      chefPhone,
+    }: any = body[0];
 
     try {
-      await this.chef.create({ data: payload });
+      await this.chef.create({
+        data: {
+          chefName,
+          chefSurname,
+          chefEmail,
+          chefUsername: chefEmail,
+          chefPassword,
+          chefBio,
+          chefExperience,
+          chefSpecialty,
+          chefPhone,
+          chefPicture: 'https://via.placeholder.com/150',
+        },
+      });
       return { message: 'Chef created successfully' };
     } catch (e) {
       console.error('Error creating chef:', e);
