@@ -1,6 +1,7 @@
 import { Body, Controller } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern } from '@nestjs/microservices';
+// import { ChefModel } from '../../gateway/src/model/chef.model';
 
 @Controller()
 export class AppController {
@@ -11,7 +12,7 @@ export class AppController {
     return data;
   }
   @EventPattern('chef/signup')
-  postSignUpChef(@Body() body: any): Promise<any> {
+  postSignUpChef(@Body() body: any[]): Promise<any> {
     const data = this.appService.postSignUpChef(body);
     return data;
   }
