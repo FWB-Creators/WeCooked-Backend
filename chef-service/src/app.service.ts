@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { PrismaClient } from '../../gateway/node_modules/.prisma/client';
-// import { ChefModel } from '../../gateway/src/model/chef.model';
+import { ChefLoginModel, ChefModel } from './model/chef.model.dto';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -13,7 +13,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
     return this.chef.findMany();
   }
 
-  async postSignUpChef(body: any[]): Promise<any> {
+  async postSignUpChef(body: ChefModel[]): Promise<any> {
     const {
       chefName,
       chefSurname,
@@ -23,8 +23,8 @@ export class AppService extends PrismaClient implements OnModuleInit {
       chefExperience,
       chefSpecialty,
       chefPhone,
-    }: any = body[0];
-
+    }: ChefModel = body[0];
+    console.log(body);
     try {
       await this.chef.create({
         data: {
@@ -43,6 +43,25 @@ export class AppService extends PrismaClient implements OnModuleInit {
       return { message: 'Chef created successfully' };
     } catch (e) {
       console.error('Error creating chef:', e);
+      throw e;
+    }
+  }
+
+  async postLoginChef(body: ChefLoginModel[]): Promise<any> {
+    const { chefEmail, chefPassword }: ChefLoginModel = body[0];
+    try {
+      const chef = await this.chef.findUnique({
+        where: {
+          chefEmail,
+        },
+      });
+      if (chef && chef.chefPassword === chefPassword) {
+        return { message: 'Login successful' };
+      } else {
+        return { message: 'Login failed' };
+      }
+    } catch (e) {
+      console.error('Error logging in:', e);
       throw e;
     }
   }

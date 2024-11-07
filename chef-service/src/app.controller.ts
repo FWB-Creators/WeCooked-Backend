@@ -16,4 +16,10 @@ export class AppController {
     const data = this.appService.postSignUpChef(body);
     return data;
   }
+
+  @EventPattern('chef/login')
+  postLoginChef(@Body() body: any[]): Promise<any> {
+    const data = this.appService.postLoginChef(body);
+    return data;
+  }
 }

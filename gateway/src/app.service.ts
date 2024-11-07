@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom, Observable } from 'rxjs';
 import { ChefModel } from './model/chef.model';
+import { ChefLoginModel } from '../../chef-service/src/model/chef.model.dto';
 
 @Injectable()
 export class AppService {
@@ -24,6 +25,17 @@ export class AppService {
   postSignUpChef(body: ChefModel[]): Observable<any> {
     return new Observable((observer) => {
       lastValueFrom(this.chefClient.send('chef/signup', body))
+        .then((result) => {
+          observer.next(result);
+          observer.complete();
+        })
+        .catch((error) => observer.error(error));
+    });
+  }
+
+  postLoginChef(body: ChefLoginModel[]): Observable<any> {
+    return new Observable((observer) => {
+      lastValueFrom(this.chefClient.send('chef/login', body))
         .then((result) => {
           observer.next(result);
           observer.complete();

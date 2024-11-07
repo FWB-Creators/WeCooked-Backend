@@ -24,8 +24,17 @@ export class AppController {
     @Body() body: any,
   ): Observable<any> {
     this.logger.log('Action:', action);
-    if (action === 'signup') {
-      return this.appService.postSignUpChef(body);
+
+    switch (action) {
+      case 'signup':
+        return this.appService.postSignUpChef(body);
+
+      case 'login':
+        return this.appService.postLoginChef(body);
+
+      default:
+        this.logger.warn(`Unknown action: ${action}`);
+        return null;
     }
   }
 }
