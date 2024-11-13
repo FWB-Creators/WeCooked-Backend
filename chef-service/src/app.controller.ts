@@ -22,4 +22,10 @@ export class AppController {
     const data = this.appService.postLoginChef(body);
     return data;
   }
+
+  @EventPattern('chef/profile')
+  getProfileChef(@Body() id: number): Promise<any> {
+    const data = this.appService.getProfileChef(id);
+    return data;
+  }
 }

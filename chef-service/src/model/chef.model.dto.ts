@@ -82,7 +82,6 @@ interface User {
   userAddress?: string;
   userProfile?: string;
   favouriteChefId?: number;
-  sex?: string;
   userPhone?: number;
   userEmail?: string;
   userPayment?: number;

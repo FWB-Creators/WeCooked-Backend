@@ -31,7 +31,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
           chefName,
           chefSurname,
           chefEmail,
-          chefUsername: chefEmail,
           chefPassword,
           chefBio,
           chefExperience,
@@ -56,12 +55,42 @@ export class AppService extends PrismaClient implements OnModuleInit {
         },
       });
       if (chef && chef.chefPassword === chefPassword) {
-        return { message: 'Login successful' };
+        return [{ message: 'Login successful' }];
       } else {
-        return { message: 'Login failed' };
+        return [{ message: 'Login failed' }];
       }
     } catch (e) {
       console.error('Error logging in:', e);
+      throw e;
+    }
+  }
+
+  async getProfileChef(id: number): Promise<any> {
+    try {
+      const chef = await this.chef.findUnique({
+        where: {
+          chefId: id,
+        },
+      });
+      if (!chef) {
+        return [];
+      }
+      return [
+        {
+          chefId: chef.chefId,
+          chefName: chef.chefName,
+          chefSurname: chef.chefSurname,
+          chefBio: chef.chefBio,
+          chefSpecialty: chef.chefSpecialty,
+          chefExperience: chef.chefExperience,
+          chefPicture: chef.chefPicture,
+          chefEmail: chef.chefEmail,
+          chefPayment: chef.chefPayment,
+          chefPhone: chef.chefPhone,
+        },
+      ];
+    } catch (e) {
+      console.error('Error fetching chef:', e);
       throw e;
     }
   }

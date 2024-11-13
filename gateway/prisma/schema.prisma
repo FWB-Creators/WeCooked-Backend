@@ -13,13 +13,13 @@ model Chef {
   chefName       String
   chefSurname    String
   chefBio        String?
+  chefSex        String?
   chefSpecialty  String?
   chefExperience String?
   chefPicture    String?
   chefEmail      String?   @unique
   chefPayment    Int?
   chefPhone      Int?      @unique
-  chefUsername   String    @unique
   chefPassword   String
   payment        Payment?  @relation(fields: [chefPayment], references: [paymentId])
   courses        Course[]  @relation("ChefCourses")

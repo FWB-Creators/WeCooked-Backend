@@ -6,7 +6,6 @@ import { ChefLoginModel } from '../../chef-service/src/model/chef.model.dto';
 
 @Injectable()
 export class AppService {
-  private readonly users: any[] = [];
   constructor(
     @Inject('CHEF_SERVICE') private readonly chefClient: ClientProxy,
   ) {}
@@ -36,6 +35,17 @@ export class AppService {
   postLoginChef(body: ChefLoginModel[]): Observable<any> {
     return new Observable((observer) => {
       lastValueFrom(this.chefClient.send('chef/login', body))
+        .then((result) => {
+          observer.next(result);
+          observer.complete();
+        })
+        .catch((error) => observer.error(error));
+    });
+  }
+
+  getProfileChef(id: number): Observable<any> {
+    return new Observable((observer) => {
+      lastValueFrom(this.chefClient.send('chef/profile', id))
         .then((result) => {
           observer.next(result);
           observer.complete();
