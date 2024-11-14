@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Client, ClientProxy, Transport } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
+import { Client as PostgreClient } from 'pg';
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -18,6 +19,21 @@ export class AppService implements OnModuleInit {
 
   async onModuleInit() {
     // Send a message with the pattern `{ cmd: 'sum' }`
+    const client = new PostgreClient({
+      user: 'yourusername',
+      host: 'postgres',
+      database: 'yourdatabase',
+      password: 'yourpassword',
+      port: 5432,
+    });
+    await client
+      .connect()
+      .then(() => {
+        console.log('Connected to Postgres');
+      })
+      .catch((e) => {
+        console.log('Error connecting to Postgres: ', e);
+      });
     try {
       const result = await lastValueFrom(
         this.client.send({ cmd: 'health-check-user-service' }, [1, 2, 3]),
