@@ -1,4 +1,4 @@
-export class ChefModel {
+export interface ChefModel {
   chefId: number;
   chefName: string;
   chefSurname: string;

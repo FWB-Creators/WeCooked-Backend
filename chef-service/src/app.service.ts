@@ -1,5 +1,8 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
-import { PrismaClient } from '../../gateway/node_modules/.prisma/client';
+import {
+  PrismaClient,
+  Prisma,
+} from '../../gateway/node_modules/.prisma/client';
 import { ChefLoginModel, ChefModel } from './model/chef.model.dto';
 
 @Injectable()
@@ -24,7 +27,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
       chefSpecialty,
       chefPhone,
     }: ChefModel = body[0];
-    console.log(body);
     try {
       await this.chef.create({
         data: {
@@ -39,9 +41,14 @@ export class AppService extends PrismaClient implements OnModuleInit {
           chefPicture: 'https://via.placeholder.com/150',
         },
       });
-      return { message: 'Chef created successfully' };
+      return [{ message: 'Chef created successfully' }];
     } catch (e) {
-      console.error('Error creating chef:', e);
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // Prisma error code for unique constraint violation
+        if (e.code === 'P2002') {
+          return [{ message: 'Email already registered' }];
+        }
+      }
       throw e;
     }
   }
@@ -60,6 +67,12 @@ export class AppService extends PrismaClient implements OnModuleInit {
         return [{ message: 'Login failed' }];
       }
     } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // Prisma error code for record not found
+        if (e.code === 'P2025') {
+          return [{ message: 'Email not registered' }];
+        }
+      }
       console.error('Error logging in:', e);
       throw e;
     }
@@ -90,6 +103,12 @@ export class AppService extends PrismaClient implements OnModuleInit {
         },
       ];
     } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // Prisma error code for record not found
+        if (e.code === 'P2025') {
+          return [{ message: 'Chef not found' }];
+        }
+      }
       console.error('Error fetching chef:', e);
       throw e;
     }
