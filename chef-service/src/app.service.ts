@@ -114,6 +114,25 @@ export class AppService extends PrismaClient implements OnModuleInit {
     }
   }
 
+  async getProfileChefs(): Promise<any> {
+    try {
+      const chef = await this.chef.findMany();
+      if (!chef) {
+        return [];
+      }
+      return chef;
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // Prisma error code for record not found
+        if (e.code === 'P2025') {
+          return [{ message: 'Chef not found' }];
+        }
+      }
+      console.error('Error fetching chef:', e);
+      throw e;
+    }
+  }
+
   async updateProfileChef(body: any): Promise<any> {
     const updateData: any = {};
     // Dynamically add fields to updateData based on keys in body.body[0]

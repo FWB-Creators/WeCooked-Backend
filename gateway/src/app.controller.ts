@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Observable } from 'rxjs';
@@ -19,8 +18,14 @@ export class AppController {
 
   @ApiTags('Chef')
   @Get('chef/profile/:id?')
-  handleChefAction(@Param('id') id: number): Observable<any> {
+  profileChef(@Param('id') id: number): Observable<any> {
     return this.appService.getProfileChef(Number(id));
+  }
+
+  @ApiTags('Chef')
+  @Get('chef/profiles')
+  profileChefs(): Observable<any> {
+    return this.appService.getProfileChefs();
   }
 
   @ApiTags('Chef')

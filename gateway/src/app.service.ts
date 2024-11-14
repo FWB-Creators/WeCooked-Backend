@@ -54,6 +54,17 @@ export class AppService {
     });
   }
 
+  getProfileChefs(): Observable<any> {
+    return new Observable((observer) => {
+      lastValueFrom(this.chefClient.send('chef/profiles', {}))
+        .then((result) => {
+          observer.next(result);
+          observer.complete();
+        })
+        .catch((error) => observer.error(error));
+    });
+  }
+
   updateProfileChef(body: ChefModel, id: number): Observable<any> {
     return new Observable((observer) => {
       lastValueFrom(this.chefClient.send('chef/updateProfile', { body, id }))

@@ -29,6 +29,12 @@ export class AppController {
     return data;
   }
 
+  @EventPattern('chef/profiles')
+  getProfilesChef(): Promise<any> {
+    const data = this.appService.getProfileChefs();
+    return data;
+  }
+
   @EventPattern('chef/updateProfile')
   updateProfileChef(@Body() body: any): Promise<any> {
     const data = this.appService.updateProfileChef(body);
