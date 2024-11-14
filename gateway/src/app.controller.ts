@@ -4,7 +4,9 @@ import {
   Get,
   Logger,
   Param,
+  Patch,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { AppService } from './app.service';
@@ -32,5 +34,14 @@ export class AppController {
   @Post('chef/login')
   loginChef(@Body() body: any): Observable<any> {
     return this.appService.postLoginChef(body);
+  }
+
+  @ApiTags('Chef')
+  @Patch('chef/update/:id')
+  updateProfileChef(
+    @Param('id') id: number,
+    @Body() body: any,
+  ): Observable<any> {
+    return this.appService.updateProfileChef(body, Number(id));
   }
 }

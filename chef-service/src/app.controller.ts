@@ -28,4 +28,10 @@ export class AppController {
     const data = this.appService.getProfileChef(id);
     return data;
   }
+
+  @EventPattern('chef/updateProfile')
+  updateProfileChef(@Body() body: any): Promise<any> {
+    const data = this.appService.updateProfileChef(body);
+    return data;
+  }
 }

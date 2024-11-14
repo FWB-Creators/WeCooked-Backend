@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger, Body } from '@nestjs/common';
 import {
   PrismaClient,
   Prisma,
@@ -110,6 +110,33 @@ export class AppService extends PrismaClient implements OnModuleInit {
         }
       }
       console.error('Error fetching chef:', e);
+      throw e;
+    }
+  }
+
+  async updateProfileChef(body: any): Promise<any> {
+    const updateData: any = {};
+    // Dynamically add fields to updateData based on keys in body.body[0]
+    Object.keys(body.body[0]).forEach((key) => {
+      if (body.body[0][key] !== undefined) {
+        updateData[key] = body.body[0][key];
+      }
+    });
+    try {
+      await this.chef.update({
+        where: {
+          chefId: body.id,
+        },
+        data: updateData,
+      });
+      return [{ message: 'Chef updated successfully' }];
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          return [{ message: 'Chef not found' }];
+        }
+      }
+      console.error('Error updating chef:', e);
       throw e;
     }
   }
