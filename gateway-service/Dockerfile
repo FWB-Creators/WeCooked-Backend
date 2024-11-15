@@ -1,13 +1,25 @@
-# Stage 1: Build the application
-FROM node:22
+######### First Stage #############
+
+FROM node:20-alpine AS development
 
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-RUN npm install -g prisma
+
 COPY . .
-RUN npm run build
-RUN npm run prisma:generate
+
+RUN npx prisma generate \
+    && npm run build
+
+
+######### Second Stage #############
+
+FROM node:20-alpine AS production
+
+WORKDIR /app
+
+COPY --from=development /app/node_modules ./node_modules
+COPY --from=development /app/prisma ./prisma
+COPY --from=development /app/dist ./dist
+
 EXPOSE 3000
-CMD ["sh", "-c", " npm run prisma:push && npm run start:dev"]
-# CMD ["sh", "run.sh"]
+
+CMD ["node", "dist/main"]

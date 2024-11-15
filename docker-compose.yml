@@ -28,8 +28,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - gateway-service
-      - user-service
+      - all-service
 
   nats-streaming:
     image: nats-streaming:latest
@@ -37,8 +36,7 @@ services:
       - "4222:4222"
       - "8222:8222"
     networks:
-      - gateway-service
-      - user-service
+      - all-service
 
   gateway-service:
     image: gateway-service
@@ -59,7 +57,7 @@ services:
       DATABASE_URL: postgres://yourusername:yourpassword@postgres:5432/yourdatabase
       NATS_URL: nats://nats-streaming:4222
     networks:
-      - gateway-service
+      - all-service
     depends_on:
       - postgres
       - nats-streaming
@@ -86,15 +84,13 @@ services:
       DATABASE_URL: postgres://yourusername:yourpassword@postgres:5432/yourdatabase
       NATS_URL: nats://nats-streaming:4222
     networks:
-      - user-service
+      - all-service
     depends_on:
       - postgres
       - nats-streaming
 
 networks:
-  gateway-service:
-    driver: bridge
-  user-service:
+  all-service:
     driver: bridge
 
 volumes:
