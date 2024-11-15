@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: yourusername
+      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_DB: yourdatabase
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - all-service
+
+  nats-streaming:
+    image: nats-streaming:latest
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    networks:
+      - all-service
+
+  gateway-service:
+    image: gateway-service
+    build:
+      context: ./gateway-service/
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: sync
+          path: ./gateway-service/src
+          target: /app/gateway-service/src
+          ignore:
+            - .git
+            - node_modules
+        - action: rebuild
+          path: ./gateway-service/package.json
+    environment:
+      DATABASE_URL: postgres://yourusername:yourpassword@postgres:5432/yourdatabase
+      NATS_URL: nats://nats-streaming:4222
+    networks:
+      - all-service
+    depends_on:
+      - postgres
+      - nats-streaming
+      - user-service
+    ports:
+      - "3000:3000"
+
+  user-service:
+    image: user-service
+    build:
+      context: ./user-service/
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: sync
+          path: ./user-service/src
+          target: /app/user-service/src
+          ignore:
+            - .git
+            - node_modules
+        - action: rebuild
+          path: ./user-service/package.json
+    environment:
+      DATABASE_URL: postgres://yourusername:yourpassword@postgres:5432/yourdatabase
+      NATS_URL: nats://nats-streaming:4222
+    networks:
+      - all-service
+    depends_on:
+      - postgres
+      - nats-streaming
+
+networks:
+  all-service:
+    driver: bridge
+
+volumes:
+  postgres_data:
