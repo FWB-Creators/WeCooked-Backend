@@ -40,4 +40,12 @@ export class AppController {
     const data = this.appService.updateProfileChef(body);
     return data;
   }
+
+  @EventPattern('chef/uploadCourseVideo')
+  uploadCourseVideo(@Body() body): Promise<any> {
+    console.log('uploadCourseVideo');
+    console.log(body);
+    const data = this.appService.uploadCourseVideo(body.id, body.payload);
+    return data;
+  }
 }

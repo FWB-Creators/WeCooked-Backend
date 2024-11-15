@@ -48,4 +48,10 @@ export class AppController {
   ): Observable<any> {
     return this.appService.updateProfileChef(body, Number(id));
   }
+
+  @ApiTags('Chef')
+  @Post('chef/upload/:id')
+  uploadCourseVideo(@Param('id') id: number, @Body() payload): Observable<any> {
+    return this.appService.uploadCourseVideo(Number(id), payload);
+  }
 }

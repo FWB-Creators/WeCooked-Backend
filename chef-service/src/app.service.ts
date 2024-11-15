@@ -159,4 +159,42 @@ export class AppService extends PrismaClient implements OnModuleInit {
       throw e;
     }
   }
+
+  async uploadCourseVideo(chefId: number, body: any): Promise<any> {
+    try {
+      const {
+        courseTitle,
+        courseDetail,
+        coursePrice,
+        courseCategory,
+        videoPath,
+        videoTitle,
+      } = body[0];
+      await this.course.create({
+        data: {
+          courseTitle,
+          courseDetail,
+          coursePrice,
+          courseCategory,
+          chef: {
+            connect: { chefId: chefId },
+          },
+          video: {
+            create: {
+              videoPath,
+              videoTitle,
+            },
+          },
+        },
+        include: {
+          video: true,
+          chef: true,
+        },
+      });
+      return [{ message: 'Course uploaded successfully' }];
+    } catch (e) {
+      console.error('Error uploading course video:', e);
+      throw e;
+    }
+  }
 }

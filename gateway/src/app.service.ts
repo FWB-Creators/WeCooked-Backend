@@ -75,4 +75,17 @@ export class AppService {
         .catch((error) => observer.error(error));
     });
   }
+
+  uploadCourseVideo(id: number, payload: any): Observable<any> {
+    return new Observable((observer) => {
+      lastValueFrom(
+        this.chefClient.send('chef/uploadCourseVideo', { id, payload }),
+      )
+        .then((result) => {
+          observer.next(result);
+          observer.complete();
+        })
+        .catch((error) => observer.error(error));
+    });
+  }
 }
