@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom, Observable } from 'rxjs';
-import { ChefModel } from './model/chef.model';
-import { ChefLoginModel } from '../../chef-service/src/model/chef.model.dto';
+import { ChefModel, ChefLoginModel } from './model/chef.model';
+// import { ChefLoginModel } from '../../chef-service/src/model/chef.model.dto';
 
 @Injectable()
 export class AppService {
