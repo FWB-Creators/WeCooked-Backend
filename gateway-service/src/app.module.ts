@@ -1,7 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+<<<<<<< HEAD:gateway-service/src/app.module.ts
 import { APP_FILTER } from '@nestjs/core';
 import { ChefController } from './chef/chef.controller';
 import { ChefService } from './chef/chef.service';
+=======
+import { ChefController } from './entity/chef.controller';
+import { ChefService } from './entity/chef.service';
+>>>>>>> f639b2ea (feat: refactor app module to chef entity in gateway):gateway/src/app.module.ts
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
@@ -30,6 +35,11 @@ import { UserModule } from './user/user.module';
       useClass: HttpExceptionFilter,
     },
   ],
+<<<<<<< HEAD:gateway-service/src/app.module.ts
+=======
+  controllers: [ChefController],
+  providers: [ChefService],
+>>>>>>> f639b2ea (feat: refactor app module to chef entity in gateway):gateway/src/app.module.ts
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
