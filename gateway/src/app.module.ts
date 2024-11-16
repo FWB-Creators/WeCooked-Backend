@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ChefController } from './entity/chef.controller';
+import { ChefService } from './entity/chef.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
@@ -18,8 +18,8 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
       },
     ]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [ChefController],
+  providers: [ChefService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

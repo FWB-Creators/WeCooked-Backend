@@ -7,37 +7,37 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { AppService } from './app.service';
+import { ChefService } from './chef.service';
 import { Observable } from 'rxjs';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class ChefController {
+  constructor(private readonly ChefService: ChefService) {}
   logger = new Logger('Gateway Service');
 
   @ApiTags('Chef')
   @Get('chef/profile/:id?')
   profileChef(@Param('id') id: number): Observable<any> {
-    return this.appService.getProfileChef(Number(id));
+    return this.ChefService.getProfileChef(Number(id));
   }
 
   @ApiTags('Chef')
   @Get('chef/profiles')
   profileChefs(): Observable<any> {
-    return this.appService.getProfileChefs();
+    return this.ChefService.getProfileChefs();
   }
 
   @ApiTags('Chef')
   @Post('chef/signup')
   signUpChef(@Body() body: any): Observable<any> {
-    return this.appService.postSignUpChef(body);
+    return this.ChefService.postSignUpChef(body);
   }
 
   @ApiTags('Chef')
   @Post('chef/login')
   loginChef(@Body() body: any): Observable<any> {
-    return this.appService.postLoginChef(body);
+    return this.ChefService.postLoginChef(body);
   }
 
   @ApiTags('Chef')
@@ -46,12 +46,12 @@ export class AppController {
     @Param('id') id: number,
     @Body() body: any,
   ): Observable<any> {
-    return this.appService.updateProfileChef(body, Number(id));
+    return this.ChefService.updateProfileChef(body, Number(id));
   }
 
   @ApiTags('Chef')
   @Post('chef/upload/:id')
   uploadCourseVideo(@Param('id') id: number, @Body() payload): Observable<any> {
-    return this.appService.uploadCourseVideo(Number(id), payload);
+    return this.ChefService.uploadCourseVideo(Number(id), payload);
   }
 }
