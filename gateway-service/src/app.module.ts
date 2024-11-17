@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 import { ChefController } from './chef/chef.controller';
 import { ChefService } from './chef/chef.service';
