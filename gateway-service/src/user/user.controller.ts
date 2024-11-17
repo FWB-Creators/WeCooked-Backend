@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Controller, Post, Body, Logger, Headers, Get } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -7,10 +8,27 @@ import {
   UserLoginRequestBody,
   ProfileUpdateRequestBody,
 } from './dto/user-reqbody.dto';
+=======
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import { UserService } from './user.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { UserSignUpRequestBody } from './dto/user-reqbody.dto';
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
+<<<<<<< HEAD
   constructor(
     private readonly userService: UserService,
     private jwtService: JwtService,
@@ -30,11 +48,15 @@ export class UserController {
       return error;
     }
   }
+=======
+  constructor(private readonly userService: UserService) {}
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 
   @Post('signup')
   signUp(@Body() userSignUpRequestBody: UserSignUpRequestBody) {
     return this.userService.signup(userSignUpRequestBody);
   }
+<<<<<<< HEAD
 
   @Post('login')
   login(@Body() userLoginRequestBody: UserLoginRequestBody) {
@@ -54,4 +76,6 @@ export class UserController {
       return error;
     }
   }
+=======
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 }

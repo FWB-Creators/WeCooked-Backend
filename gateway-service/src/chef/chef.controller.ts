@@ -2,7 +2,11 @@ import {
 <<<<<<< HEAD
   BadRequestException,
 =======
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   Body,
   ConflictException,
   Controller,
@@ -12,7 +16,11 @@ import {
 <<<<<<< HEAD
   NotFoundException,
 =======
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   Param,
   Patch,
   Post,
@@ -45,7 +53,11 @@ export class ChefController {
 =======
   profileChef(@Param('id') id: number): Observable<any> {
     return this.ChefService.getProfileChef(Number(id));
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   }
 
   @ApiTags('Chef')
@@ -68,7 +80,11 @@ export class ChefController {
 =======
   profileChefs(): Observable<any> {
     return this.ChefService.getProfileChefs();
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   }
 
   @ApiTags('Chef')
@@ -82,7 +98,11 @@ export class ChefController {
 =======
       if (signUp[0].status === HttpStatus.CONFLICT) {
         throw new ConflictException(signUp[0].message);
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
       }
       return new Observable((observer) => {
         observer.next(signUp);
@@ -112,7 +132,11 @@ export class ChefController {
 =======
   loginChef(@Body() body: any): Observable<any> {
     return this.ChefService.postLoginChef(body);
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   }
 
   @ApiTags('Chef')
@@ -143,7 +167,11 @@ export class ChefController {
     @Body() body: any,
   ): Observable<any> {
     return this.ChefService.updateProfileChef(body, Number(id));
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   }
 
   @ApiTags('Chef')
@@ -170,6 +198,10 @@ export class ChefController {
 =======
   uploadCourseVideo(@Param('id') id: number, @Body() payload): Observable<any> {
     return this.ChefService.uploadCourseVideo(Number(id), payload);
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   }
 }

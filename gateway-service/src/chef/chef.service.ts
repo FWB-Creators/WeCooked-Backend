@@ -4,7 +4,11 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 =======
 import { lastValueFrom, Observable } from 'rxjs';
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 import { ChefModel } from '../model/chef.model';
 import { ChefLoginModel } from '../../../chef-service/src/model/chef.model.dto';
 
@@ -16,6 +20,9 @@ export class ChefService {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 =======
   getChef(): Observable<any> {
     return new Observable((observer) => {
@@ -28,9 +35,13 @@ export class ChefService {
     });
   }
 
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
 =======
 >>>>>>> 54a9b80a (fix: throwing error and remove unused service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   async postSignUpChef(body: ChefModel[]): Promise<any> {
     try {
       const result = await lastValueFrom(
@@ -152,6 +163,10 @@ export class ChefService {
         })
         .catch((error) => observer.error(error));
     });
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   }
 }

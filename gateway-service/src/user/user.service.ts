@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom, Observable } from 'rxjs';
+<<<<<<< HEAD
 import {
   ProfileUpdateRequestBody,
   UserLoginRequestBody,
@@ -11,6 +12,10 @@ import {
   UserLoginEventMsg,
   ProfileUpdateEventMsg,
 } from '@lib/src/user/event-msg.dto';
+=======
+import { UserSignUpRequestBody } from './dto/user-reqbody.dto';
+import { UserSignUpEventMsg } from '../../../lib/user/event-msg.dto';
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 
 @Injectable()
 export class UserService {
@@ -18,6 +23,7 @@ export class UserService {
     @Inject('USER_SERVICE') private readonly userClient: ClientProxy,
   ) {}
 
+<<<<<<< HEAD
   getUser(userId: number): Observable<any> {
     const result = new Observable((observer) => {
       lastValueFrom(this.userClient.send('user/getUser', userId))
@@ -30,6 +36,8 @@ export class UserService {
     return result;
   }
 
+=======
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   signup(userSignUpRequestBody: UserSignUpRequestBody): Observable<any> {
     const userSignUpEventMsg: UserSignUpEventMsg = {
       email: userSignUpRequestBody.email,
@@ -37,8 +45,12 @@ export class UserService {
       firstName: userSignUpRequestBody.firstName,
       lastName: userSignUpRequestBody.lastName,
     };
+<<<<<<< HEAD
 
     const result = new Observable((observer) => {
+=======
+    return new Observable((observer) => {
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
       lastValueFrom(this.userClient.send('user/signup', userSignUpEventMsg))
         .then((result) => {
           observer.next(result);
@@ -46,6 +58,7 @@ export class UserService {
         })
         .catch((error) => observer.error(error));
     });
+<<<<<<< HEAD
 
     return result;
   }
@@ -91,5 +104,7 @@ export class UserService {
         .catch((error) => observer.error(error));
     });
     return result;
+=======
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   }
 }

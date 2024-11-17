@@ -1,7 +1,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
+=======
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 <<<<<<< HEAD:gateway-service/src/app.module.ts
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 <<<<<<< HEAD:gateway-service/src/app.module.ts
@@ -33,6 +36,8 @@ import { ChefService } from './chef/chef.service';
 >>>>>>> 0a1150a1 (feat: refactor app module to chef entity in gateway)
 =======
 =======
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
 import {
   HttpException,
   MiddlewareConsumer,
@@ -42,6 +47,7 @@ import {
 import { APP_FILTER } from '@nestjs/core';
 import { ChefController } from './chef/chef.controller';
 import { ChefService } from './chef/chef.service';
+<<<<<<< HEAD
 >>>>>>> a0513b77 (feat: implement http exception for sign up chef):gateway/src/app.module.ts
 >>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
 import { ClientsModule, Transport } from '@nestjs/microservices';
@@ -49,14 +55,22 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { HttpExceptionFilter } from './http-exception.filter';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { UserModule } from './user/user.module';
+=======
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 =======
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
 =======
 >>>>>>> 54a9b80a (fix: throwing error and remove unused service)
+=======
+import { UserModule } from './user/user.module';
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 
 @Module({
   imports: [
@@ -71,15 +85,23 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
       },
     ]),
 <<<<<<< HEAD
+<<<<<<< HEAD
     UserModule,
 =======
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
   ],
   controllers: [ChefController],
 <<<<<<< HEAD:gateway-service/src/app.module.ts
 <<<<<<< HEAD:gateway-service/src/app.module.ts
 =======
 >>>>>>> a0513b77 (feat: implement http exception for sign up chef):gateway/src/app.module.ts
+=======
+    UserModule,
+  ],
+  controllers: [ChefController],
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
   providers: [
     ChefService,
     {
@@ -87,8 +109,11 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
+=======
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 <<<<<<< HEAD:gateway-service/src/app.module.ts
       useClass: HttpExceptionFilter,
     },
@@ -124,7 +149,15 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     },
   ],
 >>>>>>> a0513b77 (feat: implement http exception for sign up chef):gateway/src/app.module.ts
+<<<<<<< HEAD
 >>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
+=======
+=======
+      useClass: HttpException,
+    },
+  ],
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

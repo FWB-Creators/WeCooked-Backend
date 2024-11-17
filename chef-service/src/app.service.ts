@@ -69,8 +69,11 @@ export class AppService extends PrismaClient implements OnModuleInit {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
+=======
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
           throw {
             status: HttpStatus.CONFLICT,
             message: 'Email already registered',
@@ -86,10 +89,15 @@ export class AppService extends PrismaClient implements OnModuleInit {
           //   HttpStatus.CONFLICT,
           // );
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
 =======
 >>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
+=======
+=======
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+>>>>>>> cd415583 (chore: change gateway to gateway-service)
           throw [
             {
               status: HttpStatus.CONFLICT,
