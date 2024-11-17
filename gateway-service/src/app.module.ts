@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< HEAD:gateway-service/src/app.module.ts
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 <<<<<<< HEAD:gateway-service/src/app.module.ts
@@ -9,6 +10,8 @@ import { ChefController } from './entity/chef.controller';
 import { ChefService } from './entity/chef.service';
 >>>>>>> f639b2ea (feat: refactor app module to chef entity in gateway):gateway/src/app.module.ts
 =======
+=======
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
 import {
   HttpException,
   MiddlewareConsumer,
@@ -18,12 +21,18 @@ import {
 import { APP_FILTER } from '@nestjs/core';
 import { ChefController } from './chef/chef.controller';
 import { ChefService } from './chef/chef.service';
+<<<<<<< HEAD
 >>>>>>> 93a55995 (feat: implement http exception for sign up chef):gateway/src/app.module.ts
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { UserModule } from './user/user.module';
+=======
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule } from '@nestjs/config';
+import { LoggerMiddleware } from './middleware/logger.middleware';
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
 
 @Module({
   imports: [
@@ -37,13 +46,17 @@ import { UserModule } from './user/user.module';
         },
       },
     ]),
+<<<<<<< HEAD
     UserModule,
+=======
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
   ],
   controllers: [ChefController],
   providers: [
     ChefService,
     {
       provide: APP_FILTER,
+<<<<<<< HEAD
 <<<<<<< HEAD:gateway-service/src/app.module.ts
       useClass: HttpExceptionFilter,
     },
@@ -58,6 +71,11 @@ import { UserModule } from './user/user.module';
     },
   ],
 >>>>>>> 93a55995 (feat: implement http exception for sign up chef):gateway/src/app.module.ts
+=======
+      useClass: HttpException,
+    },
+  ],
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

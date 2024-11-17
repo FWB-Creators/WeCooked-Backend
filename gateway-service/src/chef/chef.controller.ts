@@ -1,12 +1,18 @@
 import {
+<<<<<<< HEAD
   BadRequestException,
+=======
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
   Body,
   ConflictException,
   Controller,
   Get,
   HttpStatus,
   Logger,
+<<<<<<< HEAD
   NotFoundException,
+=======
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
   Param,
   Patch,
   Post,
@@ -22,6 +28,7 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Get('chef/profile/:id?')
+<<<<<<< HEAD
   async profileChef(@Param('id') id: number): Promise<any> {
     try {
       const profile = await this.ChefService.getProfileChef(Number(id));
@@ -35,10 +42,15 @@ export class ChefController {
     } catch (error) {
       throw error;
     }
+=======
+  profileChef(@Param('id') id: number): Observable<any> {
+    return this.ChefService.getProfileChef(Number(id));
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
   }
 
   @ApiTags('Chef')
   @Get('chef/profiles')
+<<<<<<< HEAD
   async profileChefs(): Promise<any> {
     try {
       const profiles = await this.ChefService.getProfileChefs();
@@ -53,6 +65,10 @@ export class ChefController {
     } catch (error) {
       throw error;
     }
+=======
+  profileChefs(): Observable<any> {
+    return this.ChefService.getProfileChefs();
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
   }
 
   @ApiTags('Chef')
@@ -60,8 +76,13 @@ export class ChefController {
   async signUpChef(@Body() body: any): Promise<Observable<any>> {
     try {
       const signUp = await this.ChefService.postSignUpChef(body);
+<<<<<<< HEAD
       if (signUp.status === HttpStatus.CONFLICT) {
         throw new ConflictException(signUp.message);
+=======
+      if (signUp[0].status === HttpStatus.CONFLICT) {
+        throw new ConflictException(signUp[0].message);
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
       }
       return new Observable((observer) => {
         observer.next(signUp);
@@ -74,6 +95,7 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Post('chef/login')
+<<<<<<< HEAD
   async loginChef(@Body() body: any): Promise<Observable<any>> {
     try {
       const login = await this.ChefService.postLoginChef(body);
@@ -87,10 +109,15 @@ export class ChefController {
     } catch (error) {
       throw error;
     }
+=======
+  loginChef(@Body() body: any): Observable<any> {
+    return this.ChefService.postLoginChef(body);
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
   }
 
   @ApiTags('Chef')
   @Patch('chef/update/:id')
+<<<<<<< HEAD
   async updateProfileChef(
     @Param('id') id: number,
     @Body() body: any,
@@ -110,10 +137,18 @@ export class ChefController {
     } catch (error) {
       throw error;
     }
+=======
+  updateProfileChef(
+    @Param('id') id: number,
+    @Body() body: any,
+  ): Observable<any> {
+    return this.ChefService.updateProfileChef(body, Number(id));
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
   }
 
   @ApiTags('Chef')
   @Post('chef/upload/:id')
+<<<<<<< HEAD
   async uploadCourseVideo(
     @Param('id') id: number,
     @Body() payload,
@@ -132,5 +167,9 @@ export class ChefController {
     } catch (error) {
       throw error;
     }
+=======
+  uploadCourseVideo(@Param('id') id: number, @Body() payload): Observable<any> {
+    return this.ChefService.uploadCourseVideo(Number(id), payload);
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
   }
 }

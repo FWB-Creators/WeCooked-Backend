@@ -63,6 +63,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         // Prisma error code for unique constraint violation
         if (e.code === 'P2002') {
 <<<<<<< HEAD
+<<<<<<< HEAD
           throw {
             status: HttpStatus.CONFLICT,
             message: 'Email already registered',
@@ -77,6 +78,8 @@ export class AppService extends PrismaClient implements OnModuleInit {
           //   },
           //   HttpStatus.CONFLICT,
           // );
+=======
+>>>>>>> b7701392 (chore: change gateway to gateway-service)
           throw [
             {
               status: HttpStatus.CONFLICT,
