@@ -53,15 +53,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for unique constraint violation
         if (e.code === 'P2002') {
-          // throw new ConflictException({
-          //   message: 'Email already registered',
-          // });
-          // throw new HttpException(
-          //   {
-          //     message: 'Email already registered',
-          //   },
-          //   HttpStatus.CONFLICT,
-          // );
           throw [
             {
               status: HttpStatus.CONFLICT,
