@@ -1,14 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-<<<<<<< HEAD
-import { lastValueFrom } from 'rxjs';
-=======
 import { lastValueFrom, Observable } from 'rxjs';
-<<<<<<< HEAD
->>>>>>> b7701392 (chore: change gateway to gateway-service)
-=======
->>>>>>> b0593c02 (chore: change gateway to gateway-service)
->>>>>>> cd415583 (chore: change gateway to gateway-service)
 import { ChefModel } from '../model/chef.model';
 import { ChefLoginModel } from '../../../chef-service/src/model/chef.model.dto';
 
@@ -18,15 +10,6 @@ export class ChefService {
     @Inject('CHEF_SERVICE') private readonly chefClient: ClientProxy,
   ) {}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> cd415583 (chore: change gateway to gateway-service)
-=======
->>>>>>> 9ac66253 (fix: throwing error and remove unused service)
-=======
   getChef(): Observable<any> {
     return new Observable((observer) => {
       lastValueFrom(this.chefClient.send('chef', {}))
@@ -38,18 +21,6 @@ export class ChefService {
     });
   }
 
-<<<<<<< HEAD
->>>>>>> b7701392 (chore: change gateway to gateway-service)
-=======
->>>>>>> 54a9b80a (fix: throwing error and remove unused service)
-=======
->>>>>>> b0593c02 (chore: change gateway to gateway-service)
-<<<<<<< HEAD
->>>>>>> cd415583 (chore: change gateway to gateway-service)
-=======
-=======
->>>>>>> 4a62f085 (fix: throwing error and remove unused service)
->>>>>>> 9ac66253 (fix: throwing error and remove unused service)
   async postSignUpChef(body: ChefModel[]): Promise<any> {
     try {
       const result = await lastValueFrom(
@@ -61,61 +32,6 @@ export class ChefService {
     }
   }
 
-<<<<<<< HEAD
-  async postLoginChef(body: ChefLoginModel[]): Promise<any> {
-    try {
-      const result = await lastValueFrom(
-        this.chefClient.send('chef/login', body),
-      );
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getProfileChef(id: number): Promise<any> {
-    try {
-      const result = await lastValueFrom(
-        this.chefClient.send('chef/profile', id),
-      );
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getProfileChefs(): Promise<any> {
-    try {
-      const result = await lastValueFrom(
-        this.chefClient.send('chef/profiles', {}),
-      );
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async updateProfileChef(body: ChefModel, id: number): Promise<any> {
-    try {
-      const result = await lastValueFrom(
-        this.chefClient.send('chef/updateProfile', { body, id }),
-      );
-      return result;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async uploadCourseVideo(id: number, payload: any): Promise<any> {
-    try {
-      const result = await lastValueFrom(
-        this.chefClient.send('chef/uploadCourseVideo', { id, payload }),
-      );
-      return result;
-    } catch (error) {
-      throw error;
-    }
-=======
   postLoginChef(body: ChefLoginModel[]): Observable<any> {
     return new Observable((observer) => {
       lastValueFrom(this.chefClient.send('chef/login', body))
@@ -171,10 +87,5 @@ export class ChefService {
         })
         .catch((error) => observer.error(error));
     });
-<<<<<<< HEAD
->>>>>>> b7701392 (chore: change gateway to gateway-service)
-=======
->>>>>>> b0593c02 (chore: change gateway to gateway-service)
->>>>>>> cd415583 (chore: change gateway to gateway-service)
   }
 }
