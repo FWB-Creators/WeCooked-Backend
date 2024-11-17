@@ -9,7 +9,11 @@ import {
   HttpStatus,
   ConflictException,
 } from '@nestjs/common';
+<<<<<<< HEAD
 >>>>>>> 93a55995 (feat: implement http exception for sign up chef)
+=======
+>>>>>>> a0513b77 (feat: implement http exception for sign up chef)
+>>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
 import {
   PrismaClient,
   Prisma,
@@ -64,6 +68,9 @@ export class AppService extends PrismaClient implements OnModuleInit {
         if (e.code === 'P2002') {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
           throw {
             status: HttpStatus.CONFLICT,
             message: 'Email already registered',
@@ -78,18 +85,24 @@ export class AppService extends PrismaClient implements OnModuleInit {
           //   },
           //   HttpStatus.CONFLICT,
           // );
+<<<<<<< HEAD
 =======
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
           throw [
             {
               status: HttpStatus.CONFLICT,
               message: 'Email already registered',
             },
           ];
+<<<<<<< HEAD
 >>>>>>> 93a55995 (feat: implement http exception for sign up chef)
+=======
+>>>>>>> a0513b77 (feat: implement http exception for sign up chef)
+>>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
         }
       }
-      throw e;
     }
   }
 

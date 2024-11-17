@@ -22,7 +22,11 @@ export class AppController {
       // console.log(error.response, error.status);
       // return new HttpException(error.response, error.status);
       // throw new HttpException(error.response, error.status);
+<<<<<<< HEAD
 >>>>>>> 93a55995 (feat: implement http exception for sign up chef)
+=======
+>>>>>>> a0513b77 (feat: implement http exception for sign up chef)
+>>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
       return error;
     }
   }
