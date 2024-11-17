@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from './http-exception.filter';
 
 declare const module: any;
 async function bootstrap() {
@@ -13,6 +14,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new HttpExceptionFilter());
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
   if (module.hot) {

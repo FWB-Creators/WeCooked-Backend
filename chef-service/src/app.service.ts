@@ -1,4 +1,11 @@
-import { Injectable, OnModuleInit, Logger, Body } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  Logger,
+  HttpException,
+  HttpStatus,
+  ConflictException,
+} from '@nestjs/common';
 import {
   PrismaClient,
   Prisma,
@@ -46,10 +53,23 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for unique constraint violation
         if (e.code === 'P2002') {
-          return [{ message: 'Email already registered' }];
+          // throw new ConflictException({
+          //   message: 'Email already registered',
+          // });
+          // throw new HttpException(
+          //   {
+          //     message: 'Email already registered',
+          //   },
+          //   HttpStatus.CONFLICT,
+          // );
+          throw [
+            {
+              status: HttpStatus.CONFLICT,
+              message: 'Email already registered',
+            },
+          ];
         }
       }
-      throw e;
     }
   }
 
@@ -73,7 +93,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
           return [{ message: 'Email not registered' }];
         }
       }
-      console.error('Error logging in:', e);
       throw e;
     }
   }
