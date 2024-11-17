@@ -56,9 +56,12 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { HttpExceptionFilter } from './http-exception.filter';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { UserModule } from './user/user.module';
 =======
 >>>>>>> cd415583 (chore: change gateway to gateway-service)
+=======
+>>>>>>> 604b4b51 (user db connected)
 =======
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
@@ -78,7 +81,13 @@ import { UserModule } from './user/user.module';
 =======
 import { HttpExceptionFilter } from './http-exception.filter';
 >>>>>>> 4a62f085 (fix: throwing error and remove unused service)
+<<<<<<< HEAD
 >>>>>>> 9ac66253 (fix: throwing error and remove unused service)
+=======
+=======
+import { UserModule } from './user/user.module';
+>>>>>>> 7c4c210c (user db connected)
+>>>>>>> 604b4b51 (user db connected)
 
 @Module({
   imports: [
