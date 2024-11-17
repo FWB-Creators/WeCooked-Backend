@@ -15,6 +15,7 @@ export class ChefService {
   ) {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   getChef(): Observable<any> {
     return new Observable((observer) => {
@@ -28,6 +29,8 @@ export class ChefService {
   }
 
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
+=======
+>>>>>>> 54a9b80a (fix: throwing error and remove unused service)
   async postSignUpChef(body: ChefModel[]): Promise<any> {
     try {
       const result = await lastValueFrom(
