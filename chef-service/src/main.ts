@@ -18,7 +18,6 @@ async function bootstrap() {
   );
   app.listen();
   app.useGlobalFilters(new HttpExceptionFilter());
-  // app.useGlobalFilters(new HttpExceptionFilter());
   logger.log('Chef - Microservice is listening');
 }
 bootstrap();

@@ -10,6 +10,7 @@ import { ChefService } from './chef/chef.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { HttpExceptionFilter } from './http-exception.filter';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     ChefService,
     {
       provide: APP_FILTER,
-      useClass: HttpException,
+      useClass: HttpExceptionFilter,
     },
   ],
 })
