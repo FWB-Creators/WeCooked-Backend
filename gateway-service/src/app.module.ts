@@ -6,6 +6,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { HttpExceptionFilter } from './http-exception.filter';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
