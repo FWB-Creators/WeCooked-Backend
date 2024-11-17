@@ -21,15 +21,15 @@ export class ChefService {
     });
   }
 
-  postSignUpChef(body: ChefModel[]): Observable<any> {
-    return new Observable((observer) => {
-      lastValueFrom(this.chefClient.send('chef/signup', body))
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
+  async postSignUpChef(body: ChefModel[]): Promise<any> {
+    try {
+      const result = await lastValueFrom(
+        this.chefClient.send('chef/signup', body),
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 
   postLoginChef(body: ChefLoginModel[]): Observable<any> {

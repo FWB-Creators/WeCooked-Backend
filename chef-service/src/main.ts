@@ -18,6 +18,10 @@ async function bootstrap() {
   );
   app.listen();
   app.useGlobalFilters(new HttpExceptionFilter());
+<<<<<<< HEAD
+=======
+  // app.useGlobalFilters(new HttpExceptionFilter());
+>>>>>>> 93a55995 (feat: implement http exception for sign up chef)
   logger.log('Chef - Microservice is listening');
 }
 bootstrap();

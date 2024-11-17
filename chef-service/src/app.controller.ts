@@ -1,4 +1,4 @@
-import { Body, Controller } from '@nestjs/common';
+import { Body, Controller, HttpException } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern } from '@nestjs/microservices';
 
@@ -12,6 +12,17 @@ export class AppController {
       const data = await this.appService.postSignUpChef(body);
       return data;
     } catch (error) {
+<<<<<<< HEAD
+=======
+      // return [];
+      // return {
+      //   status: error.status,
+      //   response: error.response,
+      // };
+      // console.log(error.response, error.status);
+      // return new HttpException(error.response, error.status);
+      // throw new HttpException(error.response, error.status);
+>>>>>>> 93a55995 (feat: implement http exception for sign up chef)
       return error;
     }
   }
