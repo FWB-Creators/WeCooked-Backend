@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom, Observable } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { ChefModel } from '../model/chef.model';
 import { ChefLoginModel } from '../../../chef-service/src/model/chef.model.dto';
 
