@@ -100,6 +100,17 @@ export class AppService extends PrismaClient implements OnModuleInit {
         where: {
           chefId: id,
         },
+        select: {
+          chefId: true,
+          chefName: true,
+          chefSurname: true,
+          chefEmail: true,
+          chefBio: true,
+          chefExperience: true,
+          chefSpecialty: true,
+          chefPhone: true,
+          chefPicture: true,
+        },
       });
       if (!chef) {
         return {
@@ -226,7 +237,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
         message: 'Course uploaded successfully',
       };
     } catch (e) {
-      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
           throw {
