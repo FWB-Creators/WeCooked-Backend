@@ -52,6 +52,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
           };
         }
       }
+      throw e;
     }
   }
 
@@ -78,7 +79,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          return {
+          throw {
             status: HttpStatus.NOT_FOUND,
             message: 'Incorrect email or password',
           };
@@ -111,7 +112,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          return {
+          throw {
             status: HttpStatus.NOT_FOUND,
             message: 'Chef not found',
             data: [],
@@ -125,7 +126,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
   async getProfileChefs(): Promise<any> {
     try {
       const chef = await this.chef.findMany();
-      if (!chef) {
+      if (chef.length === 0) {
         return {
           status: HttpStatus.NOT_FOUND,
           message: 'No chefs found',
@@ -141,7 +142,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          return {
+          throw {
             status: HttpStatus.NOT_FOUND,
             message: 'No chefs found',
             data: [],
@@ -174,7 +175,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          return {
+          throw {
             status: HttpStatus.NOT_FOUND,
             message: 'Chef not found',
           };
@@ -223,12 +224,12 @@ export class AppService extends PrismaClient implements OnModuleInit {
       console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          return {
+          throw {
             status: HttpStatus.CONFLICT,
             message: 'Course already uploaded',
           };
         } else if (e.code === 'P2003') {
-          return {
+          throw {
             status: HttpStatus.BAD_REQUEST,
             message: 'Cannot upload course',
           };
