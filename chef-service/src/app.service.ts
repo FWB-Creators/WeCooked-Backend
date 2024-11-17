@@ -1,11 +1,4 @@
-import {
-  Injectable,
-  OnModuleInit,
-  Logger,
-  HttpException,
-  HttpStatus,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger, HttpStatus } from '@nestjs/common';
 import {
   PrismaClient,
   Prisma,
