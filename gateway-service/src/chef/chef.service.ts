@@ -32,15 +32,15 @@ export class ChefService {
     }
   }
 
-  postLoginChef(body: ChefLoginModel[]): Observable<any> {
-    return new Observable((observer) => {
-      lastValueFrom(this.chefClient.send('chef/login', body))
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
+  async postLoginChef(body: ChefLoginModel[]): Promise<any> {
+    try {
+      const result = await lastValueFrom(
+        this.chefClient.send('chef/login', body),
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 
   getProfileChef(id: number): Observable<any> {

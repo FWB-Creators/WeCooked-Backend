@@ -9,7 +9,7 @@ import {
 import {
   PrismaClient,
   Prisma,
-} from '../../gateway/node_modules/.prisma/client';
+} from '../../gateway-service/node_modules/.prisma/client';
 import { ChefLoginModel, ChefModel } from './model/chef.model.dto';
 
 @Injectable()
@@ -48,17 +48,18 @@ export class AppService extends PrismaClient implements OnModuleInit {
           chefPicture: 'https://via.placeholder.com/150',
         },
       });
-      return [{ message: 'Chef created successfully' }];
+      return {
+        status: HttpStatus.CREATED,
+        message: 'Chef registered successfully',
+      };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for unique constraint violation
         if (e.code === 'P2002') {
-          throw [
-            {
-              status: HttpStatus.CONFLICT,
-              message: 'Email already registered',
-            },
-          ];
+          throw {
+            status: HttpStatus.CONFLICT,
+            message: 'Email already registered',
+          };
         }
       }
     }
@@ -73,15 +74,24 @@ export class AppService extends PrismaClient implements OnModuleInit {
         },
       });
       if (chef && chef.chefPassword === chefPassword) {
-        return [{ message: 'Login successful' }];
+        return {
+          status: HttpStatus.OK,
+          message: 'Login successful',
+        };
       } else {
-        return [{ message: 'Login failed' }];
+        return {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Incorrect email or password',
+        };
       }
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          return [{ message: 'Email not registered' }];
+          return {
+            status: HttpStatus.NOT_FOUND,
+            message: 'Incorrect email or password',
+          };
         }
       }
       throw e;

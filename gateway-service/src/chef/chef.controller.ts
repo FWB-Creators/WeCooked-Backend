@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Logger,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -35,8 +36,8 @@ export class ChefController {
   async signUpChef(@Body() body: any): Promise<Observable<any>> {
     try {
       const signUp = await this.ChefService.postSignUpChef(body);
-      if (signUp[0].status === HttpStatus.CONFLICT) {
-        throw new ConflictException(signUp[0].message);
+      if (signUp.status === HttpStatus.CONFLICT) {
+        throw new ConflictException(signUp.message);
       }
       return new Observable((observer) => {
         observer.next(signUp);
@@ -49,8 +50,19 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Post('chef/login')
-  loginChef(@Body() body: any): Observable<any> {
-    return this.ChefService.postLoginChef(body);
+  async loginChef(@Body() body: any): Promise<Observable<any>> {
+    try {
+      const login = await this.ChefService.postLoginChef(body);
+      if (login.status === HttpStatus.NOT_FOUND) {
+        throw new NotFoundException(login.message);
+      }
+      return new Observable((observer) => {
+        observer.next(login);
+        observer.complete();
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   @ApiTags('Chef')
