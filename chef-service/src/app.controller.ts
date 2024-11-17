@@ -1,4 +1,4 @@
-import { Body, Controller, HttpException } from '@nestjs/common';
+import { Body, Controller } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern } from '@nestjs/microservices';
 
@@ -6,10 +6,6 @@ import { EventPattern } from '@nestjs/microservices';
 export class AppController {
   constructor(private readonly appService: AppService) {}
   @EventPattern('chef')
-  getChef(): Promise<any> {
-    const data = this.appService.getChef();
-    return data;
-  }
   @EventPattern('chef/signup')
   async postSignUpChef(@Body() body: any[]) {
     try {
@@ -21,9 +17,9 @@ export class AppController {
   }
 
   @EventPattern('chef/login')
-  postLoginChef(@Body() body: any[]): Promise<any> {
+  async postLoginChef(@Body() body: any[]): Promise<any> {
     try {
-      const data = this.appService.postLoginChef(body);
+      const data = await this.appService.postLoginChef(body);
       return data;
     } catch (error) {
       return error;
@@ -31,28 +27,45 @@ export class AppController {
   }
 
   @EventPattern('chef/profile')
-  getProfileChef(@Body() id: number): Promise<any> {
-    const data = this.appService.getProfileChef(id);
-    return data;
+  async getProfileChef(@Body() id: number): Promise<any> {
+    try {
+      const data = await this.appService.getProfileChef(id);
+      return data;
+    } catch (error) {
+      return error;
+    }
   }
 
   @EventPattern('chef/profiles')
-  getProfilesChef(): Promise<any> {
-    const data = this.appService.getProfileChefs();
-    return data;
+  async getProfilesChef(): Promise<any> {
+    try {
+      const data = await this.appService.getProfileChefs();
+      return data;
+    } catch (error) {
+      return error;
+    }
   }
 
   @EventPattern('chef/updateProfile')
-  updateProfileChef(@Body() body: any): Promise<any> {
-    const data = this.appService.updateProfileChef(body);
-    return data;
+  async updateProfileChef(@Body() body: any): Promise<any> {
+    try {
+      const data = await this.appService.updateProfileChef(body);
+      return data;
+    } catch (error) {
+      return error;
+    }
   }
 
   @EventPattern('chef/uploadCourseVideo')
-  uploadCourseVideo(@Body() body): Promise<any> {
-    console.log('uploadCourseVideo');
-    console.log(body);
-    const data = this.appService.uploadCourseVideo(body.id, body.payload);
-    return data;
+  async uploadCourseVideo(@Body() body): Promise<any> {
+    try {
+      const data = await this.appService.uploadCourseVideo(
+        body.id,
+        body.payload,
+      );
+      return data;
+    } catch (error) {
+      return error;
+    }
   }
 }
