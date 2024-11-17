@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import { Injectable, OnModuleInit, Logger, HttpStatus } from '@nestjs/common';
-=======
 import {
   Injectable,
   OnModuleInit,
@@ -9,11 +6,6 @@ import {
   HttpStatus,
   ConflictException,
 } from '@nestjs/common';
-<<<<<<< HEAD
->>>>>>> 93a55995 (feat: implement http exception for sign up chef)
-=======
->>>>>>> a0513b77 (feat: implement http exception for sign up chef)
->>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
 import {
   PrismaClient,
   Prisma,
@@ -66,49 +58,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for unique constraint violation
         if (e.code === 'P2002') {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
-=======
->>>>>>> cd415583 (chore: change gateway to gateway-service)
-          throw {
-            status: HttpStatus.CONFLICT,
-            message: 'Email already registered',
-          };
-=======
-          // throw new ConflictException({
-          //   message: 'Email already registered',
-          // });
-          // throw new HttpException(
-          //   {
-          //     message: 'Email already registered',
-          //   },
-          //   HttpStatus.CONFLICT,
-          // );
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b7701392 (chore: change gateway to gateway-service)
-=======
->>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
-=======
-=======
->>>>>>> b0593c02 (chore: change gateway to gateway-service)
->>>>>>> cd415583 (chore: change gateway to gateway-service)
-          throw [
-            {
-              status: HttpStatus.CONFLICT,
-              message: 'Email already registered',
-            },
-          ];
-<<<<<<< HEAD
->>>>>>> 93a55995 (feat: implement http exception for sign up chef)
-=======
->>>>>>> a0513b77 (feat: implement http exception for sign up chef)
->>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
+          return [{ message: 'Email already registered' }];
         }
       }
       throw e;

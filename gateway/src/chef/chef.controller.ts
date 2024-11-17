@@ -1,7 +1,9 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Get,
+  HttpStatus,
   Logger,
   Param,
   Patch,
@@ -30,8 +32,19 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Post('chef/signup')
-  signUpChef(@Body() body: any): Observable<any> {
-    return this.ChefService.postSignUpChef(body);
+  async signUpChef(@Body() body: any): Promise<Observable<any>> {
+    try {
+      const signUp = await this.ChefService.postSignUpChef(body);
+      if (signUp[0].status === HttpStatus.CONFLICT) {
+        throw new ConflictException(signUp[0].message);
+      }
+      return new Observable((observer) => {
+        observer.next(signUp);
+        observer.complete();
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   @ApiTags('Chef')
