@@ -111,6 +111,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
 >>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
         }
       }
+      throw e;
     }
   }
 

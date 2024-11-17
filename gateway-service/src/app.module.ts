@@ -64,6 +64,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> b7701392 (chore: change gateway to gateway-service)
 =======
 >>>>>>> 54a9b80a (fix: throwing error and remove unused service)
@@ -71,6 +72,13 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { UserModule } from './user/user.module';
 >>>>>>> b0593c02 (chore: change gateway to gateway-service)
 >>>>>>> cd415583 (chore: change gateway to gateway-service)
+=======
+import { UserModule } from './user/user.module';
+>>>>>>> b0593c02 (chore: change gateway to gateway-service)
+=======
+import { HttpExceptionFilter } from './http-exception.filter';
+>>>>>>> 4a62f085 (fix: throwing error and remove unused service)
+>>>>>>> 9ac66253 (fix: throwing error and remove unused service)
 
 @Module({
   imports: [
@@ -110,10 +118,13 @@ import { UserModule } from './user/user.module';
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bb2933e3 (feat: implement http exception for sign up chef)
 =======
 >>>>>>> cd415583 (chore: change gateway to gateway-service)
+=======
+>>>>>>> 9ac66253 (fix: throwing error and remove unused service)
 <<<<<<< HEAD:gateway-service/src/app.module.ts
       useClass: HttpExceptionFilter,
     },
@@ -146,6 +157,9 @@ import { UserModule } from './user/user.module';
 =======
 =======
       useClass: HttpException,
+=======
+      useClass: HttpExceptionFilter,
+>>>>>>> 4a62f085 (fix: throwing error and remove unused service)
     },
   ],
 >>>>>>> a0513b77 (feat: implement http exception for sign up chef):gateway/src/app.module.ts
