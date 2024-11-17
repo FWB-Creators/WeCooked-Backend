@@ -1,11 +1,4 @@
-import {
-  Injectable,
-  OnModuleInit,
-  Logger,
-  HttpException,
-  HttpStatus,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger, HttpStatus } from '@nestjs/common';
 import {
   PrismaClient,
   Prisma,
@@ -124,21 +117,18 @@ export class AppService extends PrismaClient implements OnModuleInit {
           message: 'Chef not found',
           data: [],
         };
+      } else {
+        return {
+          status: HttpStatus.OK,
+          message: 'Chef found',
+          data: chef,
+        };
       }
-      return {
-        status: HttpStatus.OK,
-        message: 'Chef found',
-        data: chef,
-      };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          throw {
-            status: HttpStatus.NOT_FOUND,
-            message: 'Chef not found',
-            data: [],
-          };
+          return [{ message: 'Chef not found' }];
         }
       }
       throw e;
@@ -148,12 +138,8 @@ export class AppService extends PrismaClient implements OnModuleInit {
   async getProfileChefs(): Promise<any> {
     try {
       const chef = await this.chef.findMany();
-      if (chef.length === 0) {
-        return {
-          status: HttpStatus.NOT_FOUND,
-          message: 'No chefs found',
-          data: [],
-        };
+      if (!chef) {
+        return [];
       }
       return {
         status: HttpStatus.OK,
@@ -197,7 +183,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw {
+          return {
             status: HttpStatus.NOT_FOUND,
             message: 'Chef not found',
           };
