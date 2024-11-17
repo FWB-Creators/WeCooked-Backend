@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
         },
       },
     ]),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

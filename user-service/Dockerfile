@@ -9,13 +9,16 @@ ARG NATS_URL
 ENV DATABASE_URL=$DATABASE_URL
 ENV NATS_URL=$NATS_URL
 
-WORKDIR /app
+# WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+COPY lib /lib
+COPY user-service/package*.json /user-service/
+RUN cd user-service && npm install
 
-COPY . .
-RUN npm run build
+# COPY ../lib /lib
+# COPY lib /lib
+# COPY user-service/ .
+RUN cd user-service && npm run build
 
 # Stage 2: Run the application
 FROM node:22
@@ -28,13 +31,15 @@ ARG NATS_URL
 ENV DATABASE_URL=$DATABASE_URL
 ENV NATS_URL=nats://nats-streaming:4222
 
-WORKDIR /app
+# WORKDIR /app
 
-COPY package*.json ./
-RUN npm install --only=production
+COPY user-service/package*.json /user-service/
+RUN cd user-service && npm install --only=production
 
-COPY --from=builder /app/dist ./dist
+# COPY --from=builder /app/dist ./dist
+
+COPY --from=builder /user-service/dist /user-service/dist
 
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD ["node", "dist/app/src/main"]
