@@ -43,49 +43,47 @@ export class ChefService {
     }
   }
 
-  getProfileChef(id: number): Observable<any> {
-    return new Observable((observer) => {
-      lastValueFrom(this.chefClient.send('chef/profile', id))
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
+  async getProfileChef(id: number): Promise<any> {
+    try {
+      const result = await lastValueFrom(
+        this.chefClient.send('chef/profile', id),
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  getProfileChefs(): Observable<any> {
-    return new Observable((observer) => {
-      lastValueFrom(this.chefClient.send('chef/profiles', {}))
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
+  async getProfileChefs(): Promise<any> {
+    try {
+      const result = await lastValueFrom(
+        this.chefClient.send('chef/profiles', {}),
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  updateProfileChef(body: ChefModel, id: number): Observable<any> {
-    return new Observable((observer) => {
-      lastValueFrom(this.chefClient.send('chef/updateProfile', { body, id }))
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
+  async updateProfileChef(body: ChefModel, id: number): Promise<any> {
+    try {
+      const result = await lastValueFrom(
+        this.chefClient.send('chef/updateProfile', { body, id }),
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  uploadCourseVideo(id: number, payload: any): Observable<any> {
-    return new Observable((observer) => {
-      lastValueFrom(
+  async uploadCourseVideo(id: number, payload: any): Promise<any> {
+    try {
+      const result = await lastValueFrom(
         this.chefClient.send('chef/uploadCourseVideo', { id, payload }),
-      )
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -1,11 +1,4 @@
-import {
-  Injectable,
-  OnModuleInit,
-  Logger,
-  HttpException,
-  HttpStatus,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger, HttpStatus } from '@nestjs/common';
 import {
   PrismaClient,
   Prisma,
@@ -18,9 +11,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
   onModuleInit() {
     this.$connect();
     this.logger.log('Connected to the database');
-  }
-  getChef(): Promise<any> {
-    return this.chef.findMany();
   }
 
   async postSignUpChef(body: ChefModel[]): Promise<any> {
@@ -106,30 +96,28 @@ export class AppService extends PrismaClient implements OnModuleInit {
         },
       });
       if (!chef) {
-        return [];
+        return {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Chef not found',
+          data: [],
+        };
       }
-      return [
-        {
-          chefId: chef.chefId,
-          chefName: chef.chefName,
-          chefSurname: chef.chefSurname,
-          chefBio: chef.chefBio,
-          chefSpecialty: chef.chefSpecialty,
-          chefExperience: chef.chefExperience,
-          chefPicture: chef.chefPicture,
-          chefEmail: chef.chefEmail,
-          chefPayment: chef.chefPayment,
-          chefPhone: chef.chefPhone,
-        },
-      ];
+      return {
+        status: HttpStatus.OK,
+        message: 'Chef found',
+        data: chef,
+      };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          return [{ message: 'Chef not found' }];
+          return {
+            status: HttpStatus.NOT_FOUND,
+            message: 'Chef not found',
+            data: [],
+          };
         }
       }
-      console.error('Error fetching chef:', e);
       throw e;
     }
   }
@@ -138,17 +126,28 @@ export class AppService extends PrismaClient implements OnModuleInit {
     try {
       const chef = await this.chef.findMany();
       if (!chef) {
-        return [];
+        return {
+          status: HttpStatus.NOT_FOUND,
+          message: 'No chefs found',
+          data: [],
+        };
       }
-      return chef;
+      return {
+        status: HttpStatus.OK,
+        message: 'Chefs found',
+        data: chef,
+      };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          return [{ message: 'Chef not found' }];
+          return {
+            status: HttpStatus.NOT_FOUND,
+            message: 'No chefs found',
+            data: [],
+          };
         }
       }
-      console.error('Error fetching chef:', e);
       throw e;
     }
   }
@@ -168,14 +167,19 @@ export class AppService extends PrismaClient implements OnModuleInit {
         },
         data: updateData,
       });
-      return [{ message: 'Chef updated successfully' }];
+      return {
+        status: HttpStatus.OK,
+        message: 'Chef updated successfully',
+      };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          return [{ message: 'Chef not found' }];
+          return {
+            status: HttpStatus.NOT_FOUND,
+            message: 'Chef not found',
+          };
         }
       }
-      console.error('Error updating chef:', e);
       throw e;
     }
   }
@@ -211,9 +215,25 @@ export class AppService extends PrismaClient implements OnModuleInit {
           chef: true,
         },
       });
-      return [{ message: 'Course uploaded successfully' }];
+      return {
+        status: HttpStatus.CREATED,
+        message: 'Course uploaded successfully',
+      };
     } catch (e) {
-      console.error('Error uploading course video:', e);
+      console.log(e);
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002') {
+          return {
+            status: HttpStatus.CONFLICT,
+            message: 'Course already uploaded',
+          };
+        } else if (e.code === 'P2003') {
+          return {
+            status: HttpStatus.BAD_REQUEST,
+            message: 'Cannot upload course',
+          };
+        }
+      }
       throw e;
     }
   }

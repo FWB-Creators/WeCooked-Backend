@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -21,14 +22,37 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Get('chef/profile/:id?')
-  profileChef(@Param('id') id: number): Observable<any> {
-    return this.ChefService.getProfileChef(Number(id));
+  async profileChef(@Param('id') id: number): Promise<any> {
+    try {
+      const profile = await this.ChefService.getProfileChef(Number(id));
+      if (profile.status === HttpStatus.NOT_FOUND) {
+        throw new NotFoundException(profile.message);
+      }
+      return new Observable((observer) => {
+        observer.next(profile);
+        observer.complete();
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   @ApiTags('Chef')
   @Get('chef/profiles')
-  profileChefs(): Observable<any> {
-    return this.ChefService.getProfileChefs();
+  async profileChefs(): Promise<any> {
+    try {
+      const profiles = await this.ChefService.getProfileChefs();
+      if (profiles.status === HttpStatus.NOT_FOUND) {
+        throw new NotFoundException(profiles.message);
+      }
+
+      return new Observable((observer) => {
+        observer.next(profiles);
+        observer.complete();
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   @ApiTags('Chef')
@@ -67,16 +91,46 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Patch('chef/update/:id')
-  updateProfileChef(
+  async updateProfileChef(
     @Param('id') id: number,
     @Body() body: any,
-  ): Observable<any> {
-    return this.ChefService.updateProfileChef(body, Number(id));
+  ): Promise<Observable<any>> {
+    try {
+      const updateProfile = await this.ChefService.updateProfileChef(
+        body,
+        Number(id),
+      );
+      if (updateProfile.status === HttpStatus.NOT_FOUND) {
+        throw new NotFoundException(updateProfile.message);
+      }
+      return new Observable((observer) => {
+        observer.next(updateProfile);
+        observer.complete();
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   @ApiTags('Chef')
   @Post('chef/upload/:id')
-  uploadCourseVideo(@Param('id') id: number, @Body() payload): Observable<any> {
-    return this.ChefService.uploadCourseVideo(Number(id), payload);
+  async uploadCourseVideo(
+    @Param('id') id: number,
+    @Body() payload,
+  ): Promise<Observable<any>> {
+    try {
+      const upload = await this.ChefService.uploadCourseVideo(id, payload);
+      if (upload.status === HttpStatus.NOT_FOUND) {
+        throw new NotFoundException(upload.message);
+      } else if (upload.status === HttpStatus.BAD_REQUEST) {
+        throw new BadRequestException(upload.message);
+      }
+      return new Observable((observer) => {
+        observer.next(upload);
+        observer.complete();
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }
