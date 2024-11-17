@@ -8,9 +8,14 @@ import { ChefLoginModel, ChefModel } from './model/chef.model.dto';
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
   logger = new Logger('Chef Service');
-  onModuleInit() {
-    this.$connect();
-    this.logger.log('Connected to the database');
+  async onModuleInit() {
+    try {
+      await this.$connect();
+      this.logger.log('Connected to the database');
+    } catch (error) {
+      this.logger.error('Failed to connect to the database:', error);
+      throw error;
+    }
   }
 
   async postSignUpChef(body: ChefModel[]): Promise<any> {
