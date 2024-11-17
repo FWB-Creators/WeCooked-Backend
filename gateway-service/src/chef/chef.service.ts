@@ -10,17 +10,6 @@ export class ChefService {
     @Inject('CHEF_SERVICE') private readonly chefClient: ClientProxy,
   ) {}
 
-  getChef(): Observable<any> {
-    return new Observable((observer) => {
-      lastValueFrom(this.chefClient.send('chef', {}))
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
-  }
-
   async postSignUpChef(body: ChefModel[]): Promise<any> {
     try {
       const result = await lastValueFrom(

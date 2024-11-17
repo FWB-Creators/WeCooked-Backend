@@ -57,6 +57,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
           };
         }
       }
+      throw e;
     }
   }
 
@@ -83,7 +84,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          return {
+          throw {
             status: HttpStatus.NOT_FOUND,
             message: 'Incorrect email or password',
           };
@@ -128,7 +129,11 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          return [{ message: 'Chef not found' }];
+          throw {
+            status: HttpStatus.NOT_FOUND,
+            message: 'Chef not found',
+            data: [],
+          };
         }
       }
       throw e;
@@ -138,8 +143,12 @@ export class AppService extends PrismaClient implements OnModuleInit {
   async getProfileChefs(): Promise<any> {
     try {
       const chef = await this.chef.findMany();
-      if (!chef) {
-        return [];
+      if (chef.length === 0) {
+        return {
+          status: HttpStatus.NOT_FOUND,
+          message: 'No chefs found',
+          data: [],
+        };
       }
       return {
         status: HttpStatus.OK,
@@ -183,7 +192,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          return {
+          throw {
             status: HttpStatus.NOT_FOUND,
             message: 'Chef not found',
           };
