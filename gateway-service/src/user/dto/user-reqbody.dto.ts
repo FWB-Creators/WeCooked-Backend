@@ -9,10 +9,8 @@ export class UserSignUpRequestBody {
   firstName: string;
   lastName: string;
 }
-<<<<<<< HEAD
 
 export class ProfileUpdateRequestBody {
-  userId: number;
   name: string;
   surname: string;
   userProfile: string;
@@ -22,5 +20,3 @@ export class ProfileUpdateRequestBody {
   userPayment: string;
   userAddress: string;
 }
-=======
->>>>>>> cd415583 (chore: change gateway to gateway-service)

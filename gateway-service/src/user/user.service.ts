@@ -1,7 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom, Observable } from 'rxjs';
-<<<<<<< HEAD
 import {
   ProfileUpdateRequestBody,
   UserLoginRequestBody,
@@ -11,100 +10,113 @@ import {
   UserSignUpEventMsg,
   UserLoginEventMsg,
   ProfileUpdateEventMsg,
+  UserSignUpEventResponse,
+  BasicResponse,
+  UserLoginEventResponse,
+  ProfileUpdateEventResponse,
 } from '@lib/src/user/event-msg.dto';
-=======
-import { UserSignUpRequestBody } from './dto/user-reqbody.dto';
-import { UserSignUpEventMsg } from '../../../lib/user/event-msg.dto';
->>>>>>> cd415583 (chore: change gateway to gateway-service)
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject('USER_SERVICE') private readonly userClient: ClientProxy,
   ) {}
+  logger = new Logger('Gateway User Service');
 
-<<<<<<< HEAD
-  getUser(userId: number): Observable<any> {
-    const result = new Observable((observer) => {
-      lastValueFrom(this.userClient.send('user/getUser', userId))
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
-    return result;
+  async getUser(userId: number): Promise<any> {
+    try {
+      const result = await lastValueFrom(
+        this.userClient.send('user/getUser', userId),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
   }
 
-=======
->>>>>>> cd415583 (chore: change gateway to gateway-service)
-  signup(userSignUpRequestBody: UserSignUpRequestBody): Observable<any> {
-    const userSignUpEventMsg: UserSignUpEventMsg = {
-      email: userSignUpRequestBody.email,
-      password: userSignUpRequestBody.password,
-      firstName: userSignUpRequestBody.firstName,
-      lastName: userSignUpRequestBody.lastName,
-    };
-<<<<<<< HEAD
+  async signup(
+    userSignUpRequestBody: UserSignUpRequestBody,
+  ): Promise<UserSignUpEventResponse | BasicResponse> {
+    try {
+      const userSignUpEventMsg: UserSignUpEventMsg = {
+        email: userSignUpRequestBody.email,
+        password: userSignUpRequestBody.password,
+        firstName: userSignUpRequestBody.firstName,
+        lastName: userSignUpRequestBody.lastName,
+      };
 
-    const result = new Observable((observer) => {
-=======
-    return new Observable((observer) => {
->>>>>>> cd415583 (chore: change gateway to gateway-service)
-      lastValueFrom(this.userClient.send('user/signup', userSignUpEventMsg))
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
-<<<<<<< HEAD
-
-    return result;
+      const result: UserSignUpEventResponse | BasicResponse =
+        await lastValueFrom(
+          this.userClient.send('user/signup', userSignUpEventMsg),
+        );
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
   }
 
-  login(userLoginRequestBody: UserLoginRequestBody): Observable<any> {
-    const userLoginEventMsg: UserLoginEventMsg = {
-      email: userLoginRequestBody.email,
-      password: userLoginRequestBody.password,
-    };
-    const result = new Observable((observer) => {
-      lastValueFrom(this.userClient.send('user/login', userLoginEventMsg))
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
-    return result;
+  async login(
+    userLoginRequestBody: UserLoginRequestBody,
+  ): Promise<UserLoginEventResponse | BasicResponse> {
+    try {
+      const userLoginEventMsg: UserLoginEventMsg = {
+        email: userLoginRequestBody.email,
+        password: userLoginRequestBody.password,
+      };
+      const result: UserLoginEventResponse | BasicResponse =
+        await lastValueFrom(
+          this.userClient.send('user/login', userLoginEventMsg),
+        );
+
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
   }
 
-  profileUpdate(
+  async profileUpdate(
     profileUpdateRequestBody: ProfileUpdateRequestBody,
-  ): Observable<any> {
-    const userUpdateEventMsg: ProfileUpdateEventMsg = {
-      userId: profileUpdateRequestBody.userId,
-      name: profileUpdateRequestBody.name,
-      surname: profileUpdateRequestBody.surname,
-      userProfile: profileUpdateRequestBody.userProfile,
-      sex: profileUpdateRequestBody.sex,
-      password: profileUpdateRequestBody.password,
-      userPhone: profileUpdateRequestBody.userPhone,
-      userPayment: profileUpdateRequestBody.userPayment,
-      userAddress: profileUpdateRequestBody.userAddress,
-    };
-    const result = new Observable((observer) => {
-      lastValueFrom(
-        this.userClient.send('user/profileUpdate', userUpdateEventMsg),
-      )
-        .then((result) => {
-          observer.next(result);
-          observer.complete();
-        })
-        .catch((error) => observer.error(error));
-    });
-    return result;
-=======
->>>>>>> cd415583 (chore: change gateway to gateway-service)
+    userId: number,
+  ): Promise<ProfileUpdateEventResponse | BasicResponse> {
+    try {
+      const userUpdateEventMsg: ProfileUpdateEventMsg = {
+        userId: userId,
+        name: profileUpdateRequestBody.name,
+        surname: profileUpdateRequestBody.surname,
+        userProfile: profileUpdateRequestBody.userProfile,
+        sex: profileUpdateRequestBody.sex,
+        password: profileUpdateRequestBody.password,
+        userPhone: profileUpdateRequestBody.userPhone,
+        userPayment: profileUpdateRequestBody.userPayment,
+        userAddress: profileUpdateRequestBody.userAddress,
+      };
+      const result: ProfileUpdateEventResponse | BasicResponse =
+        await lastValueFrom(
+          this.userClient.send('user/profileUpdate', userUpdateEventMsg),
+        );
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
   }
 }

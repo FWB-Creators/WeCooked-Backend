@@ -1,5 +1,13 @@
-<<<<<<< HEAD
-import { Controller, Post, Body, Logger, Headers, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Logger,
+  Headers,
+  Get,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
@@ -8,32 +16,20 @@ import {
   UserLoginRequestBody,
   ProfileUpdateRequestBody,
 } from './dto/user-reqbody.dto';
-=======
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { UserSignUpRequestBody } from './dto/user-reqbody.dto';
->>>>>>> cd415583 (chore: change gateway to gateway-service)
+  BasicResponse,
+  UserLoginEventResponse,
+  UserSignUpEventResponse,
+} from '@lib/src/user/event-msg.dto';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-<<<<<<< HEAD
   constructor(
     private readonly userService: UserService,
     private jwtService: JwtService,
   ) {}
-  logger = new Logger('Gateway Service');
+  logger = new Logger('Gateway User Controller');
 
   @Get()
   getUser(@Headers('authorization') token: string) {
@@ -48,34 +44,75 @@ export class UserController {
       return error;
     }
   }
-=======
-  constructor(private readonly userService: UserService) {}
->>>>>>> cd415583 (chore: change gateway to gateway-service)
 
   @Post('signup')
-  signUp(@Body() userSignUpRequestBody: UserSignUpRequestBody) {
-    return this.userService.signup(userSignUpRequestBody);
+  async signUp(@Body() userSignUpRequestBody: UserSignUpRequestBody) {
+    try {
+      const result: UserSignUpEventResponse | BasicResponse =
+        await this.userService.signup(userSignUpRequestBody);
+      if (result.status !== HttpStatus.CREATED) {
+        throw new HttpException(
+          {
+            status: result.status,
+            message: result.message,
+          },
+          result.status,
+        );
+      } else {
+        return result;
+      }
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      throw error;
+    }
   }
-<<<<<<< HEAD
 
   @Post('login')
-  login(@Body() userLoginRequestBody: UserLoginRequestBody) {
-    return this.userService.login(userLoginRequestBody);
+  async login(@Body() userLoginRequestBody: UserLoginRequestBody) {
+    try {
+      const result: UserLoginEventResponse | BasicResponse =
+        await this.userService.login(userLoginRequestBody);
+      if (result.status !== HttpStatus.OK) {
+        throw new HttpException(
+          {
+            status: result.status,
+            message: result.message,
+          },
+          result.status,
+        );
+      } else {
+        return result;
+      }
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      throw error;
+    }
   }
 
   @Post('profileUpdate')
-  profileUpdate(
+  async profileUpdate(
     @Body() profileUpdateRequestBody: ProfileUpdateRequestBody,
     @Headers('authorization') token: string,
   ) {
     try {
       const jwtPayload = this.jwtService.verify(token.split(' ')[1]);
-      profileUpdateRequestBody.userId = jwtPayload.userId;
-      return this.userService.profileUpdate(profileUpdateRequestBody);
+      const result = await this.userService.profileUpdate(
+        profileUpdateRequestBody,
+        jwtPayload.userId,
+      );
+      if (result.status !== HttpStatus.OK) {
+        throw new HttpException(
+          {
+            status: result.status,
+            message: result.message,
+          },
+          result.status,
+        );
+      } else {
+        return result;
+      }
     } catch (error) {
-      return error;
+      throw error;
     }
   }
-=======
->>>>>>> cd415583 (chore: change gateway to gateway-service)
 }

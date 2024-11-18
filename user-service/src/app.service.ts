@@ -1,5 +1,7 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, HttpStatus } from '@nestjs/common';
 import {
+  BasicResponse,
+  GetUserEventResponse,
   ProfileUpdateEventMsg,
   ProfileUpdateEventResponse,
   UserLoginEventMsg,
@@ -9,8 +11,6 @@ import {
 } from '@lib/src/user/event-msg.dto';
 import { PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-// import { getSnippetCode } from '@lib/One';
-// import { SampleDto } from '@lib/Test.dto';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -23,7 +23,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
     this.logger.log('Connected to the database');
   }
 
-  async getUser(userId: number): Promise<any> {
+  async getUser(userId: number): Promise<GetUserEventResponse | BasicResponse> {
     try {
       const result = await this.user.findUnique({
         where: {
@@ -31,24 +31,37 @@ export class AppService extends PrismaClient implements OnModuleInit {
         },
       });
       if (result) {
-        return Object.keys(result).reduce((acc, key) => {
-          if (key !== 'password') {
-            acc[key] = result[key];
-          }
-          return acc;
-        }, {});
+        return {
+          status: HttpStatus.OK,
+          message: 'User found',
+          data: Object.keys(result).reduce((acc, key) => {
+            if (key !== 'password') {
+              acc[key] = result[key];
+            }
+            return acc;
+          }, {}),
+        };
       } else {
-        throw new Error('User not found');
+        this.logger.error('User not found');
+        const response: BasicResponse = {
+          status: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+        };
+        return response;
       }
     } catch (error) {
       this.logger.error('Failed to connect to the database:', error);
-      throw error;
+      const response: BasicResponse = {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to connect to the database',
+      };
+      return response;
     }
   }
 
   async signUpUser(
     payload: UserSignUpEventMsg,
-  ): Promise<UserSignUpEventResponse> {
+  ): Promise<UserSignUpEventResponse | BasicResponse> {
     try {
       const result = await this.user.create({
         data: {
@@ -76,17 +89,31 @@ export class AppService extends PrismaClient implements OnModuleInit {
           }
           return acc;
         }, {}),
-        status: 'User registered successfully',
-        statusCode: 201,
+        status: HttpStatus.CREATED,
+        message: 'User registered successfully',
       };
       return response;
     } catch (error) {
       this.logger.error('Failed to connect to the database:', error);
-      throw error;
+      if ((error as any)?.code === 'P2002') {
+        const response: BasicResponse = {
+          status: HttpStatus.CONFLICT,
+          message: 'Email already registered',
+        };
+        return response;
+      } else {
+        const response: BasicResponse = {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Failed to connect to the database',
+        };
+        return response;
+      }
     }
   }
 
-  async loginUser(payload: UserLoginEventMsg): Promise<UserLoginEventResponse> {
+  async loginUser(
+    payload: UserLoginEventMsg,
+  ): Promise<UserLoginEventResponse | BasicResponse> {
     try {
       const result = await this.user.findUnique({
         where: {
@@ -111,22 +138,31 @@ export class AppService extends PrismaClient implements OnModuleInit {
             }
             return acc;
           }, {}),
-          status: 'User logged in successfully',
-          statusCode: 200,
+          status: HttpStatus.OK,
+          message: 'User logged in successfully',
         };
         return response;
       } else {
-        throw new Error('User not found');
+        this.logger.error('User not found');
+        const response: BasicResponse = {
+          status: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+        };
+        return response;
       }
     } catch (error) {
       this.logger.error('Failed to connect to the database:', error);
-      throw error;
+      const response: BasicResponse = {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to connect to the database',
+      };
+      return response;
     }
   }
 
   async updateProfile(
     payload: ProfileUpdateEventMsg,
-  ): Promise<ProfileUpdateEventResponse> {
+  ): Promise<ProfileUpdateEventResponse | BasicResponse> {
     try {
       const checkUser = await this.user.findUnique({
         where: {
@@ -134,7 +170,11 @@ export class AppService extends PrismaClient implements OnModuleInit {
         },
       });
       if (!checkUser) {
-        throw new Error('User not found');
+        const response: BasicResponse = {
+          status: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+        };
+        return response;
       }
       const result = await this.user.update({
         where: {
@@ -153,16 +193,25 @@ export class AppService extends PrismaClient implements OnModuleInit {
       });
       if (result) {
         const response: ProfileUpdateEventResponse = {
-          status: 'Profile updated successfully',
-          statusCode: 200,
+          status: HttpStatus.OK,
+          message: 'Profile updated successfully',
         };
         return response;
       } else {
-        throw new Error('Failed to update profile');
+        this.logger.error('Failed to update profile');
+        const response: BasicResponse = {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Failed to update profile',
+        };
+        return response;
       }
     } catch (error) {
       this.logger.error('Failed to connect to the database:', error);
-      throw error;
+      const response: BasicResponse = {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to connect to the database',
+      };
+      return response;
     }
   }
 }

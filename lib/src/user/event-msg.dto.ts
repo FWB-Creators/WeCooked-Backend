@@ -1,4 +1,15 @@
-    export class UserSignUpEventMsg {
+export class BasicResponse {
+    status: number;
+    message: string;
+}
+
+export class GetUserEventResponse {
+    status: number;
+    message: string;
+    data: any;
+}
+
+export class UserSignUpEventMsg {
     email: string;
     password: string;
     firstName: string;
@@ -8,8 +19,8 @@
 export class UserSignUpEventResponse {
     token: string;
     userData: any;
-    status: string;
-    statusCode: number;
+    status: number;
+    message: string;
 }
 
 export class UserLoginEventMsg {
@@ -20,8 +31,8 @@ export class UserLoginEventMsg {
 export class UserLoginEventResponse {
     token: string;
     userData: any;
-    status: string;
-    statusCode: number;
+    status: number;
+    message: string;
 }
 
 export class ProfileUpdateEventMsg {
@@ -37,6 +48,6 @@ export class ProfileUpdateEventMsg {
 }
 
 export class ProfileUpdateEventResponse {
-    status: string;
-    statusCode: number;
+    status: number;
+    message: string;
 }
