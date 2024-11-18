@@ -17,7 +17,8 @@ export class UserService {
       firstName: userSignUpRequestBody.firstName,
       lastName: userSignUpRequestBody.lastName,
     };
-    return new Observable((observer) => {
+
+    const result = new Observable((observer) => {
       lastValueFrom(this.userClient.send('user/signup', userSignUpEventMsg))
         .then((result) => {
           observer.next(result);
@@ -25,5 +26,7 @@ export class UserService {
         })
         .catch((error) => observer.error(error));
     });
+
+    return result;
   }
 }
