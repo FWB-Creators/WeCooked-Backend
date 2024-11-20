@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import {
   BasicResponse,
   CreatePaymentForCourseEventMsg,
+  CreatePaymentForCourseEventResponse,
 } from '@lib/src/payment/event-msg.dto';
 
 @Controller()
@@ -19,8 +20,16 @@ export class AppController {
   @EventPattern('payment/createPaymentForCourse')
   async createPaymentForCourse(
     payload: CreatePaymentForCourseEventMsg,
-  ): Promise<string> {
-    console.log(payload);
-    return await this.appService.createCheckoutSessionForCourse(payload);
+  ): Promise<CreatePaymentForCourseEventResponse | BasicResponse> {
+    try {
+      return await this.appService.createCheckoutSessionForCourse(payload);
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error',
+      };
+      return Promise.reject(response);
+    }
   }
 }
