@@ -1,7 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { StripeService } from './stripe/stripe.service';
-import { BasicResponse } from '@lib/src/user/event-msg.dto';
+import {
+  BasicResponse,
+  CreatePaymentForCourseEventMsg,
+} from '@lib/src/payment/event-msg.dto';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -43,9 +46,23 @@ export class AppService extends PrismaClient implements OnModuleInit {
   }
 
   async createCheckoutSessionForCourse(
-    courseId: string,
-    userId: number,
+    createPaymentForCourseEventMsg: CreatePaymentForCourseEventMsg,
   ): Promise<string> {
+    console.log(
+      createPaymentForCourseEventMsg.courseId,
+      createPaymentForCourseEventMsg.userId,
+    );
+    const myorder: Prisma.OrderUncheckedCreateInput = {
+      orderCourseId: createPaymentForCourseEventMsg.courseId,
+      orderUserId: createPaymentForCourseEventMsg.userId,
+      orderPaymentId: 0,
+      orderDate: new Date(),
+      orderFormat: '',
+      orderPrice: 0,
+    };
+    const orderResult = await this.order.create({
+      data: myorder,
+    });
     const session = await this.stripeService.stripe.checkout.sessions.create({
       line_items: [
         {
@@ -54,8 +71,8 @@ export class AppService extends PrismaClient implements OnModuleInit {
             product_data: {
               name: 'Course Name',
               metadata: {
-                courseId: courseId,
-                userId: userId,
+                courseId: orderResult.orderCourseId,
+                userId: orderResult.orderUserId,
               },
             },
             unit_amount: 2000,
@@ -64,7 +81,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         },
       ],
       mode: 'payment',
-      success_url: 'http://example.com/success',
+      success_url: `${process.env.FRONTEND_URL}/success?order_id=${orderResult.orderId}`,
     });
     console.log(session);
 

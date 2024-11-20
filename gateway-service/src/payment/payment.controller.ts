@@ -1,42 +1,33 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body, Headers } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { PaymentService } from './payment.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { CreatePaymentForCourseRequestBody } from './dto/payment-reqbody.dto';
 
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(
+    private readonly paymentService: PaymentService,
+    private jwtService: JwtService,
+  ) {}
 
-  @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentService.create(createPaymentDto);
-  }
+  @Post('createPaymentForCourse')
+  async createPaymentForCourse(
+    @Body()
+    createPaymentForCourseRequestBody: CreatePaymentForCourseRequestBody,
+    @Headers('authorization') token: string,
+  ) {
+    try {
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
 
-  @Get()
-  findAll() {
-    return this.paymentService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.paymentService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
-    return this.paymentService.update(+id, updatePaymentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.paymentService.remove(+id);
+      return this.paymentService.createPaymentForCourse(
+        createPaymentForCourseRequestBody,
+        jwtPayload.userId,
+      );
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   }
 }
