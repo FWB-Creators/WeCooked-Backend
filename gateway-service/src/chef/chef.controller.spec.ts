@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChefController } from './chef.controller';
 import { ChefService } from './chef.service';
+import { AppController } from './chef.controller';
+import { AppService } from './chef.service';
 
 describe('AppController', () => {
   let appController: ChefController;

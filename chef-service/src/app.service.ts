@@ -118,12 +118,13 @@ export class AppService extends PrismaClient implements OnModuleInit {
           message: 'Chef not found',
           data: [],
         };
+      } else {
+        return {
+          status: HttpStatus.OK,
+          message: 'Chef found',
+          data: chef,
+        };
       }
-      return {
-        status: HttpStatus.OK,
-        message: 'Chef found',
-        data: chef,
-      };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found

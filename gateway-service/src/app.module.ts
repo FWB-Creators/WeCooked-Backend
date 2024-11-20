@@ -2,6 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 import { ChefController } from './chef/chef.controller';
 import { ChefService } from './chef/chef.service';
+import { UserModule } from './user/user.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
@@ -9,6 +10,7 @@ import { HttpExceptionFilter } from './http-exception.filter';
 
 @Module({
   imports: [
+    UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule.register([
       {

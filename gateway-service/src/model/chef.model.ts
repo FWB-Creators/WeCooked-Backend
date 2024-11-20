@@ -132,3 +132,8 @@ interface Order {
   userId?: User;
   paymentId?: Payment;
 }
+
+export class ChefLoginModel {
+  chefEmail: string;
+  chefPassword: string;
+}
