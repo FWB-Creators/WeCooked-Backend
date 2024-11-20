@@ -1,8 +1,5 @@
 import { Injectable, OnModuleInit, Logger, HttpStatus } from '@nestjs/common';
-import {
-  PrismaClient,
-  Prisma,
-} from '../../gateway-service/node_modules/.prisma/client';
+import { PrismaClient, Prisma } from '../node_modules/.prisma/client';
 import { ChefLoginModel, ChefModel } from './model/chef.model.dto';
 
 @Injectable()
