@@ -67,7 +67,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         data: {
           userEmail: payload.email,
           password: payload.password,
-          username: `${payload.firstName}_${payload.lastName}_${Date.now()}`,
+          // username: `${payload.firstName}_${payload.lastName}_${Date.now()}`,
           name: payload.firstName,
           surname: payload.lastName,
           userProfile: 'https://via.placeholder.com/150',
@@ -76,7 +76,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       const jwtPayload = {
         userId: result.userId,
         userEmail: result.userEmail,
-        username: result.username,
+        // username: result.username,
       };
       const response: UserSignUpEventResponse = {
         token: this.jwtService.sign(jwtPayload, {
@@ -125,7 +125,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         const jwtPayload = {
           userId: result.userId,
           userEmail: result.userEmail,
-          username: result.username,
+          // username: result.username,
         };
         const response: UserLoginEventResponse = {
           token: this.jwtService.sign(jwtPayload, {
@@ -184,10 +184,10 @@ export class AppService extends PrismaClient implements OnModuleInit {
           name: payload.name,
           surname: payload.surname,
           userProfile: payload.userProfile,
-          sex: payload.sex,
+          // sex: payload.sex,
           password: payload.password,
-          userPhone: parseInt(payload.userPhone),
-          userPayment: parseInt(payload.userPayment),
+          // userPhone: parseInt(payload.userPhone),
+          // userPayment: parseInt(payload.userPayment),
           userAddress: payload.userAddress,
         },
       });

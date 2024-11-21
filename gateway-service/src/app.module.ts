@@ -7,10 +7,12 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { HttpExceptionFilter } from './http-exception.filter';
+import { VideoModule } from './video/video.module';
 
 @Module({
   imports: [
     UserModule,
+    VideoModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule.register([
       {

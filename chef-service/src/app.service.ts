@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit, Logger, HttpStatus } from '@nestjs/common';
 import { PrismaClient, Prisma } from '../node_modules/.prisma/client';
-import { ChefLoginModel, ChefModel } from './model/chef.model.dto';
+import { ChefLoginModel } from './model/chef.model.dto';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -15,7 +15,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async postSignUpChef(body: ChefModel[]): Promise<any> {
+  async postSignUpChef(body: any[]): Promise<any> {
     const {
       chefName,
       chefSurname,
@@ -25,7 +25,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       chefExperience,
       chefSpecialty,
       chefPhone,
-    }: ChefModel = body[0];
+    }: any = body[0];
     try {
       await this.chef.create({
         data: {
@@ -37,7 +37,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
           chefExperience,
           chefSpecialty,
           chefPhone,
-          chefPicture: 'https://via.placeholder.com/150',
+          chefImage: 'https://via.placeholder.com/150',
         },
       });
       return {
@@ -106,7 +106,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
           chefExperience: true,
           chefSpecialty: true,
           chefPhone: true,
-          chefPicture: true,
+          chefImage: true,
         },
       });
       if (!chef) {
