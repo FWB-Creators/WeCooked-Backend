@@ -75,7 +75,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       const jwtPayload = {
         userId: result.userId,
         userEmail: result.userEmail,
-        username: `${payload.firstName}_${payload.lastName}`,
+        // username: result.username,
       };
       const response: UserSignUpEventResponse = {
         token: this.jwtService.sign(jwtPayload, {
@@ -126,7 +126,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         const jwtPayload = {
           userId: result.userId,
           userEmail: result.userEmail,
-          username: `${result.name}_${result.surname}`,
+          // username: result.username,
         };
         const response: UserLoginEventResponse = {
           token: this.jwtService.sign(jwtPayload, {

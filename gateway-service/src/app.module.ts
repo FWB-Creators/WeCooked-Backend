@@ -9,10 +9,12 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { PaymentModule } from './payment/payment.module';
 import { WorkshopModule } from './workshop/workshop.module';
+import { VideoModule } from './video/video.module';
 
 @Module({
   imports: [
     UserModule,
+    VideoModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule.register([
       {
