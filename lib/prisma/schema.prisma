@@ -18,13 +18,18 @@ generator paymentServiceClient {
   output   = "../../payment-service/node_modules/.prisma/client"
 }
 
+generator videoServiceClient {
+  provider = "prisma-client-js"
+  output   = "../../video-service/node_modules/.prisma/client"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Chef {
-  chefId         Int       @id @default(autoincrement())
+  chefId         Int    @id @default(autoincrement())
   chefName       String
   chefSurname    String
   chefBio        String
@@ -32,16 +37,17 @@ model Chef {
   chefExperience String
   chefImage      String
   chefSex        String
-  chefPhone      String    @unique
-  chefEmail      String    @unique
+  chefPhone      String @unique
+  chefEmail      String @unique
   chefPassword   String
-  courses        Course[]  @relation("ChefCourses")
-  groups         GroupID[] @relation("ChefGroups")
-  users          User[]
+
+  courses Course[]  @relation("ChefCourses")
+  groups  GroupID[] @relation("ChefGroups")
+  users   User[]
 }
 
 model Course {
-  courseId              Int              @id @default(autoincrement())
+  courseId              Int    @id @default(autoincrement())
   courseTitle           String
   courseDetail          String
   coursePrice           Int
@@ -50,18 +56,20 @@ model Course {
   courseChefId          Int
   courseIngredientPrice Int
   courseImage           String
-  chef                  Chef?            @relation("ChefCourses", fields: [courseChefId], references: [chefId])
-  review                review[]
-  listofTutorial        listofTutorial[]
-  timetracking          timetracking[]
-  Dietary               Dietary[]
+
+  chef           Chef?            @relation("ChefCourses", fields: [courseChefId], references: [chefId])
+  review         review[]
+  listofTutorial listofTutorial[]
+  timetracking   timetracking[]
+  Dietary        Dietary[]
 }
 
 model Dietary {
-  dietaryId       Int     @id @default(autoincrement())
+  dietaryId       Int    @id @default(autoincrement())
   dietaryName     String
   dietaryCourseId Int
-  courseId        Course? @relation(fields: [dietaryCourseId], references: [courseId])
+
+  courseId Course? @relation(fields: [dietaryCourseId], references: [courseId])
 }
 
 model GroupID {
@@ -69,6 +77,7 @@ model GroupID {
   groupTitle                String
   groupDetail               String
   groupPrice                Int
+  groupIngredientDetail     String
   groupNumberofparticipants Int
   groupDate                 DateTime
   groupCategory             String
@@ -77,23 +86,25 @@ model GroupID {
   groupChefId               Int
   groupIngredientPrice      Int
   groupDescription          String
-  chef                      Chef?    @relation("ChefGroups", fields: [groupChefId], references: [chefId])
+
+  chef Chef? @relation("ChefGroups", fields: [groupChefId], references: [chefId])
 }
 
 model User {
-  userId          Int      @id @default(autoincrement())
+  userId          Int     @id @default(autoincrement())
   name            String
   surname         String
   userAddress     String?
   userProfile     String?
   favouriteChefId Int?
   Sex             String?
-  userPhone       String?  @unique
-  userEmail       String   @unique
+  userPhone       String? @unique
+  userEmail       String  @unique
   password        String
-  favChef         Chef?    @relation(fields: [favouriteChefId], references: [chefId])
-  review          review[]
-  order           order[]
+
+  favChef Chef?    @relation(fields: [favouriteChefId], references: [chefId])
+  review  review[]
+  order   order[]
 }
 
 model review {
@@ -103,8 +114,9 @@ model review {
   reviewDetail    String?
   reviewTimestamp DateTime
   reviewCourseId  Int
-  userId          User?    @relation(fields: [reviewUserId], references: [userId])
-  coursId         Course?  @relation(fields: [reviewCourseId], references: [courseId])
+
+  userId  User?   @relation(fields: [reviewUserId], references: [userId])
+  coursId Course? @relation(fields: [reviewCourseId], references: [courseId])
 }
 
 model order {
@@ -117,7 +129,8 @@ model order {
   orderPrice           Int
   orderDeliveryDate    DateTime?
   orderDeliveryAddress String?
-  userId               User?     @relation(fields: [orderUserId], references: [userId])
+
+  userId User? @relation(fields: [orderUserId], references: [userId])
 }
 
 model tutorialvideo {
@@ -128,10 +141,11 @@ model tutorialvideo {
 }
 
 model listofTutorial {
-  Id         Int            @id @default(autoincrement())
+  Id         Int @id @default(autoincrement())
   CourseId   Int
   TutorialId Int
   Timestamp  Int
+
   coursId    Course?        @relation(fields: [CourseId], references: [courseId])
   tutorialId tutorialvideo? @relation(fields: [TutorialId], references: [tutorialId])
 }
@@ -142,5 +156,6 @@ model timetracking {
   timeCountdown Int // duration
   timeTriggered Boolean @default(false) //stop or not
   timePopup     Int // Timestamp
-  coursId       Course? @relation(fields: [timeCourseId], references: [courseId])
+
+  coursId Course? @relation(fields: [timeCourseId], references: [courseId])
 }
