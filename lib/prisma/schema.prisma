@@ -63,6 +63,8 @@ model Course {
   reviews               Review[]
   orders                Order[]
   videoTools            VideoTools[]
+
+  Dietary Dietary[]
 }
 
 model GroupID {
@@ -79,6 +81,14 @@ model GroupID {
   groupIngredientPrice      Int?
   groupDescription          String?
   chef                      Chef?    @relation("ChefGroups", fields: [groupChefId], references: [chefId])
+}
+
+model Dietary {
+  dietaryId                     Int       @id @default(autoincrement())
+  dietaryName                   String
+  dietaryCourseId               Int
+  courseId                      Course?  @relation(fields: [dietaryCourseId], references: [courseId])
+
 }
 
 model Payment {
