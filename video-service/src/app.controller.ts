@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern } from '@nestjs/microservices';
 
@@ -6,9 +6,18 @@ import { EventPattern } from '@nestjs/microservices';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('video/getHello')
-  getHello(): string {
-    return this.appService.getHello();
+  @EventPattern('getCourseVideos')
+  async getCourseVideos(): Promise<{
+    status: HttpStatus;
+    message: string;
+    data: any[];
+  }> {
+    try {
+      const data = await this.appService.getCourseVideos();
+      return data;
+    } catch (error) {
+      return error;
+    }
   }
 
   @EventPattern('video/getVideos')

@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class VideoService {
@@ -8,9 +9,11 @@ export class VideoService {
   ) {}
   logger = new Logger('Gateway - Video Service');
 
-  async getVideos(): Promise<any> {
+  async getCourseVideos(): Promise<any> {
     try {
-      const result = 'This action returns all videos';
+      const result = await lastValueFrom(
+        this.videoClient.send('getCourseVideos', {}),
+      );
       return result;
     } catch (error) {
       throw error;
