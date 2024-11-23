@@ -9,7 +9,7 @@ import {
   UserSignUpEventMsg,
   UserSignUpEventResponse,
 } from '@lib/src/user/event-msg.dto';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -80,7 +80,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       };
       const response: UserSignUpEventResponse = {
         token: this.jwtService.sign(jwtPayload, {
-          expiresIn: '1h',
+          expiresIn: '1w',
           secret: process.env.JWT_SECRET,
         }),
         userData: Object.keys(result).reduce((acc, key) => {
@@ -203,6 +203,64 @@ export class AppService extends PrismaClient implements OnModuleInit {
         const response: BasicResponse = {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           message: 'Failed to update profile',
+        };
+        return response;
+      }
+    } catch (error) {
+      this.logger.error('Failed to connect to the database:', error);
+      const response: BasicResponse = {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to connect to the database',
+      };
+      return response;
+    }
+  }
+
+  async enrollCourse(payload: any): Promise<any> {
+    try {
+      const result = await this.user.findUnique({
+        where: {
+          userId: payload.userId,
+        },
+      });
+      if (!result) {
+        const response: BasicResponse = {
+          status: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+        };
+        return response;
+      }
+      console.log(payload);
+      const course = await this.course.findUnique({
+        where: {
+          courseId: Number(payload.course.courseId),
+        },
+      });
+      if (!course) {
+        const response: BasicResponse = {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Course not found',
+        };
+        return response;
+      }
+      const enroll = await this.enroll.create({
+        data: {
+          enrollUserId: payload.userId,
+          enrollCourseId: course.courseId,
+        },
+      });
+      // const enroll = false;
+      if (enroll) {
+        const response: BasicResponse = {
+          status: HttpStatus.CREATED,
+          message: 'Course enrolled successfully',
+        };
+        return response;
+      } else {
+        this.logger.error('Failed to enroll course');
+        const response: BasicResponse = {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Failed to enroll course',
         };
         return response;
       }

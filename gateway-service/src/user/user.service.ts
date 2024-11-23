@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom, Observable } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import {
   ProfileUpdateRequestBody,
   UserLoginRequestBody,
@@ -126,7 +126,29 @@ export class UserService {
       const result = await lastValueFrom(
         this.videoClient.send('user/getCourseVideos', { userId }),
       );
-      console.log('course');
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
+  }
+
+  async postEnrollCourse(
+    enrollCourseRequestBody: any[],
+    userId: number,
+  ): Promise<any> {
+    try {
+      const enrollCourseEventMsg = {
+        course: enrollCourseRequestBody[0],
+        userId: userId,
+      };
+      const result = await lastValueFrom(
+        this.userClient.send('user/enrollCourse', enrollCourseEventMsg),
+      );
       return result;
     } catch (error) {
       this.logger.error('Internal Server Error:', error);
