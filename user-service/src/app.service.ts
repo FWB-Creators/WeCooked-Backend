@@ -142,6 +142,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
           status: HttpStatus.OK,
           message: 'User logged in successfully',
         };
+
         return response;
       } else {
         this.logger.error('User not found');
