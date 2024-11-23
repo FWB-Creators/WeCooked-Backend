@@ -1,4 +1,4 @@
-import { Body, Controller, Logger } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import {
@@ -63,6 +63,20 @@ export class AppController {
   ): Promise<ProfileUpdateEventResponse | BasicResponse> {
     try {
       return this.appService.updateProfile(payload);
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error',
+      };
+      return Promise.reject(response);
+    }
+  }
+
+  @EventPattern('user/enrollCourse')
+  async postEnrollCourse(payload: any): Promise<any> {
+    try {
+      return this.appService.enrollCourse(payload);
     } catch (error) {
       this.logger.error('Internal Server Error:', error);
       const response: BasicResponse = {

@@ -128,4 +128,23 @@ export class UserController {
       throw error;
     }
   }
+
+  @ApiTags('Enroll Course')
+  @Post('enrollcourse')
+  async enrollCourse(
+    @Body() payload: any,
+    @Headers('Authorization') token: string,
+  ) {
+    try {
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      return await this.userService.postEnrollCourse(
+        payload,
+        jwtPayload.userId,
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 }
