@@ -41,9 +41,9 @@ model Chef {
   chefEmail      String @unique
   chefPassword   String
 
-  courses Course[]  @relation("ChefCourses")
-  groups  GroupID[] @relation("ChefGroups")
-  users   User[]
+  courses  Course[]   @relation("ChefCourses")
+  Workshop Workshop[] @relation("ChefWorkshop")
+  users    User[]
 }
 
 model Course {
@@ -62,6 +62,7 @@ model Course {
   listofTutorial listofTutorial[]
   timetracking   timetracking[]
   Dietary        Dietary[]
+  Enroll         Enroll[]
 }
 
 model Dietary {
@@ -72,22 +73,22 @@ model Dietary {
   courseId Course? @relation(fields: [dietaryCourseId], references: [courseId])
 }
 
-model GroupID {
-  groupId                   Int      @id @default(autoincrement())
-  groupTitle                String
-  groupDetail               String
-  groupPrice                Int
-  groupIngredientDetail     String
-  groupNumberofparticipants Int
-  groupDate                 DateTime
-  groupCategory             String
-  groupLinkZoom             String   @unique
-  groupPicture              String
-  groupChefId               Int
-  groupIngredientPrice      Int
-  groupDescription          String
+model Workshop {
+  workshopId                   Int      @id @default(autoincrement())
+  workshopTitle                String
+  workshopDetail               String
+  workshopPrice                Int
+  workshopIngredientDetail     String
+  workshopNumberofparticipants Int
+  workshopDate                 DateTime
+  workshopCategory             String
+  workshopLinkZoom             String   @unique
+  workshopPicture              String
+  workshopChefId               Int
+  workshopIngredientPrice      Int
+  workshopDescription          String
 
-  chef Chef? @relation("ChefGroups", fields: [groupChefId], references: [chefId])
+  chef Chef? @relation("ChefWorkshop", fields: [workshopChefId], references: [chefId])
 }
 
 model User {
@@ -105,6 +106,17 @@ model User {
   favChef Chef?    @relation(fields: [favouriteChefId], references: [chefId])
   review  review[]
   order   order[]
+  Enroll  Enroll[]
+}
+
+model Enroll {
+  enrollId       Int     @id @default(autoincrement())
+  enrollUserId   Int
+  enrollCourseId Int
+  enrollStatus   Boolean @default(false)
+
+  UserId User?   @relation(fields: [enrollUserId], references: [userId])
+  Course Course? @relation(fields: [enrollCourseId], references: [courseId])
 }
 
 model review {
@@ -123,7 +135,7 @@ model order {
   orderId              Int       @id @default(autoincrement())
   orderUserId          Int
   orderDate            DateTime
-  orderFormat          String // group, course
+  orderFormat          String // workshop, course
   orderStatus          String // pending 
   orderWithIngredient  Boolean   @default(false)
   orderPrice           Int

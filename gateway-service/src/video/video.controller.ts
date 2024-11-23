@@ -1,4 +1,4 @@
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller, Get, Logger, Query } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { VideoService } from './video.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -11,18 +11,4 @@ export class VideoController {
     private jwtService: JwtService,
   ) {}
   logger = new Logger('Video Service');
-
-  @ApiTags('Video')
-  @Get()
-  async getCourseVideos(): Promise<any> {
-    try {
-      const result = await this.VideoService.getCourseVideos();
-      return new Observable((observer) => {
-        observer.next(result);
-        observer.complete();
-      });
-    } catch (error) {
-      throw error;
-    }
-  }
 }

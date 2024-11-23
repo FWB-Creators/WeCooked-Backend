@@ -9,7 +9,7 @@ import {
   UserSignUpEventMsg,
   UserSignUpEventResponse,
 } from '@lib/src/user/event-msg.dto';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -165,12 +165,12 @@ export class AppService extends PrismaClient implements OnModuleInit {
     payload: ProfileUpdateEventMsg,
   ): Promise<ProfileUpdateEventResponse | BasicResponse> {
     try {
-      const checkUser = await this.user.findUnique({
+      const videos = await this.user.findUnique({
         where: {
           userId: payload.userId,
         },
       });
-      if (!checkUser) {
+      if (!videos) {
         const response: BasicResponse = {
           status: HttpStatus.NOT_FOUND,
           message: 'User not found',

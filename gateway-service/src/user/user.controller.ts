@@ -115,4 +115,17 @@ export class UserController {
       throw error;
     }
   }
+  @ApiTags('Course Video')
+  @Get('coursevideos')
+  async getVideos(@Headers('authorization') token: string) {
+    try {
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+
+      return this.userService.getCourseVideos(jwtPayload.userId);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

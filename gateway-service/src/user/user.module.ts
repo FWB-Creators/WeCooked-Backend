@@ -17,6 +17,13 @@ import { JwtModule } from '@nestjs/jwt';
           servers: ['nats://localhost:4222'],
         },
       },
+      {
+        name: 'VIDEO_SERVICE',
+        transport: Transport.NATS,
+        options: {
+          servers: ['nats://localhost:4222'],
+        },
+      },
     ]),
   ],
   controllers: [UserController],

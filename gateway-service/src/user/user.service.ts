@@ -20,6 +20,7 @@ import {
 export class UserService {
   constructor(
     @Inject('USER_SERVICE') private readonly userClient: ClientProxy,
+    @Inject('VIDEO_SERVICE') private readonly videoClient: ClientProxy,
   ) {}
   logger = new Logger('Gateway User Service');
 
@@ -109,6 +110,23 @@ export class UserService {
         await lastValueFrom(
           this.userClient.send('user/profileUpdate', userUpdateEventMsg),
         );
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
+  }
+
+  async getCourseVideos(userId: number): Promise<any> {
+    try {
+      const result = await lastValueFrom(
+        this.videoClient.send('user/getCourseVideos', { userId }),
+      );
+      console.log('course');
       return result;
     } catch (error) {
       this.logger.error('Internal Server Error:', error);
