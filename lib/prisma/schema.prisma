@@ -34,39 +34,42 @@ datasource db {
 }
 
 model Chef {
-  chefId            Int       @id @default(autoincrement())
-  chefName          String
-  chefSurname       String
-  chefBio           String
-  chefSpecialty     String
-  chefExperience    String
-  chefImage         String
-  chefSex           String
-  chefPhone         String    @unique
-  chefEmail         String    @unique
-  chefPassword      String
-  courses         Course[]   @relation("ChefCourses")
-  Workshop          Workshop[]  @relation("ChefWorkshop")
-  users            User[]
+  chefId         Int    @id @default(autoincrement())
+  chefName       String
+  chefSurname    String
+  chefBio        String
+  chefSpecialty  String
+  chefExperience String
+  chefImage      String
+  chefSex        String
+  chefPhone      String @unique
+  chefEmail      String @unique
+  chefPassword   String
+
+  courses  Course[]   @relation("ChefCourses")
+  Workshop Workshop[] @relation("ChefWorkshop")
+  users    User[]
 }
 
 model Course {
-  courseId                    Int       @id @default(autoincrement())
-  courseTitle                 String
-  courseDetail                String
-  coursePrice                 Int
-  courseCategory              String
-  courseVideoPath             String
-  courseChefId                Int
-  courseIngredientPrice       Int
-  courseImage                 String
-  chef                        Chef?     @relation("ChefCourses", fields: [courseChefId], references: [chefId])
-  review                      review[]
-  listofTutorial              listofTutorial[]
-  timetracking                timetracking[]
-  Dietary                     Dietary[]
-  Enroll              Enroll[]
+  courseId              Int    @id @default(autoincrement())
+  courseTitle           String
+  courseDetail          String
+  coursePrice           Int
+  courseCategory        String
+  courseVideoPath       String
+  courseChefId          Int
+  courseIngredientPrice Int
+  courseImage           String
+
+  chef           Chef?            @relation("ChefCourses", fields: [courseChefId], references: [chefId])
+  review         review[]
+  listofTutorial listofTutorial[]
+  timetracking   timetracking[]
+  Dietary        Dietary[]
+  Enroll         Enroll[]
 }
+
 model Dietary {
   dietaryId       Int    @id @default(autoincrement())
   dietaryName     String
@@ -76,47 +79,49 @@ model Dietary {
 }
 
 model Workshop {
-  workshopId                       Int       @id @default(autoincrement())
-  workshopTitle                    String    
-  workshopDetail                   String  
-  workshopPrice                    Int
-  workshopIngredientDetail         String 
-  workshopNumberofparticipants     Int
-  workshopDate                     DateTime
-  workshopCategory                 String
-  workshopLinkZoom                 String  @unique
-  workshopPicture                  String 
-  workshopChefId                   Int 
-  workshopIngredientPrice          Int
-  workshopDescription              String 
-  chef            Chef?     @relation("ChefWorkshop", fields: [workshopChefId], references: [chefId])
+  workshopId                   Int      @id @default(autoincrement())
+  workshopTitle                String
+  workshopDetail               String
+  workshopPrice                Int
+  workshopIngredientDetail     String
+  workshopNumberofparticipants Int
+  workshopDate                 DateTime
+  workshopCategory             String
+  workshopLinkZoom             String   @unique
+  workshopPicture              String
+  workshopChefId               Int
+  workshopIngredientPrice      Int
+  workshopDescription          String
+
+  chef Chef? @relation("ChefWorkshop", fields: [workshopChefId], references: [chefId])
 }
 
 model User {
-  userId           Int       @id @default(autoincrement())
-  name             String
-  surname          String
-  userAddress      String?
-  userProfile      String?
-  favouriteChefId  Int?
-  Sex              String?
-  userPhone        String?   @unique
-  userEmail        String    @unique
-  password         String 
-  favChef             Chef?     @relation(fields: [favouriteChefId], references: [chefId])
-  review              review[]
-  order               order[]
-  Enroll              Enroll[]
+  userId          Int     @id @default(autoincrement())
+  name            String
+  surname         String
+  userAddress     String?
+  userProfile     String?
+  favouriteChefId Int?
+  Sex             String?
+  userPhone       String? @unique
+  userEmail       String  @unique
+  password        String
 
+  favChef Chef?    @relation(fields: [favouriteChefId], references: [chefId])
+  review  review[]
+  order   order[]
+  Enroll  Enroll[]
 }
 
 model Enroll {
-  enrollId               Int       @id @default(autoincrement())
-  enrollUserId           Int       
-  enrollCourseId         Int
-  enrollStatus           Boolean   @default(false)
-  UserId                 User?     @relation(fields: [enrollUserId], references: [userId])
-  Course                 Course?  @relation(fields: [enrollCourseId], references: [courseId])
+  enrollId       Int     @id @default(autoincrement())
+  enrollUserId   Int
+  enrollCourseId Int
+  enrollStatus   Boolean @default(false)
+
+  UserId User?   @relation(fields: [enrollUserId], references: [userId])
+  Course Course? @relation(fields: [enrollCourseId], references: [courseId])
 }
 
 model review {
@@ -131,16 +136,17 @@ model review {
 }
 
 model order {
-  orderId               Int       @id @default(autoincrement())
-  orderUserId           Int      
-  orderDate             DateTime
-  orderFormat           String // workshop, course
-  orderStatus           String // pending 
-  orderWithIngredient   Boolean    @default(false) 
-  orderPrice            Int
-  orderDeliveryDate     DateTime?
-  orderDeliveryAddress  String?
-  userId        User? @relation(fields: [orderUserId],  references: [userId])
+  orderId              Int       @id @default(autoincrement())
+  orderUserId          Int
+  orderDate            DateTime
+  orderFormat          String // workshop, course
+  orderStatus          String // pending 
+  orderWithIngredient  Boolean   @default(false)
+  orderPrice           Int
+  orderDeliveryDate    DateTime?
+  orderDeliveryAddress String?
+
+  userId User? @relation(fields: [orderUserId], references: [userId])
 }
 
 model tutorialvideo {

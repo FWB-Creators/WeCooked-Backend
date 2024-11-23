@@ -1,4 +1,4 @@
-import { Controller, Logger } from '@nestjs/common';
+import { Body, Controller, Logger } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import {
