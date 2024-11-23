@@ -21,11 +21,20 @@ export class AppService extends PrismaClient implements OnModuleInit {
     try {
       const enrollments = await this.enroll.findMany({
         where: {
-          enrollUserId: payload.userId, // Filter by user ID
+          enrollUserId: payload.userId,
         },
-        include: {
-          Course: true, // Include course details
-          UserId: true, // Optionally include user details
+        select: {
+          Course: {
+            select: {
+              courseId: true,
+              courseTitle: true,
+              courseDetail: true,
+              coursePrice: true,
+              courseImage: true,
+              courseChefId: true,
+              courseCategory: true,
+            },
+          },
         },
       });
       return {

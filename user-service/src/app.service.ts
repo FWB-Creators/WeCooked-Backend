@@ -125,7 +125,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
         const jwtPayload = {
           userId: result.userId,
           userEmail: result.userEmail,
-          // username: result.username,
         };
         const response: UserLoginEventResponse = {
           token: this.jwtService.sign(jwtPayload, {
