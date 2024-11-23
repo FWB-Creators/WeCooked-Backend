@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { VideoController } from './video.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { VideoService } from './video.service';
+import { ChefController } from './chef.controller';
+import { ChefService } from './chef.service';
 
 @Module({
   imports: [
@@ -11,7 +11,7 @@ import { VideoService } from './video.service';
     }),
     ClientsModule.register([
       {
-        name: 'VIDEO_SERVICE',
+        name: 'CHEF_SERVICE',
         transport: Transport.NATS,
         options: {
           servers: ['nats://localhost:4222'],
@@ -19,7 +19,7 @@ import { VideoService } from './video.service';
       },
     ]),
   ],
-  controllers: [VideoController],
-  providers: [VideoService],
+  controllers: [ChefController],
+  providers: [ChefService],
 })
-export class VideoModule {}
+export class ChefModule {}

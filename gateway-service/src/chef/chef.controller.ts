@@ -10,21 +10,31 @@ import {
   Param,
   Patch,
   Post,
+  Headers,
 } from '@nestjs/common';
 import { ChefService } from './chef.service';
 import { Observable } from 'rxjs';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtService } from '@nestjs/jwt';
 
-@Controller()
+@Controller('chef')
 export class ChefController {
-  constructor(private readonly ChefService: ChefService) {}
+  constructor(
+    private readonly ChefService: ChefService,
+    private jwtService: JwtService,
+  ) {}
   logger = new Logger('Gateway Service');
 
   @ApiTags('Chef')
-  @Get('chef/profile/:id?')
-  async profileChef(@Param('id') id: number): Promise<any> {
+  @Get('profile/:id?')
+  async profileChef(@Headers('authorization') token: string): Promise<any> {
     try {
-      const profile = await this.ChefService.getProfileChef(Number(id));
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      const profile = await this.ChefService.getProfileChef(
+        Number(jwtPayload.chefId),
+      );
       if (profile.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(profile.message);
       }
@@ -38,9 +48,12 @@ export class ChefController {
   }
 
   @ApiTags('Chef')
-  @Get('chef/profiles')
-  async profileChefs(): Promise<any> {
+  @Get('profiles')
+  async profileChefs(@Headers('authorization') token: string): Promise<any> {
     try {
+      this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
       const profiles = await this.ChefService.getProfileChefs();
       if (profiles.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(profiles.message);
@@ -56,10 +69,16 @@ export class ChefController {
   }
 
   @ApiTags('Chef')
-  @Post('chef/signup')
-  async signUpChef(@Body() body: any): Promise<Observable<any>> {
+  @Post('signup')
+  async signUpChef(
+    @Headers('authorization') token: string,
+    @Body() payload: any,
+  ): Promise<Observable<any>> {
     try {
-      const signUp = await this.ChefService.postSignUpChef(body);
+      this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      const signUp = await this.ChefService.postSignUpChef(payload);
       if (signUp.status === HttpStatus.CONFLICT) {
         throw new ConflictException(signUp.message);
       }
@@ -73,10 +92,16 @@ export class ChefController {
   }
 
   @ApiTags('Chef')
-  @Post('chef/login')
-  async loginChef(@Body() body: any): Promise<Observable<any>> {
+  @Post('login')
+  async loginChef(
+    @Headers('authorization') token: string,
+    @Body() payload: any,
+  ): Promise<Observable<any>> {
     try {
-      const login = await this.ChefService.postLoginChef(body);
+      this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      const login = await this.ChefService.postLoginChef(payload);
       if (login.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(login.message);
       }
@@ -90,15 +115,18 @@ export class ChefController {
   }
 
   @ApiTags('Chef')
-  @Patch('chef/update/:id')
+  @Patch('update/:id')
   async updateProfileChef(
-    @Param('id') id: number,
-    @Body() body: any,
+    @Headers('authorization') token: string,
+    @Body() payload: any,
   ): Promise<Observable<any>> {
     try {
+      this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
       const updateProfile = await this.ChefService.updateProfileChef(
-        body,
-        Number(id),
+        payload,
+        Number(payload.chefId),
       );
       if (updateProfile.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(updateProfile.message);
@@ -113,13 +141,19 @@ export class ChefController {
   }
 
   @ApiTags('Chef')
-  @Post('chef/upload/:id')
+  @Post('upload/:id')
   async uploadCourseVideo(
-    @Param('id') id: number,
+    @Headers('authorization') token: string,
     @Body() payload,
   ): Promise<Observable<any>> {
     try {
-      const upload = await this.ChefService.uploadCourseVideo(id, payload);
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      const upload = await this.ChefService.uploadCourseVideo(
+        jwtPayload.chefId,
+        payload,
+      );
       if (upload.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(upload.message);
       } else if (upload.status === HttpStatus.BAD_REQUEST) {

@@ -46,6 +46,7 @@ export class AppController {
     payload: UserLoginEventMsg,
   ): Promise<UserLoginEventResponse | BasicResponse> {
     try {
+      console.log('login');
       return this.appService.loginUser(payload);
     } catch (error) {
       this.logger.error('Internal Server Error:', error);
