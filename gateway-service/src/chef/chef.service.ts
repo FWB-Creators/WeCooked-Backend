@@ -1,8 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { ChefModel } from '../model/chef.model';
-import { ChefLoginModel } from '../../../chef-service/src/model/chef.model.dto';
 
 @Injectable()
 export class ChefService {
@@ -11,7 +9,7 @@ export class ChefService {
     @Inject('VIDEO_SERVICE') private readonly videoClient: ClientProxy,
   ) {}
 
-  async postSignUpChef(body: ChefModel[]): Promise<any> {
+  async postSignUpChef(body: any): Promise<any> {
     try {
       const result = await lastValueFrom(
         this.chefClient.send('chef/signup', body),
@@ -22,7 +20,7 @@ export class ChefService {
     }
   }
 
-  async postLoginChef(body: ChefLoginModel[]): Promise<any> {
+  async postLoginChef(body: any): Promise<any> {
     try {
       const result = await lastValueFrom(
         this.chefClient.send('chef/login', body),
@@ -55,7 +53,7 @@ export class ChefService {
     }
   }
 
-  async updateProfileChef(payload: ChefModel, chefId: number): Promise<any> {
+  async updateProfileChef(payload: any, chefId: number): Promise<any> {
     try {
       const result = await lastValueFrom(
         this.chefClient.send('chef/updateProfile', { payload, chefId }),
