@@ -8,6 +8,7 @@ import { ChefLoginModel } from '../../../chef-service/src/model/chef.model.dto';
 export class ChefService {
   constructor(
     @Inject('CHEF_SERVICE') private readonly chefClient: ClientProxy,
+    @Inject('VIDEO_SERVICE') private readonly videoClient: ClientProxy,
   ) {}
 
   async postSignUpChef(body: ChefModel[]): Promise<any> {
@@ -69,6 +70,17 @@ export class ChefService {
     try {
       const result = await lastValueFrom(
         this.chefClient.send('chef/uploadCourseVideo', { chefId, payload }),
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateCourseDetails(payload: any, chefId: number): Promise<any> {
+    try {
+      const result = await lastValueFrom(
+        this.videoClient.send('chef/updateCourseDetails', { payload, chefId }),
       );
       return result;
     } catch (error) {

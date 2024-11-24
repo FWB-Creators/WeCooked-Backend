@@ -154,4 +154,30 @@ export class ChefController {
       throw error;
     }
   }
+
+  @ApiTags('Chef')
+  @Patch('updatecoursedetails')
+  async updateCourseDetails(
+    @Headers('authorization') token: string,
+    @Body() payload: any,
+  ): Promise<Observable<any>> {
+    try {
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      const updateCourse = await this.ChefService.updateCourseDetails(
+        payload,
+        jwtPayload.chefId,
+      );
+      if (updateCourse.status === HttpStatus.NOT_FOUND) {
+        throw new NotFoundException(updateCourse.message);
+      }
+      return new Observable((observer) => {
+        observer.next(updateCourse);
+        observer.complete();
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
