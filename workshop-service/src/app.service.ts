@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { Prisma, PrismaClient, Workshop } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import {
   BasicResponse,
   CreateWorkshopEventMsg,
