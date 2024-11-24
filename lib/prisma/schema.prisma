@@ -5,7 +5,7 @@ generator gatewayServiceClient {
 
 generator userServiceClient {
   provider = "prisma-client-js"
-  output   = "../../user-service/node_modules/.prisma/client"
+  output   = "../../user-service/node_modules/@prisma/client"
 }
 
 generator chefServiceClient {
@@ -15,7 +15,7 @@ generator chefServiceClient {
 
 generator paymentServiceClient {
   provider = "prisma-client-js"
-  output   = "../../payment-service/node_modules/.prisma/client"
+  output   = "../../payment-service/node_modules/@prisma/client"
 }
 
 generator workshopServiceClient {

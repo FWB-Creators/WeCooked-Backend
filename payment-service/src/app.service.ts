@@ -1,10 +1,11 @@
 import { Injectable, Logger, OnModuleInit, HttpStatus } from '@nestjs/common';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { StripeService } from './stripe/stripe.service';
 import {
   BasicResponse,
   CreatePaymentForCourseEventMsg,
   CreatePaymentForCourseEventResponse,
+  CreatePaymentForWorkshopEventMsg,
 } from '@lib/src/payment/event-msg.dto';
 
 @Injectable()
@@ -18,41 +19,40 @@ export class AppService extends PrismaClient implements OnModuleInit {
     this.logger.log('Connected to the database');
   }
 
-  async getHeartbeat(): Promise<string> {
-    const session = await this.stripeService.stripe.checkout.sessions.create({
-      line_items: [
-        {
-          price_data: {
-            currency: 'thb',
-            product_data: {
-              name: 'Course Name',
-              metadata: {},
-            },
-            unit_amount: 2000,
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: 'http://example.com/success',
-    });
-    return session.url;
-  }
-
   async createCheckoutSessionForCourse(
     createPaymentForCourseEventMsg: CreatePaymentForCourseEventMsg,
   ): Promise<CreatePaymentForCourseEventResponse | BasicResponse> {
     try {
-      const myorder: Prisma.OrderUncheckedCreateInput = {
-        orderCourseId: createPaymentForCourseEventMsg.courseId,
-        orderUserId: createPaymentForCourseEventMsg.userId,
-        orderPaymentId: 0,
-        orderDate: new Date(),
-        orderFormat: '',
-        orderPrice: 0,
-      };
+      const course = await this.course.findUnique({
+        where: {
+          courseId: createPaymentForCourseEventMsg.courseId,
+        },
+      });
+
+      const user = await this.user.findUnique({
+        where: {
+          userId: createPaymentForCourseEventMsg.userId,
+        },
+      });
       const orderResult = await this.order.create({
-        data: myorder,
+        data: {
+          userId: {
+            connect: {
+              userId: user.userId,
+            },
+          },
+          orderFormat: JSON.stringify({
+            type: 'course',
+            courseId: course.courseId,
+          }),
+          orderDate: new Date(),
+          orderStatus: 'pending',
+          orderPrice: createPaymentForCourseEventMsg.isWithIngredient
+            ? course.coursePrice + course.courseIngredientPrice
+            : course.coursePrice,
+          orderWithIngredient: createPaymentForCourseEventMsg.isWithIngredient,
+          orderDeliveryAddress: user.userAddress,
+        },
       });
       const session = await this.stripeService.stripe.checkout.sessions.create({
         line_items: [
@@ -60,13 +60,91 @@ export class AppService extends PrismaClient implements OnModuleInit {
             price_data: {
               currency: 'thb',
               product_data: {
-                name: 'Course Name',
+                name: createPaymentForCourseEventMsg.isWithIngredient
+                  ? `${course.courseTitle} with ingredient`
+                  : course.courseTitle,
                 metadata: {
-                  courseId: orderResult.orderCourseId,
+                  orderId: orderResult.orderId,
+                  courseId: course.courseId,
+                  userId: user.userId,
+                },
+              },
+              unit_amount: orderResult.orderPrice * 100,
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: `${process.env.FRONTEND_URL}/success?order_id=${orderResult.orderId}`,
+      });
+
+      const result: CreatePaymentForCourseEventResponse = {
+        status: HttpStatus.CREATED,
+        message: 'Success',
+        checkoutUrl: session.url,
+      };
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error',
+      };
+      return response;
+    }
+  }
+
+  async createCheckoutSessionForWorkshop(
+    createPaymentForWorkshopEventMsg: CreatePaymentForWorkshopEventMsg,
+  ): Promise<CreatePaymentForCourseEventResponse | BasicResponse> {
+    try {
+      const workshop = await this.workshop.findUnique({
+        where: {
+          workshopId: createPaymentForWorkshopEventMsg.workshopId,
+        },
+      });
+
+      const user = await this.user.findUnique({
+        where: {
+          userId: createPaymentForWorkshopEventMsg.userId,
+        },
+      });
+
+      const orderResult = await this.order.create({
+        data: {
+          userId: {
+            connect: {
+              userId: user.userId,
+            },
+          },
+          orderFormat: JSON.stringify({
+            type: 'workshop',
+            workshopId: workshop.workshopId,
+          }),
+          orderDate: new Date(),
+          orderStatus: 'pending',
+          orderPrice: createPaymentForWorkshopEventMsg.isWithIngredient
+            ? workshop.workshopPrice + workshop.workshopIngredientPrice
+            : workshop.workshopPrice,
+          orderWithIngredient:
+            createPaymentForWorkshopEventMsg.isWithIngredient,
+          orderDeliveryAddress: user.userAddress,
+        },
+      });
+      const session = await this.stripeService.stripe.checkout.sessions.create({
+        line_items: [
+          {
+            price_data: {
+              currency: 'thb',
+              product_data: {
+                name: workshop.workshopTitle,
+                metadata: {
+                  orderId: orderResult.orderId,
+                  workshopId: workshop.workshopId,
                   userId: orderResult.orderUserId,
                 },
               },
-              unit_amount: 2000,
+              unit_amount: orderResult.orderPrice * 100,
             },
             quantity: 1,
           },
