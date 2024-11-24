@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { GroupService } from './group.service';
-import { GroupController } from './group.controller';
+import { WorkshopService } from './workshop.service';
+import { WorkshopController } from './workshop.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
@@ -15,7 +15,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     ]),
   ],
-  controllers: [GroupController],
-  providers: [GroupService],
+  controllers: [WorkshopController],
+  providers: [WorkshopService],
 })
-export class GroupModule {}
+export class WorkshopModule {}

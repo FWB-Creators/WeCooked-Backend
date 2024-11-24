@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
 
-const logger = new Logger('Group Microservice');
+const logger = new Logger('Workshop Microservice');
 const defaultNATsHost: string =
   process.env.NATS_HOST || 'nats://localhost:4222';
 

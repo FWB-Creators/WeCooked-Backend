@@ -1,14 +1,19 @@
 import { Controller, HttpStatus, Logger } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 import { AppService } from './app.service';
-import { BasicResponse, CreateGroupEventMsg, GetGroupByIdResponse, UpcomingResponse } from '@lib/src/group/event-msg.dto';
+import {
+  BasicResponse,
+  CreateWorkshopEventMsg,
+  GetWorkshopByIdResponse,
+  UpcomingResponse,
+} from '@lib/src/workshop/event-msg.dto';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
-  logger = new Logger('Payment Controller');
+  logger = new Logger('Workshop Controller');
 
-  @EventPattern('group/upcoming')
+  @EventPattern('workshop/upcoming')
   async Upcoming(): Promise<BasicResponse | UpcomingResponse> {
     try {
       return await this.appService.Upcoming();
@@ -22,12 +27,12 @@ export class AppController {
     }
   }
 
-  @EventPattern('group/getGroupById')
-  async GetGroupById(data: {
+  @EventPattern('workshop/getWorkshopById')
+  async GetWorkshopById(data: {
     id: number;
-  }): Promise<BasicResponse | GetGroupByIdResponse> {
+  }): Promise<BasicResponse | GetWorkshopByIdResponse> {
     try {
-      return await this.appService.GetGroupById(data.id);
+      return await this.appService.GetWorkshopById(data.id);
     } catch (error) {
       this.logger.error(error);
       const response: BasicResponse = {
@@ -38,10 +43,10 @@ export class AppController {
     }
   }
 
-  @EventPattern('group/createGroup')
-  async CreateGroup(data: CreateGroupEventMsg): Promise<BasicResponse> {
+  @EventPattern('workshop/createWorkshop')
+  async CreateWorkshop(data: CreateWorkshopEventMsg): Promise<BasicResponse> {
     try {
-      return await this.appService.CreateGroup(data);
+      return await this.appService.CreateWorkshop(data);
     } catch (error) {
       this.logger.error(error);
       const response: BasicResponse = {

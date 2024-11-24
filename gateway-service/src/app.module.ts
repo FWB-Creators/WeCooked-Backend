@@ -8,7 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { PaymentModule } from './payment/payment.module';
-import { GroupModule } from './group/group.module';
+import { WorkshopModule } from './workshop/workshop.module';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { GroupModule } from './group/group.module';
       },
     ]),
     PaymentModule,
-    GroupModule,
+    WorkshopModule,
   ],
   controllers: [ChefController],
   providers: [

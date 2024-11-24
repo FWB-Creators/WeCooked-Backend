@@ -1,5 +1,5 @@
 {
-  "name": "group-service",
+  "name": "workshop-service",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -9,7 +9,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --entryFile group-service/src/main  --watch",
+    "start:dev": "nest start --entryFile workshop-service/src/main  --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -18,7 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prisma:generate": "npx prisma generate --schema=../lib/prisma/schema.prisma --generator groupServiceClient && cd .. && rm -rf node_modules package.json package-lock.json"
+    "prisma:generate": "npx prisma generate --schema=../lib/prisma/schema.prisma --generator workshopServiceClient && cd .. && rm -rf node_modules package.json package-lock.json",
+    "prisma:migrate": "npx prisma migrate dev --schema=../lib/prisma/schema.prisma --name workshopServiceClient && cd .. && rm -rf node_modules package.json package-lock.json",
+    "prisma:migrate_reset": "npx prisma migrate reset --schema=../lib/prisma/schema.prisma && cd .. && rm -rf node_modules package.json package-lock.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

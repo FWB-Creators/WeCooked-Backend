@@ -8,24 +8,24 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { GroupService } from './group.service';
+import { WorkshopService } from './workshop.service';
 import {
   BasicResponse,
-  GetGroupByIdResponse,
+  GetWorkshopByIdResponse,
   UpcomingResponse,
-} from '@lib/src/group/event-msg.dto';
-import { CreateGroupReqBody } from './dto/group-reqbody.dto';
+} from '@lib/src/workshop/event-msg.dto';
+import { CreateWorkshopReqBody } from './dto/workshop-reqbody.dto';
 
-@Controller('group')
-export class GroupController {
-  constructor(private readonly groupService: GroupService) {}
-  logger = new Logger('Gateway Group Controller');
+@Controller('workshop')
+export class WorkshopController {
+  constructor(private readonly workshopService: WorkshopService) {}
+  logger = new Logger('Gateway Workshop Controller');
 
   @Get('upcoming')
   async Upcoming() {
     try {
       const result: BasicResponse | UpcomingResponse =
-        await this.groupService.Upcoming();
+        await this.workshopService.Upcoming();
       if (result.status !== HttpStatus.OK) {
         throw new HttpException(
           {
@@ -44,10 +44,10 @@ export class GroupController {
   }
 
   @Get()
-  async GetGroupById(@Query('id') id: string) {
+  async GetWorkshopById(@Query('id') id: string) {
     try {
-      const result: BasicResponse | GetGroupByIdResponse =
-        await this.groupService.GetGroupById(parseInt(id));
+      const result: BasicResponse | GetWorkshopByIdResponse =
+        await this.workshopService.GetWorkshopById(parseInt(id));
       if (result.status !== HttpStatus.OK) {
         throw new HttpException(
           {
@@ -65,9 +65,10 @@ export class GroupController {
   }
 
   @Post()
-  async CreateGroup(@Body() data: CreateGroupReqBody) {
+  async CreateWorkshop(@Body() data: CreateWorkshopReqBody) {
     try {
-      const result: BasicResponse = await this.groupService.CreateGroup(data);
+      const result: BasicResponse =
+        await this.workshopService.CreateWorkshop(data);
       if (result.status !== HttpStatus.CREATED) {
         throw new HttpException(
           {
