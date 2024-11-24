@@ -31,7 +31,7 @@ export class UserController {
   ) {}
   logger = new Logger('Gateway User Controller');
 
-  @Get()
+  @Get('getuser')
   getUser(@Headers('authorization') token: string) {
     try {
       const jwtPayload = this.jwtService.verify(token, {
@@ -148,19 +148,19 @@ export class UserController {
     }
   }
 
-  // @ApiTags('User')
-  // @Get('courseVideo/:courseId')
-  // async getCourseVideos(
-  //   @Headers('authorization') token: string,
-  //   @Param('courseId') courseId: number,
-  // ) {
-  //   try {
-  //     const jwtPayload = this.jwtService.verify(token, {
-  //       secret: process.env.JWT_SECRET,
-  //     });
-  //     return this.userService.getCourseVideos(jwtPayload.userId, courseId);
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  @ApiTags('User')
+  @Post('coursevideo')
+  async getCourseVideo(
+    @Headers('authorization') token: string,
+    @Body() payload: any,
+  ) {
+    try {
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      return this.userService.getCourseVideo(jwtPayload.userId, payload);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

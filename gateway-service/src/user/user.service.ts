@@ -159,4 +159,20 @@ export class UserService {
       return response;
     }
   }
+
+  async getCourseVideo(userId: any, payload: any): Promise<any> {
+    try {
+      const result = await lastValueFrom(
+        this.videoClient.send('user/getCourseVideo', { userId, payload }),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
+  }
 }

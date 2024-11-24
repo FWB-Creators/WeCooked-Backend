@@ -9,7 +9,7 @@ import {
   UserSignUpEventMsg,
   UserSignUpEventResponse,
 } from '@lib/src/user/event-msg.dto';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -269,6 +269,54 @@ export class AppService extends PrismaClient implements OnModuleInit {
         message: 'Failed to connect to the database',
       };
       return response;
+    }
+  }
+  async getCourseVideo(userId: number, payload: any): Promise<any> {
+    try {
+      console.log('getCourseVideo', userId, payload);
+      const checkUserPermission = await this.enroll.findFirst({
+        where: {
+          enrollUserId: userId,
+          enrollCourseId: payload.courseId,
+        },
+      });
+      if (!checkUserPermission) {
+        return {
+          status: HttpStatus.FORBIDDEN,
+          message: 'You are not enrolled in this course',
+        };
+      }
+      const result = await this.course.findUnique({
+        where: {
+          courseId: payload.courseId,
+        },
+      });
+      return {
+        status: HttpStatus.OK,
+        message: 'Videos retrieved successfully',
+        data: result,
+        // data: enrollments.map((enrollment) => {
+        //   return {
+        //     courseId: enrollment.Course.courseId,
+        //     courseTitle: enrollment.Course.courseTitle,
+        //     courseDetail: enrollment.Course.courseDetail,
+        //     coursePrice: enrollment.Course.coursePrice,
+        //     courseImage: enrollment.Course.courseImage,
+        //     courseChefId: enrollment.Course.courseChefId,
+        //     courseCategory: enrollment.Course.courseCategory,
+        //     courseIngredientPrice: enrollment.Course.courseIngredientPrice,
+        //     isCourseCompleted: enrollment.enrollStatus,
+        //   };
+        // }
+      };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Videos not found',
+        };
+      }
+      throw error;
     }
   }
 }

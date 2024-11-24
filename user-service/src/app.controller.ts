@@ -87,4 +87,18 @@ export class AppController {
       return Promise.reject(response);
     }
   }
+
+  @EventPattern('user/getCourseVideo')
+  async getCourseVideo(payload: any): Promise<any> {
+    try {
+      return this.appService.getCourseVideo(payload.userId, payload.payload[0]);
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error',
+      };
+      return Promise.reject(response);
+    }
+  }
 }
