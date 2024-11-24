@@ -101,18 +101,18 @@ export class ChefController {
   }
 
   @ApiTags('Chef')
-  @Patch('update/:id')
+  @Patch('update')
   async updateProfileChef(
     @Headers('authorization') token: string,
     @Body() payload: any,
   ): Promise<Observable<any>> {
     try {
-      this.jwtService.verify(token, {
+      const jwtPayload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
       });
       const updateProfile = await this.ChefService.updateProfileChef(
         payload,
-        Number(payload.chefId),
+        Number(jwtPayload.chefId),
       );
       if (updateProfile.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(updateProfile.message);

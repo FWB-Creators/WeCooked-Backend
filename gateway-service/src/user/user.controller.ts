@@ -147,4 +147,20 @@ export class UserController {
       throw error;
     }
   }
+
+  // @ApiTags('User')
+  // @Get('courseVideo/:courseId')
+  // async getCourseVideos(
+  //   @Headers('authorization') token: string,
+  //   @Param('courseId') courseId: number,
+  // ) {
+  //   try {
+  //     const jwtPayload = this.jwtService.verify(token, {
+  //       secret: process.env.JWT_SECRET,
+  //     });
+  //     return this.userService.getCourseVideos(jwtPayload.userId, courseId);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }

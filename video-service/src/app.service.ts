@@ -41,7 +41,19 @@ export class AppService extends PrismaClient implements OnModuleInit {
       return {
         status: HttpStatus.OK,
         message: 'Videos retrieved successfully',
-        data: enrollments,
+        data: enrollments.map((enrollment) => {
+          return {
+            courseId: enrollment.Course.courseId,
+            courseTitle: enrollment.Course.courseTitle,
+            courseDetail: enrollment.Course.courseDetail,
+            coursePrice: enrollment.Course.coursePrice,
+            courseImage: enrollment.Course.courseImage,
+            courseChefId: enrollment.Course.courseChefId,
+            courseCategory: enrollment.Course.courseCategory,
+            courseIngredientPrice: enrollment.Course.courseIngredientPrice,
+            isCourseCompleted: enrollment.enrollStatus,
+          };
+        }),
       };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {

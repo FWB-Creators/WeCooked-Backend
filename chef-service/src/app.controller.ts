@@ -46,9 +46,9 @@ export class AppController {
   }
 
   @EventPattern('chef/updateProfile')
-  async updateProfileChef(@Body() body: any): Promise<any> {
+  async updateProfileChef(payload: any): Promise<any> {
     try {
-      const data = await this.appService.updateProfileChef(body);
+      const data = await this.appService.updateProfileChef(payload);
       return data;
     } catch (error) {
       return error;
