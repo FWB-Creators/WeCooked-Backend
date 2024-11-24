@@ -51,7 +51,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
             courseChefId: enrollment.Course.courseChefId,
             courseCategory: enrollment.Course.courseCategory,
             courseIngredientPrice: enrollment.Course.courseIngredientPrice,
-            isCourseCompleted: enrollment.enrollStatus,
+            isCourseCompleted: enrollment.isCourseComplete,
           };
         }),
       };

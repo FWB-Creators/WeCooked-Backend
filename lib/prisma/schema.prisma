@@ -115,24 +115,27 @@ model User {
 }
 
 model Enroll {
-  enrollId       Int     @id @default(autoincrement())
-  enrollUserId   Int
-  enrollCourseId Int
-  enrollStatus   Boolean @default(false)
+  enrollId         Int     @id @default(autoincrement())
+  enrollUserId     Int
+  enrollCourseId   Int
+  isCourseComplete Boolean @default(false)
 
   UserId User?   @relation(fields: [enrollUserId], references: [userId])
   Course Course? @relation(fields: [enrollCourseId], references: [courseId])
+
+  @@unique([enrollUserId, enrollCourseId])
 }
 
 model review {
-  reviewId           Int        @id @default(autoincrement())
-  reviewUserId       Int        
-  reviewRating       Int        
-  reviewDetail       String?
-  reviewTimestamp    DateTime
-  reviewCourseId     Int
-  userId    User?   @relation(fields: [reviewUserId], references: [userId])
-  coursId  Course? @relation(fields: [reviewCourseId], references: [courseId])
+  reviewId        Int      @id @default(autoincrement())
+  reviewUserId    Int
+  reviewRating    Int
+  reviewDetail    String?
+  reviewTimestamp DateTime
+  reviewCourseId  Int
+
+  userId   User?   @relation(fields: [reviewUserId], references: [userId])
+  courseId Course? @relation(fields: [reviewCourseId], references: [courseId])
 }
 
 model order {
@@ -162,7 +165,7 @@ model listofTutorial {
   TutorialId Int
   Timestamp  Int
 
-  coursId    Course?        @relation(fields: [CourseId], references: [courseId])
+  couresId   Course?        @relation(fields: [CourseId], references: [courseId])
   tutorialId tutorialvideo? @relation(fields: [TutorialId], references: [tutorialId])
 }
 
@@ -173,5 +176,5 @@ model timetracking {
   timeTriggered Boolean @default(false) //stop or not
   timePopup     Int // Timestamp
 
-  coursId Course? @relation(fields: [timeCourseId], references: [courseId])
+  couresId Course? @relation(fields: [timeCourseId], references: [courseId])
 }

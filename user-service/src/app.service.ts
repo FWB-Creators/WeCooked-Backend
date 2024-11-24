@@ -132,12 +132,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
             expiresIn: '1h',
             secret: process.env.JWT_SECRET,
           }),
-          // userData: Object.keys(result).reduce((acc, key) => {
-          //   if (key !== 'password') {
-          //     acc[key] = result[key];
-          //   }
-          //   return acc;
-          // }, {}),
           status: HttpStatus.OK,
           message: 'User logged in successfully',
         };
@@ -263,12 +257,18 @@ export class AppService extends PrismaClient implements OnModuleInit {
         return response;
       }
     } catch (error) {
-      this.logger.error('Failed to connect to the database:', error);
-      const response: BasicResponse = {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: 'Failed to connect to the database',
-      };
-      return response;
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          return {
+            status: HttpStatus.CONFLICT,
+            message: 'User already enrolled in this course',
+          };
+        }
+        return {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Course not found',
+        };
+      }
     }
   }
   async getCourseVideo(userId: number, payload: any): Promise<any> {
@@ -295,19 +295,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
         status: HttpStatus.OK,
         message: 'Videos retrieved successfully',
         data: result,
-        // data: enrollments.map((enrollment) => {
-        //   return {
-        //     courseId: enrollment.Course.courseId,
-        //     courseTitle: enrollment.Course.courseTitle,
-        //     courseDetail: enrollment.Course.courseDetail,
-        //     coursePrice: enrollment.Course.coursePrice,
-        //     courseImage: enrollment.Course.courseImage,
-        //     courseChefId: enrollment.Course.courseChefId,
-        //     courseCategory: enrollment.Course.courseCategory,
-        //     courseIngredientPrice: enrollment.Course.courseIngredientPrice,
-        //     isCourseCompleted: enrollment.enrollStatus,
-        //   };
-        // }
       };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
