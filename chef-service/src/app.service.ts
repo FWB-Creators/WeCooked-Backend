@@ -18,37 +18,36 @@ export class AppService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async postSignUpChef(body: any[]): Promise<any> {
-    const {
-      chefName,
-      chefSurname,
-      chefEmail,
-      chefPassword,
-      chefBio,
-      chefExperience,
-      chefSpecialty,
-      chefPhone,
-    }: any = body[0];
+  async postSignUpChef(payload: any): Promise<any> {
     try {
-      await this.chef.create({
+      const chef = await this.chef.create({
         data: {
-          chefName,
-          chefSurname,
-          chefEmail,
-          chefPassword,
-          chefBio,
-          chefExperience,
-          chefSpecialty,
-          chefPhone,
-          chefSex: body[0].chefSex || 'male', // Add the missing chefSex property
-          chefImage: 'https://via.placeholder.com/150',
+          chefName: payload.chefName,
+          chefSurname: payload.chefSurname,
+          chefEmail: payload.chefEmail,
+          chefPassword: payload.chefPassword,
+          chefBio: payload.chefBio,
+          chefExperience: payload.chefExperience,
+          chefSpecialty: payload.chefSpecialty,
+          chefPhone: payload.chefPhone,
+          chefSex: payload.chefSex,
+          chefImage: payload.chefImage,
         },
       });
+      const jwtPayload = {
+        chefId: chef.chefId,
+        chefEmail: chef.chefEmail,
+      };
       return {
+        token: this.jwtService.sign(jwtPayload, {
+          expiresIn: '1w',
+          secret: process.env.JWT_SECRET,
+        }),
         status: HttpStatus.CREATED,
         message: 'Chef registered successfully',
       };
     } catch (e) {
+      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for unique constraint violation
         if (e.code === 'P2002') {
@@ -212,32 +211,28 @@ export class AppService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async uploadCourseVideo(chefId: number, body: any): Promise<any> {
+  async uploadCourseVideo(chefId: number, payload: any): Promise<any> {
     try {
-      const { courseTitle, courseDetail, coursePrice, courseCategory } =
-        body[0];
+      console.log(chefId, payload);
       await this.course.create({
         data: {
-          courseTitle,
-          courseDetail,
-          coursePrice,
-          courseCategory,
-          courseVideoPath: body[0].courseVideoPath,
-          courseIngredientPrice: body[0].courseIngredientPrice,
-          courseImage: body[0].courseImage,
-          chef: {
-            connect: { chefId: chefId },
-          },
-        },
-        include: {
-          chef: true,
+          courseTitle: payload.courseTitle,
+          courseDetail: payload.courseDetail,
+          coursePrice: payload.coursePrice,
+          courseCategory: payload.courseCategory,
+          courseVideoPath: payload.courseVideoPath,
+          courseIngredientPrice: payload.courseIngredientPrice,
+          courseImage: payload.courseImage,
+          courseChefId: chefId,
         },
       });
+
       return {
         status: HttpStatus.CREATED,
         message: 'Course uploaded successfully',
       };
     } catch (e) {
+      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
           throw {

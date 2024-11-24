@@ -7,7 +7,6 @@ import {
   HttpStatus,
   Logger,
   NotFoundException,
-  Param,
   Patch,
   Post,
   Headers,
@@ -58,7 +57,6 @@ export class ChefController {
       if (profiles.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(profiles.message);
       }
-
       return new Observable((observer) => {
         observer.next(profiles);
         observer.complete();
@@ -70,14 +68,8 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Post('signup')
-  async signUpChef(
-    @Headers('authorization') token: string,
-    @Body() payload: any,
-  ): Promise<Observable<any>> {
+  async signUpChef(@Body() payload: any): Promise<Observable<any>> {
     try {
-      this.jwtService.verify(token, {
-        secret: process.env.JWT_SECRET,
-      });
       const signUp = await this.ChefService.postSignUpChef(payload);
       if (signUp.status === HttpStatus.CONFLICT) {
         throw new ConflictException(signUp.message);
@@ -93,14 +85,8 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Post('login')
-  async loginChef(
-    @Headers('authorization') token: string,
-    @Body() payload: any,
-  ): Promise<Observable<any>> {
+  async loginChef(@Body() payload: any): Promise<Observable<any>> {
     try {
-      this.jwtService.verify(token, {
-        secret: process.env.JWT_SECRET,
-      });
       const login = await this.ChefService.postLoginChef(payload);
       if (login.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(login.message);
@@ -141,7 +127,7 @@ export class ChefController {
   }
 
   @ApiTags('Chef')
-  @Post('upload/:id')
+  @Post('upload')
   async uploadCourseVideo(
     @Headers('authorization') token: string,
     @Body() payload,
@@ -150,6 +136,7 @@ export class ChefController {
       const jwtPayload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
       });
+      console.log(jwtPayload);
       const upload = await this.ChefService.uploadCourseVideo(
         jwtPayload.chefId,
         payload,

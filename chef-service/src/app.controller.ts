@@ -5,11 +5,10 @@ import { EventPattern } from '@nestjs/microservices';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
-  @EventPattern('chef')
   @EventPattern('chef/signup')
-  async postSignUpChef(@Body() body: any[]) {
+  async postSignUpChef(payload): Promise<any> {
     try {
-      const data = await this.appService.postSignUpChef(body);
+      const data = await this.appService.postSignUpChef(payload[0]);
       return data;
     } catch (error) {
       return error;
@@ -57,11 +56,11 @@ export class AppController {
   }
 
   @EventPattern('chef/uploadCourseVideo')
-  async uploadCourseVideo(@Body() body): Promise<any> {
+  async uploadCourseVideo(payload): Promise<any> {
     try {
       const data = await this.appService.uploadCourseVideo(
-        body.id,
-        body.payload,
+        payload.chefId,
+        payload.payload[0],
       );
       return data;
     } catch (error) {

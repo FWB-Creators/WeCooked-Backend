@@ -23,7 +23,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         where: {
           enrollUserId: payload.userId,
         },
-        select: {
+        include: {
           Course: {
             select: {
               courseId: true,
@@ -33,6 +33,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
               courseImage: true,
               courseChefId: true,
               courseCategory: true,
+              courseIngredientPrice: true,
             },
           },
         },

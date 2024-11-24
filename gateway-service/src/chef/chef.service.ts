@@ -65,10 +65,10 @@ export class ChefService {
     }
   }
 
-  async uploadCourseVideo(id: number, payload: any): Promise<any> {
+  async uploadCourseVideo(chefId: number, payload: any): Promise<any> {
     try {
       const result = await lastValueFrom(
-        this.chefClient.send('chef/uploadCourseVideo', { id, payload }),
+        this.chefClient.send('chef/uploadCourseVideo', { chefId, payload }),
       );
       return result;
     } catch (error) {
