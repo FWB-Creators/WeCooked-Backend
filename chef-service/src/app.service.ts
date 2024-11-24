@@ -179,18 +179,18 @@ export class AppService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async updateProfileChef(body: any): Promise<any> {
+  async updateProfileChef(payload: any): Promise<any> {
     const updateData: any = {};
     // Dynamically add fields to updateData based on keys in body.body[0]
-    Object.keys(body.body[0]).forEach((key) => {
-      if (body.body[0][key] !== undefined) {
-        updateData[key] = body.body[0][key];
+    Object.keys(payload.payload[0]).forEach((key) => {
+      if (payload.payload[0][key] !== undefined) {
+        updateData[key] = payload.payload[0][key];
       }
     });
     try {
       await this.chef.update({
         where: {
-          chefId: body.id,
+          chefId: payload.chefId,
         },
         data: updateData,
       });
@@ -199,6 +199,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         message: 'Chef updated successfully',
       };
     } catch (e) {
+      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw {

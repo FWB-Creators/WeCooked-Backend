@@ -54,10 +54,10 @@ export class ChefService {
     }
   }
 
-  async updateProfileChef(body: ChefModel, id: number): Promise<any> {
+  async updateProfileChef(payload: ChefModel, chefId: number): Promise<any> {
     try {
       const result = await lastValueFrom(
-        this.chefClient.send('chef/updateProfile', { body, id }),
+        this.chefClient.send('chef/updateProfile', { payload, chefId }),
       );
       return result;
     } catch (error) {
