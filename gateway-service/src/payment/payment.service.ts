@@ -1,12 +1,17 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { CreatePaymentForCourseRequestBody, CreatePaymentForWorkshopRequestBody } from './dto/payment-reqbody.dto';
+import {
+  CreatePaymentForCourseRequestBody,
+  CreatePaymentForWorkshopRequestBody,
+  PaymentSuccessRequestBody,
+} from './dto/payment-reqbody.dto';
 import {
   CreatePaymentForCourseEventMsg,
   CreatePaymentForCourseEventResponse,
   CreatePaymentForWorkshopEventMsg,
   CreatePaymentForWorkshopEventResponse,
+  PaymentSuccessEventMsg,
 } from '@lib/src/payment/event-msg.dto';
 import { BasicResponse } from '@lib/src/payment/event-msg.dto';
 
@@ -64,6 +69,28 @@ export class PaymentService {
             createPaymentForCourseEventMsg,
           ),
         );
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
+  }
+
+  async paymentSuccess(paymentSuccessRequestBody: PaymentSuccessRequestBody) {
+    try {
+      const paymentSuccessEventMsg: PaymentSuccessEventMsg = {
+        orderId: paymentSuccessRequestBody.orderId,
+      };
+      const result: BasicResponse = await lastValueFrom(
+        this.paymentClient.send(
+          'payment/paymentSuccess',
+          paymentSuccessEventMsg,
+        ),
+      );
       return result;
     } catch (error) {
       this.logger.error('Internal Server Error:', error);

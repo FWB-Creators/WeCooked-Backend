@@ -12,6 +12,7 @@ import { PaymentService } from './payment.service';
 import {
   CreatePaymentForCourseRequestBody,
   CreatePaymentForWorkshopRequestBody,
+  PaymentSuccessRequestBody,
 } from './dto/payment-reqbody.dto';
 import {
   CreatePaymentForCourseEventResponse,
@@ -86,6 +87,21 @@ export class PaymentController {
       } else {
         return result;
       }
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      throw error;
+    }
+  }
+
+  @Post('paymentSuccess')
+  async paymentSuccess(
+    @Body() paymentSuccessRequestBody: PaymentSuccessRequestBody,
+  ) {
+    try {
+      const result: BasicResponse = await this.paymentService.paymentSuccess(
+        paymentSuccessRequestBody,
+      );
+      return result;
     } catch (error) {
       this.logger.error('Internal Server Error:', error);
       throw error;

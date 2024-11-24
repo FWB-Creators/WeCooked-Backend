@@ -7,6 +7,7 @@ import {
   CreatePaymentForCourseEventResponse,
   CreatePaymentForWorkshopEventMsg,
   CreatePaymentForWorkshopEventResponse,
+  PaymentSuccessEventMsg,
 } from '@lib/src/payment/event-msg.dto';
 
 @Controller()
@@ -36,6 +37,22 @@ export class AppController {
   ): Promise<CreatePaymentForWorkshopEventResponse | BasicResponse> {
     try {
       return await this.appService.createCheckoutSessionForWorkshop(payload);
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error',
+      };
+      return Promise.reject(response);
+    }
+  }
+
+  @EventPattern('payment/paymentSuccess')
+  async paymentSuccess(
+    payload: PaymentSuccessEventMsg,
+  ): Promise<BasicResponse> {
+    try {
+      return await this.appService.paymentSuccess(payload);
     } catch (error) {
       this.logger.error('Internal Server Error:', error);
       const response: BasicResponse = {

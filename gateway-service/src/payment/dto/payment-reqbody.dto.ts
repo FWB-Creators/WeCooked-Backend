@@ -7,3 +7,7 @@ export class CreatePaymentForWorkshopRequestBody {
   workshopId: number;
   isWithIngredient: boolean;
 }
+
+export class PaymentSuccessRequestBody {
+  orderId: number;
+}

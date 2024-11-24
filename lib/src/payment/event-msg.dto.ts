@@ -26,3 +26,7 @@ export class CreatePaymentForWorkshopEventResponse {
     message: string;
     checkoutUrl: string;
 }
+
+export class PaymentSuccessEventMsg {
+    orderId: number;
+}

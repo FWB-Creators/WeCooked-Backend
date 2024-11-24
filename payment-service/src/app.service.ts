@@ -6,6 +6,7 @@ import {
   CreatePaymentForCourseEventMsg,
   CreatePaymentForCourseEventResponse,
   CreatePaymentForWorkshopEventMsg,
+  PaymentSuccessEventMsg,
 } from '@lib/src/payment/event-msg.dto';
 
 @Injectable()
@@ -158,6 +159,45 @@ export class AppService extends PrismaClient implements OnModuleInit {
         checkoutUrl: session.url,
       };
       return result;
+    } catch (error) {
+      this.logger.error(error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error',
+      };
+      return response;
+    }
+  }
+
+  async paymentSuccess(
+    paymentSuccessEventMsg: PaymentSuccessEventMsg,
+  ): Promise<BasicResponse> {
+    try {
+      const order = await this.order.findUnique({
+        where: {
+          orderId: paymentSuccessEventMsg.orderId,
+        },
+      });
+      if (!order) {
+        const response: BasicResponse = {
+          status: 404,
+          message: 'Order not found',
+        };
+        return response;
+      }
+      await this.order.update({
+        where: {
+          orderId: order.orderId,
+        },
+        data: {
+          orderStatus: 'completed',
+        },
+      });
+      const response: BasicResponse = {
+        status: 200,
+        message: 'Payment success',
+      };
+      return response;
     } catch (error) {
       this.logger.error(error);
       const response: BasicResponse = {
