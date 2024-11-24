@@ -131,12 +131,12 @@ export class AppService extends PrismaClient implements OnModuleInit {
             expiresIn: '1h',
             secret: process.env.JWT_SECRET,
           }),
-          userData: Object.keys(result).reduce((acc, key) => {
-            if (key !== 'password') {
-              acc[key] = result[key];
-            }
-            return acc;
-          }, {}),
+          // userData: Object.keys(result).reduce((acc, key) => {
+          //   if (key !== 'password') {
+          //     acc[key] = result[key];
+          //   }
+          //   return acc;
+          // }, {}),
           status: HttpStatus.OK,
           message: 'User logged in successfully',
         };
@@ -229,7 +229,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
         };
         return response;
       }
-      console.log(payload);
       const course = await this.course.findUnique({
         where: {
           courseId: Number(payload.course.courseId),
