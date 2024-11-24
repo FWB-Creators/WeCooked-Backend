@@ -65,4 +65,39 @@ export class AppService extends PrismaClient implements OnModuleInit {
       throw error;
     }
   }
+
+  async updateCourseDetails(payload): Promise<{
+    status: HttpStatus;
+    message: string;
+  }> {
+    try {
+      const updateData = {};
+      Object.keys(payload.payload[0]).forEach((key) => {
+        if (payload.payload[0][key] !== undefined) {
+          updateData[key] = payload.payload[0][key];
+        }
+      });
+      await this.course.update({
+        where: {
+          courseId: payload.payload[0].courseId,
+        },
+        data: updateData,
+      });
+      return {
+        status: HttpStatus.OK,
+        message: 'Course updated successfully',
+      };
+    } catch (e) {
+      console.log(e);
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw {
+            status: HttpStatus.NOT_FOUND,
+            message: 'Course not found',
+          };
+        }
+      }
+      throw e;
+    }
+  }
 }

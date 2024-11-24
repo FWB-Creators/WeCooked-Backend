@@ -19,4 +19,17 @@ export class AppController {
       return error;
     }
   }
+
+  @EventPattern('chef/updateCourseDetails')
+  async updateCourseDetails(payload): Promise<{
+    status: HttpStatus;
+    message: string;
+  }> {
+    try {
+      const data = await this.appService.updateCourseDetails(payload);
+      return data;
+    } catch (error) {
+      return error;
+    }
+  }
 }
