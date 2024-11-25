@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Prisma, PrismaClient } from '.prisma/client';
+import { CourseUpdateEventMsg } from '../../lib/src/video/event.msg.dto';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -66,20 +67,20 @@ export class AppService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async updateCourseDetails(payload): Promise<{
+  async updateCourseDetails(payload: CourseUpdateEventMsg): Promise<{
     status: HttpStatus;
     message: string;
   }> {
     try {
       const updateData = {};
-      Object.keys(payload.payload[0]).forEach((key) => {
-        if (payload.payload[0][key] !== undefined) {
-          updateData[key] = payload.payload[0][key];
+      Object.keys(payload).forEach((key) => {
+        if (payload[key] !== undefined && key !== 'courseId') {
+          updateData[key] = payload[key];
         }
       });
       await this.course.update({
         where: {
-          courseId: payload.payload[0].courseId,
+          courseId: payload.courseId,
         },
         data: updateData,
       });

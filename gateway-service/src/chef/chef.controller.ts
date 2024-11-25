@@ -15,6 +15,13 @@ import { ChefService } from './chef.service';
 import { Observable } from 'rxjs';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
+import {
+  ChefLoginRequestBody,
+  ChefProfileUpdateRequestBody,
+  ChefSignUpRequestBody,
+  CourseUpdateRequestBody,
+  CourseUploadRequestBody,
+} from './dto/chef-reqbody.dto';
 
 @Controller('chef')
 export class ChefController {
@@ -25,7 +32,7 @@ export class ChefController {
   logger = new Logger('Gateway Service');
 
   @ApiTags('Chef')
-  @Get('profile/:id?')
+  @Get('profile')
   async profileChef(@Headers('authorization') token: string): Promise<any> {
     try {
       const jwtPayload = this.jwtService.verify(token, {
@@ -68,7 +75,9 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Post('signup')
-  async signUpChef(@Body() payload: any): Promise<Observable<any>> {
+  async signUpChef(
+    @Body() payload: ChefSignUpRequestBody,
+  ): Promise<Observable<any>> {
     try {
       const signUp = await this.ChefService.postSignUpChef(payload);
       if (signUp.status === HttpStatus.CONFLICT) {
@@ -85,7 +94,9 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Post('login')
-  async loginChef(@Body() payload: any): Promise<Observable<any>> {
+  async loginChef(
+    @Body() payload: ChefLoginRequestBody,
+  ): Promise<Observable<any>> {
     try {
       const login = await this.ChefService.postLoginChef(payload);
       if (login.status === HttpStatus.NOT_FOUND) {
@@ -104,7 +115,7 @@ export class ChefController {
   @Patch('update')
   async updateProfileChef(
     @Headers('authorization') token: string,
-    @Body() payload: any,
+    @Body() payload: ChefProfileUpdateRequestBody,
   ): Promise<Observable<any>> {
     try {
       const jwtPayload = this.jwtService.verify(token, {
@@ -130,13 +141,12 @@ export class ChefController {
   @Post('upload')
   async uploadCourseVideo(
     @Headers('authorization') token: string,
-    @Body() payload,
+    @Body() payload: CourseUploadRequestBody,
   ): Promise<Observable<any>> {
     try {
       const jwtPayload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
       });
-      console.log(jwtPayload);
       const upload = await this.ChefService.uploadCourseVideo(
         jwtPayload.chefId,
         payload,
@@ -159,7 +169,7 @@ export class ChefController {
   @Patch('updatecoursedetails')
   async updateCourseDetails(
     @Headers('authorization') token: string,
-    @Body() payload: any,
+    @Body() payload: CourseUpdateRequestBody,
   ): Promise<Observable<any>> {
     try {
       const jwtPayload = this.jwtService.verify(token, {
