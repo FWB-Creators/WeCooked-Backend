@@ -1,6 +1,7 @@
 import { Controller, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern } from '@nestjs/microservices';
+import { CourseUpdateEventMsg } from '../../lib/src/video/event.msg.dto';
 
 @Controller()
 export class AppController {
@@ -21,7 +22,7 @@ export class AppController {
   }
 
   @EventPattern('chef/updateCourseDetails')
-  async updateCourseDetails(payload): Promise<{
+  async updateCourseDetails(payload: CourseUpdateEventMsg): Promise<{
     status: HttpStatus;
     message: string;
   }> {

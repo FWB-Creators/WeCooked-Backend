@@ -1,7 +1,12 @@
 import { Injectable, OnModuleInit, Logger, HttpStatus } from '@nestjs/common';
-import { PrismaClient, Prisma } from '../node_modules/.prisma/client';
-import { ChefLoginModel } from './model/chef.model.dto';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { ChefProfileUpdateEventMsg } from '../../lib/src/chef/event-msg.dto';
+import {
+  ChefLoginEventMsg,
+  ChefSignUpEventMsg,
+  CourseUploadEventMsg,
+} from '@lib/src/chef/event-msg.dto';
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
   constructor(private jwtService: JwtService) {
@@ -18,7 +23,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async postSignUpChef(payload: any): Promise<any> {
+  async postSignUpChef(payload: ChefSignUpEventMsg): Promise<any> {
     try {
       const chef = await this.chef.create({
         data: {
@@ -51,18 +56,18 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for unique constraint violation
         if (e.code === 'P2002') {
-          throw {
+          return {
             status: HttpStatus.CONFLICT,
             message: 'Email already registered',
           };
         }
       }
-      throw e;
+      return e;
     }
   }
 
-  async postLoginChef(body: ChefLoginModel[]): Promise<any> {
-    const { chefEmail, chefPassword }: ChefLoginModel = body[0];
+  async postLoginChef(payload: ChefLoginEventMsg): Promise<any> {
+    const { chefEmail, chefPassword } = payload[0];
     try {
       const chef = await this.chef.findUnique({
         where: {
@@ -92,13 +97,13 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          throw {
+          return {
             status: HttpStatus.NOT_FOUND,
             message: 'Incorrect email or password',
           };
         }
       }
-      throw e;
+      return e;
     }
   }
 
@@ -138,14 +143,14 @@ export class AppService extends PrismaClient implements OnModuleInit {
         // Prisma error code for record not found
         console.log(e);
         if (e.code === 'P2025') {
-          throw {
+          return {
             status: HttpStatus.NOT_FOUND,
             message: 'Chef not found',
             data: [],
           };
         }
       }
-      throw e;
+      return e;
     }
   }
 
@@ -168,23 +173,22 @@ export class AppService extends PrismaClient implements OnModuleInit {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Prisma error code for record not found
         if (e.code === 'P2025') {
-          throw {
+          return {
             status: HttpStatus.NOT_FOUND,
             message: 'No chefs found',
             data: [],
           };
         }
       }
-      throw e;
+      return e;
     }
   }
 
-  async updateProfileChef(payload: any): Promise<any> {
-    const updateData: any = {};
-    // Dynamically add fields to updateData based on keys in body.body[0]
-    Object.keys(payload.payload[0]).forEach((key) => {
-      if (payload.payload[0][key] !== undefined) {
-        updateData[key] = payload.payload[0][key];
+  async updateProfileChef(payload: ChefProfileUpdateEventMsg): Promise<any> {
+    const updateData: ChefProfileUpdateEventMsg = {};
+    Object.keys(payload).forEach((key) => {
+      if (payload[key] !== undefined) {
+        updateData[key] = payload[key];
       }
     });
     try {
@@ -199,22 +203,23 @@ export class AppService extends PrismaClient implements OnModuleInit {
         message: 'Chef updated successfully',
       };
     } catch (e) {
-      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw {
+          return {
             status: HttpStatus.NOT_FOUND,
             message: 'Chef not found',
           };
         }
       }
-      throw e;
+      return e;
     }
   }
 
-  async uploadCourseVideo(chefId: number, payload: any): Promise<any> {
+  async uploadCourseVideo(
+    chefId: number,
+    payload: CourseUploadEventMsg,
+  ): Promise<any> {
     try {
-      console.log(chefId, payload);
       await this.course.create({
         data: {
           courseTitle: payload.courseTitle,
@@ -227,27 +232,25 @@ export class AppService extends PrismaClient implements OnModuleInit {
           courseChefId: chefId,
         },
       });
-
       return {
         status: HttpStatus.CREATED,
         message: 'Course uploaded successfully',
       };
     } catch (e) {
-      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw {
+          return {
             status: HttpStatus.CONFLICT,
             message: 'Course already uploaded',
           };
         } else if (e.code === 'P2003') {
-          throw {
+          return {
             status: HttpStatus.BAD_REQUEST,
             message: 'Cannot upload course',
           };
         }
       }
-      throw e;
+      return e;
     }
   }
 }

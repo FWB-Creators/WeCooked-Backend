@@ -1,14 +1,22 @@
-import { Body, Controller } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern } from '@nestjs/microservices';
+import {
+  ChefProfileUpdateEventMsg,
+  CourseUploadEventMsg,
+} from '../../lib/src/chef/event-msg.dto';
+import {
+  ChefLoginEventMsg,
+  ChefSignUpEventMsg,
+} from '../../lib/src/chef/event-msg.dto';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
   @EventPattern('chef/signup')
-  async postSignUpChef(payload): Promise<any> {
+  async postSignUpChef(payload: ChefSignUpEventMsg): Promise<any> {
     try {
-      const data = await this.appService.postSignUpChef(payload[0]);
+      const data = await this.appService.postSignUpChef(payload);
       return data;
     } catch (error) {
       return error;
@@ -16,9 +24,9 @@ export class AppController {
   }
 
   @EventPattern('chef/login')
-  async postLoginChef(@Body() body: any[]): Promise<any> {
+  async postLoginChef(payload: ChefLoginEventMsg): Promise<any> {
     try {
-      const data = await this.appService.postLoginChef(body);
+      const data = await this.appService.postLoginChef(payload);
       return data;
     } catch (error) {
       return error;
@@ -26,7 +34,7 @@ export class AppController {
   }
 
   @EventPattern('chef/profile')
-  async getProfileChef(@Body() id: number): Promise<any> {
+  async getProfileChef(id: number): Promise<any> {
     try {
       const data = await this.appService.getProfileChef(id);
       return data;
@@ -46,7 +54,7 @@ export class AppController {
   }
 
   @EventPattern('chef/updateProfile')
-  async updateProfileChef(payload: any): Promise<any> {
+  async updateProfileChef(payload: ChefProfileUpdateEventMsg): Promise<any> {
     try {
       const data = await this.appService.updateProfileChef(payload);
       return data;
@@ -56,11 +64,11 @@ export class AppController {
   }
 
   @EventPattern('chef/uploadCourseVideo')
-  async uploadCourseVideo(payload): Promise<any> {
+  async uploadCourseVideo(payload: CourseUploadEventMsg): Promise<any> {
     try {
       const data = await this.appService.uploadCourseVideo(
         payload.chefId,
-        payload.payload[0],
+        payload,
       );
       return data;
     } catch (error) {
