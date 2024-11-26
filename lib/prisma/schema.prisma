@@ -22,7 +22,6 @@ generator workshopServiceClient {
   provider = "prisma-client-js"
   output   = "../../workshop-service/node_modules/@prisma/client"
 }
-
 generator videoServiceClient {
   provider = "prisma-client-js"
   output   = "../../video-service/node_modules/.prisma/client"
@@ -153,10 +152,10 @@ model order {
 }
 
 model tutorialvideo {
-  tutorialId        Int       @id @default(autoincrement())
-  tutorialVideo     String
-  tutorialTitle     String 
-  listofTutorial        listofTutorial[]
+  tutorialId     Int              @id @default(autoincrement())
+  tutorialVideo  String
+  tutorialTitle  String
+  listofTutorial listofTutorial[]
 }
 
 model listofTutorial {
