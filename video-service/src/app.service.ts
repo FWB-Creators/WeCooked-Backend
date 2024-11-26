@@ -3,6 +3,8 @@ import { Prisma, PrismaClient } from '.prisma/client';
 import {
   BasicResponse,
   CourseUpdateEventMsg,
+  SignUpChefResponse,
+  UserCourseVideoEventMsg,
 } from '../../lib/src/video/event.msg.dto';
 
 @Injectable()
@@ -17,12 +19,11 @@ export class AppService extends PrismaClient implements OnModuleInit {
       throw error;
     }
   }
-  async getCourseVideos(payload): Promise<{
-    status: HttpStatus;
-    message: string;
-    data: any[];
-  }> {
+  async getCourseVideos(
+    payload: UserCourseVideoEventMsg,
+  ): Promise<SignUpChefResponse> {
     try {
+      console.log(payload);
       const enrollments = await this.enroll.findMany({
         where: {
           enrollUserId: payload.userId,
@@ -45,7 +46,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       return {
         status: HttpStatus.OK,
         message: 'Videos retrieved successfully',
-        data: enrollments.map((enrollment) => {
+        data: enrollments.map((enrollment: any) => {
           return {
             courseId: enrollment.Course.courseId,
             courseTitle: enrollment.Course.courseTitle,

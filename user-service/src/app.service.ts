@@ -11,6 +11,7 @@ import {
 } from '@lib/src/user/event-msg.dto';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { UserCourseVideoEventMsg } from '@lib/src/video/event.msg.dto';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -209,8 +210,9 @@ export class AppService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async enrollCourse(payload: any): Promise<any> {
+  async enrollCourse(payload: UserCourseVideoEventMsg): Promise<BasicResponse> {
     try {
+      console.log(payload);
       const result = await this.user.findUnique({
         where: {
           userId: payload.userId,
@@ -225,7 +227,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       }
       const course = await this.course.findUnique({
         where: {
-          courseId: Number(payload.course.courseId),
+          courseId: Number(payload.courseId),
         },
       });
       if (!course) {
@@ -241,7 +243,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
           enrollCourseId: course.courseId,
         },
       });
-      // const enroll = false;
       if (enroll) {
         const response: BasicResponse = {
           status: HttpStatus.CREATED,
@@ -271,13 +272,13 @@ export class AppService extends PrismaClient implements OnModuleInit {
       }
     }
   }
-  async getCourseVideo(userId: number, payload: any): Promise<any> {
+  async getCourseVideo(userId: number, courseId: any): Promise<any> {
     try {
-      console.log('getCourseVideo', userId, payload);
+      console.log('getCourseVideo', userId, courseId);
       const checkUserPermission = await this.enroll.findFirst({
         where: {
           enrollUserId: userId,
-          enrollCourseId: payload.courseId,
+          enrollCourseId: courseId,
         },
       });
       if (!checkUserPermission) {
@@ -288,7 +289,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
       }
       const result = await this.course.findUnique({
         where: {
-          courseId: payload.courseId,
+          courseId: courseId,
         },
       });
       return {
