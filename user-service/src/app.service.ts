@@ -68,7 +68,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
         data: {
           userEmail: payload.email,
           password: payload.password,
-          // username: `${payload.firstName}_${payload.lastName}_${Date.now()}`,
           name: payload.firstName,
           surname: payload.lastName,
           userProfile: 'https://via.placeholder.com/150',
@@ -97,9 +96,11 @@ export class AppService extends PrismaClient implements OnModuleInit {
     } catch (error) {
       this.logger.error('Failed to connect to the database:', error);
       if ((error as any)?.code === 'P2002') {
+        console.log(error);
+
         const response: BasicResponse = {
           status: HttpStatus.CONFLICT,
-          message: 'Email already registered',
+          message: 'DB Constraint Failed',
         };
         return response;
       } else {
@@ -179,10 +180,9 @@ export class AppService extends PrismaClient implements OnModuleInit {
           name: payload.name,
           surname: payload.surname,
           userProfile: payload.userProfile,
-          // sex: payload.sex,
+          Sex: payload.sex,
           password: payload.password,
-          // userPhone: parseInt(payload.userPhone),
-          // userPayment: parseInt(payload.userPayment),
+          userPhone: payload.userPhone,
           userAddress: payload.userAddress,
         },
       });
