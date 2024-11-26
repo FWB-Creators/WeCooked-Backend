@@ -13,6 +13,9 @@ async function bootstrap() {
     .setDescription('The WeCooked API description')
     .setVersion('1.0')
     .build();
+  app.enableCors({
+    origin: '*',
+  });
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
   const documentFactory = () => SwaggerModule.createDocument(app, config);

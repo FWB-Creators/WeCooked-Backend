@@ -95,9 +95,11 @@ export class AppService extends PrismaClient implements OnModuleInit {
     } catch (error) {
       this.logger.error('Failed to connect to the database:', error);
       if ((error as any)?.code === 'P2002') {
+        console.log(error);
+
         const response: BasicResponse = {
           status: HttpStatus.CONFLICT,
-          message: 'Email already registered',
+          message: 'DB Constraint Failed',
         };
         return response;
       } else {
