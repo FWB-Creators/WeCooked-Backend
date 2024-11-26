@@ -15,6 +15,7 @@ import {
   UserSignUpRequestBody,
   UserLoginRequestBody,
   ProfileUpdateRequestBody,
+  RatingCourseRequestBody,
 } from './dto/user-reqbody.dto';
 import {
   BasicResponse,
@@ -163,6 +164,22 @@ export class UserController {
         secret: process.env.JWT_SECRET,
       });
       return this.userService.getCourseVideo(jwtPayload.userId, payload);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @ApiTags('User')
+  @Post('ratingcourse')
+  async ratingCourse(
+    @Headers('authorization') token: string,
+    @Body() payload: RatingCourseRequestBody,
+  ): Promise<BasicResponse> {
+    try {
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      return this.userService.ratingCourse(jwtPayload.userId, payload);
     } catch (error) {
       throw error;
     }

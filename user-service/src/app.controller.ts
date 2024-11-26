@@ -5,6 +5,7 @@ import {
   BasicResponse,
   ProfileUpdateEventMsg,
   ProfileUpdateEventResponse,
+  RatingCourseEventMsg,
   UserLoginEventMsg,
   UserLoginEventResponse,
   UserSignUpEventMsg,
@@ -96,6 +97,22 @@ export class AppController {
     try {
       console.log(payload);
       return this.appService.getCourseVideo(payload.userId, payload.courseId);
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error',
+      };
+      return Promise.reject(response);
+    }
+  }
+
+  @EventPattern('user/ratingCourse')
+  async postRatingCourse(
+    payload: RatingCourseEventMsg,
+  ): Promise<BasicResponse> {
+    try {
+      return this.appService.ratingCourse(payload);
     } catch (error) {
       this.logger.error('Internal Server Error:', error);
       const response: BasicResponse = {

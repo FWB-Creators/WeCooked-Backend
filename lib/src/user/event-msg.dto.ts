@@ -75,3 +75,10 @@ export class CourseVideoEventResponse {
     isCourseCompleted: boolean
   }
 }
+
+export class RatingCourseEventMsg {
+  userId: number
+  courseId: number
+  rating: number
+  reviewDetail: string
+}

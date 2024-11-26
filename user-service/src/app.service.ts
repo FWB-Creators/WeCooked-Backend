@@ -5,6 +5,7 @@ import {
   GetUserEventResponse,
   ProfileUpdateEventMsg,
   ProfileUpdateEventResponse,
+  RatingCourseEventMsg,
   UserLoginEventMsg,
   UserLoginEventResponse,
   UserSignUpEventMsg,
@@ -337,6 +338,65 @@ export class AppService extends PrismaClient implements OnModuleInit {
         };
       }
       throw error;
+    }
+  }
+
+  async ratingCourse(payload: RatingCourseEventMsg): Promise<BasicResponse> {
+    try {
+      const userEnrollment = await this.enroll.findFirst({
+        where: {
+          enrollUserId: payload.userId,
+          enrollCourseId: payload.courseId,
+        },
+      });
+      if (!userEnrollment) {
+        return {
+          status: HttpStatus.FORBIDDEN,
+          message: 'User is not enrolled in this course',
+        };
+      }
+      const course = await this.course.findUnique({
+        where: {
+          courseId: payload.courseId,
+        },
+      });
+      if (!course) {
+        return {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Course not found',
+        };
+      }
+      const existingReview = await this.review.findFirst({
+        where: {
+          reviewCourseId: payload.courseId,
+          reviewUserId: Number(payload.userId),
+        },
+      });
+      if (existingReview) {
+        return {
+          status: HttpStatus.CONFLICT,
+          message: 'User has already reviewed this course',
+        };
+      }
+      await this.review.create({
+        data: {
+          reviewRating: payload.rating,
+          reviewCourseId: payload.courseId,
+          reviewUserId: Number(payload.userId),
+          reviewDetail: payload.reviewDetail,
+          reviewTimestamp: new Date(),
+        },
+      });
+      return {
+        status: HttpStatus.OK,
+        message: 'Course rated successfully',
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An unexpected error occurred',
+      };
     }
   }
 }

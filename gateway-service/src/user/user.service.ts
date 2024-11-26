@@ -3,6 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import {
   ProfileUpdateRequestBody,
+  RatingCourseRequestBody,
   UserLoginRequestBody,
   UserSignUpRequestBody,
 } from './dto/user-reqbody.dto';
@@ -14,6 +15,7 @@ import {
   BasicResponse,
   UserLoginEventResponse,
   ProfileUpdateEventResponse,
+  RatingCourseEventMsg,
 } from '@lib/src/user/event-msg.dto';
 import { SignUpChefResponse } from '@lib/src/video/event.msg.dto';
 
@@ -171,6 +173,30 @@ export class UserService {
       };
       const result = await lastValueFrom(
         this.videoClient.send('user/getCourseVideo', postCourseVideoMsg),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
+  }
+
+  async ratingCourse(
+    userId: number,
+    payload: RatingCourseRequestBody,
+  ): Promise<BasicResponse> {
+    try {
+      const postRatingMsg: RatingCourseEventMsg = {
+        userId: userId,
+        ...payload[0],
+      };
+
+      const result = await lastValueFrom(
+        this.userClient.send('user/ratingCourse', postRatingMsg),
       );
       return result;
     } catch (error) {

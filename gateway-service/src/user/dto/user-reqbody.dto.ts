@@ -20,3 +20,9 @@ export class ProfileUpdateRequestBody {
   userPayment: string;
   userAddress: string;
 }
+
+export class RatingCourseRequestBody {
+  courseId: number;
+  rating: number;
+  reviewDetail: string;
+}
