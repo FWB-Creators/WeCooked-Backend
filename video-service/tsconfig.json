@@ -16,13 +16,6 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
-    "rootDir": "../",
-    "paths": {
-      "@lib/*": ["../lib/*"]
-    },
-    "esModuleInterop": true,
-    "strict": true
-  },
-  "include": ["src/**/*", "../lib/**/*"]
+    "noFallthroughCasesInSwitch": false
+  }
 }

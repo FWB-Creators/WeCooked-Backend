@@ -10,6 +10,7 @@ import {
   UserSignUpEventMsg,
   UserSignUpEventResponse,
 } from '@lib/src/user/event-msg.dto';
+import { UserCourseVideoEventMsg } from '@lib/src/video/event.msg.dto';
 
 @Controller()
 export class AppController {
@@ -46,6 +47,7 @@ export class AppController {
     payload: UserLoginEventMsg,
   ): Promise<UserLoginEventResponse | BasicResponse> {
     try {
+      console.log('login');
       return this.appService.loginUser(payload);
     } catch (error) {
       this.logger.error('Internal Server Error:', error);
@@ -63,6 +65,37 @@ export class AppController {
   ): Promise<ProfileUpdateEventResponse | BasicResponse> {
     try {
       return this.appService.updateProfile(payload);
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error',
+      };
+      return Promise.reject(response);
+    }
+  }
+
+  @EventPattern('user/enrollCourse')
+  async postEnrollCourse(
+    payload: UserCourseVideoEventMsg,
+  ): Promise<BasicResponse> {
+    try {
+      return this.appService.enrollCourse(payload);
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error',
+      };
+      return Promise.reject(response);
+    }
+  }
+
+  @EventPattern('user/getCourseVideo')
+  async getCourseVideo(payload: any): Promise<any> {
+    try {
+      console.log(payload);
+      return this.appService.getCourseVideo(payload.userId, payload.courseId);
     } catch (error) {
       this.logger.error('Internal Server Error:', error);
       const response: BasicResponse = {

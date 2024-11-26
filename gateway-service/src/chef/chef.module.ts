@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
 import { JwtModule } from '@nestjs/jwt';
+import { ChefController } from './chef.controller';
+import { ChefService } from './chef.service';
 
 @Module({
   imports: [
@@ -11,7 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
     }),
     ClientsModule.register([
       {
-        name: 'USER_SERVICE',
+        name: 'CHEF_SERVICE',
         transport: Transport.NATS,
         options: {
           servers: ['nats://localhost:4222'],
@@ -26,7 +26,7 @@ import { JwtModule } from '@nestjs/jwt';
       },
     ]),
   ],
-  controllers: [UserController],
-  providers: [UserService],
+  controllers: [ChefController],
+  providers: [ChefService],
 })
-export class UserModule {}
+export class ChefModule {}

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
+import { VideoController } from './video.controller';
 import { JwtModule } from '@nestjs/jwt';
+import { VideoService } from './video.service';
 
 @Module({
   imports: [
@@ -10,13 +10,6 @@ import { JwtModule } from '@nestjs/jwt';
       secret: process.env.JWT_SECRET,
     }),
     ClientsModule.register([
-      {
-        name: 'USER_SERVICE',
-        transport: Transport.NATS,
-        options: {
-          servers: ['nats://localhost:4222'],
-        },
-      },
       {
         name: 'VIDEO_SERVICE',
         transport: Transport.NATS,
@@ -26,7 +19,7 @@ import { JwtModule } from '@nestjs/jwt';
       },
     ]),
   ],
-  controllers: [UserController],
-  providers: [UserService],
+  controllers: [VideoController],
+  providers: [VideoService],
 })
-export class UserModule {}
+export class VideoModule {}

@@ -18,13 +18,18 @@ generator paymentServiceClient {
   output   = "../../payment-service/node_modules/.prisma/client"
 }
 
+generator videoServiceClient {
+  provider = "prisma-client-js"
+  output   = "../../video-service/node_modules/.prisma/client"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Chef {
-  chefId         Int       @id @default(autoincrement())
+  chefId         Int    @id @default(autoincrement())
   chefName       String
   chefSurname    String
   chefBio        String
@@ -32,134 +37,139 @@ model Chef {
   chefExperience String
   chefImage      String
   chefSex        String
-  chefPayment    Int?
-  chefPhone      Int       @unique
-  chefEmail      String    @unique
+  chefPhone      String @unique
+  chefEmail      String @unique
   chefPassword   String
-  payment        Payment?  @relation(fields: [chefPayment], references: [paymentId])
-  courses        Course[]  @relation("ChefCourses")
-  groups         GroupID[] @relation("ChefGroups")
-  users          User[]
+
+  courses  Course[]   @relation("ChefCourses")
+  Workshop Workshop[] @relation("ChefWorkshop")
+  users    User[]
 }
 
 model Course {
-  courseId              Int          @id @default(autoincrement())
+  courseId              Int    @id @default(autoincrement())
   courseTitle           String
   courseDetail          String
   coursePrice           Int
   courseCategory        String
-  courseVideoId         Int?
-  courseChefId          Int?
+  courseVideoPath       String
+  courseChefId          Int
   courseIngredientPrice Int
-  courseDietary         String[]
   courseImage           String
-  video                 Video?       @relation(fields: [courseVideoId], references: [videoId])
-  chef                  Chef?        @relation("ChefCourses", fields: [courseChefId], references: [chefId])
-  reviews               Review[]
-  orders                Order[]
-  videoTools            VideoTools[]
+
+  chef           Chef?            @relation("ChefCourses", fields: [courseChefId], references: [chefId])
+  review         review[]
+  listofTutorial listofTutorial[]
+  timetracking   timetracking[]
+  Dietary        Dietary[]
+  Enroll         Enroll[]
 }
 
-model GroupID {
-  groupId                   Int      @id @default(autoincrement())
-  groupTitle                String
-  groupDetail               String
-  groupPrice                Float
-  groupNumberOfParticipants Int
-  groupDate                 DateTime
-  groupCategory             String
-  groupLinkZoom             String?  @unique
-  groupPicture              String?
-  groupChefId               Int?
-  groupIngredientPrice      Int?
-  groupDescription          String?
-  chef                      Chef?    @relation("ChefGroups", fields: [groupChefId], references: [chefId])
+model Dietary {
+  dietaryId       Int    @id @default(autoincrement())
+  dietaryName     String
+  dietaryCourseId Int
+
+  courseId Course? @relation(fields: [dietaryCourseId], references: [courseId])
 }
 
-model Payment {
-  paymentId  Int     @id @default(autoincrement())
-  cardNo     Int     @unique
-  cardHolder String
-  cvc        Int
-  expireDate String
-  users      User[]
-  chefs      Chef[]
-  orders     Order[]
+model Workshop {
+  workshopId                   Int      @id @default(autoincrement())
+  workshopTitle                String
+  workshopDetail               String
+  workshopPrice                Int
+  workshopIngredientDetail     String
+  workshopNumberofparticipants Int
+  workshopDate                 DateTime
+  workshopCategory             String
+  workshopLinkZoom             String   @unique
+  workshopPicture              String
+  workshopChefId               Int
+  workshopIngredientPrice      Int
+  workshopDescription          String
+
+  chef Chef? @relation("ChefWorkshop", fields: [workshopChefId], references: [chefId])
 }
 
 model User {
-  userId          Int      @id @default(autoincrement())
+  userId          Int     @id @default(autoincrement())
   name            String
   surname         String
   userAddress     String?
   userProfile     String?
-  userPayment     Int?
   favouriteChefId Int?
-  sex             String?
-  userEmail       String   @unique
-  userPhone       Int?     @unique
+  Sex             String?
+  userPhone       String? @unique
+  userEmail       String  @unique
   password        String
-  favChef         Chef?    @relation(fields: [favouriteChefId], references: [chefId])
-  payment         Payment? @relation(fields: [userPayment], references: [paymentId])
-  reviews         Review[]
-  orders          Order[]
+
+  favChef Chef?    @relation(fields: [favouriteChefId], references: [chefId])
+  review  review[]
+  order   order[]
+  Enroll  Enroll[]
 }
 
-model Video {
-  videoId    Int      @id @default(autoincrement())
-  videoPath  String
-  videoTitle String
-  videoDate  DateTime
-  courses    Course[]
+model Enroll {
+  enrollId         Int     @id @default(autoincrement())
+  enrollUserId     Int
+  enrollCourseId   Int
+  isCourseComplete Boolean @default(false)
+
+  UserId User?   @relation(fields: [enrollUserId], references: [userId])
+  Course Course? @relation(fields: [enrollCourseId], references: [courseId])
+
+  @@unique([enrollUserId, enrollCourseId])
 }
 
-model Review {
+model review {
   reviewId        Int      @id @default(autoincrement())
   reviewUserId    Int
   reviewRating    Int
   reviewDetail    String?
   reviewTimestamp DateTime
   reviewCourseId  Int
-  user            User?    @relation(fields: [reviewUserId], references: [userId])
-  course          Course?  @relation(fields: [reviewCourseId], references: [courseId])
+
+  userId   User?   @relation(fields: [reviewUserId], references: [userId])
+  courseId Course? @relation(fields: [reviewCourseId], references: [courseId])
 }
 
-model Order {
+model order {
   orderId              Int       @id @default(autoincrement())
   orderUserId          Int
-  orderCourseId        Int
-  orderPaymentId       Int
   orderDate            DateTime
-  orderFormat          String
+  orderFormat          String // workshop, course
+  orderStatus          String // pending 
   orderWithIngredient  Boolean   @default(false)
-  orderPrice           Float
+  orderPrice           Int
   orderDeliveryDate    DateTime?
-  orderDeliveryAddress DateTime?
-  course               Course?   @relation(fields: [orderCourseId], references: [courseId])
-  user                 User?     @relation(fields: [orderUserId], references: [userId])
-  payment              Payment?  @relation(fields: [orderPaymentId], references: [paymentId])
+  orderDeliveryAddress String?
+
+  userId User? @relation(fields: [orderUserId], references: [userId])
 }
 
-model TutorialVideo {
-  tutorialId    Int          @id @default(autoincrement())
-  tutorialVideo String
-  tutorialTitle String
-  videoTools    VideoTools[]
+model tutorialvideo {
+  tutorialId     Int              @id @default(autoincrement())
+  tutorialVideo  String
+  tutorialTitle  String
+  listofTutorial listofTutorial[]
 }
 
-model VideoTools {
-  videoToolsId         Int            @id @default(autoincrement())
-  videoToolsCourseId   Int
-  videoToolsTutorialId Int
-  videoToolsTimestamp  Int
-  course               Course?        @relation(fields: [videoToolsCourseId], references: [courseId])
-  tutorial             TutorialVideo? @relation(fields: [videoToolsTutorialId], references: [tutorialId])
+model listofTutorial {
+  Id         Int @id @default(autoincrement())
+  CourseId   Int
+  TutorialId Int
+  Timestamp  Int
+
+  couresId   Course?        @relation(fields: [CourseId], references: [courseId])
+  tutorialId tutorialvideo? @relation(fields: [TutorialId], references: [tutorialId])
 }
 
-model TimeTracking {
+model timetracking {
   timeId        Int     @id @default(autoincrement())
-  timeVideoId   Int
-  timeCountdown Int
-  timeTriggered Boolean @default(false)
-  timeStop      Int
+  timeCourseId  Int
+  timeCountdown Int // duration
+  timeTriggered Boolean @default(false) //stop or not
+  timePopup     Int // Timestamp
+
+  couresId Course? @relation(fields: [timeCourseId], references: [courseId])
 }

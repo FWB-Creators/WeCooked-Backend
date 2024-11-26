@@ -9,8 +9,9 @@ import {
   UserSignUpEventMsg,
   UserSignUpEventResponse,
 } from '@lib/src/user/event-msg.dto';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { UserCourseVideoEventMsg } from '@lib/src/video/event.msg.dto';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -67,7 +68,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         data: {
           userEmail: payload.email,
           password: payload.password,
-          username: `${payload.firstName}_${payload.lastName}_${Date.now()}`,
+          // username: `${payload.firstName}_${payload.lastName}_${Date.now()}`,
           name: payload.firstName,
           surname: payload.lastName,
           userProfile: 'https://via.placeholder.com/150',
@@ -76,11 +77,11 @@ export class AppService extends PrismaClient implements OnModuleInit {
       const jwtPayload = {
         userId: result.userId,
         userEmail: result.userEmail,
-        username: result.username,
+        // username: result.username,
       };
       const response: UserSignUpEventResponse = {
         token: this.jwtService.sign(jwtPayload, {
-          expiresIn: '1h',
+          expiresIn: '1w',
           secret: process.env.JWT_SECRET,
         }),
         userData: Object.keys(result).reduce((acc, key) => {
@@ -125,22 +126,16 @@ export class AppService extends PrismaClient implements OnModuleInit {
         const jwtPayload = {
           userId: result.userId,
           userEmail: result.userEmail,
-          username: result.username,
         };
         const response: UserLoginEventResponse = {
           token: this.jwtService.sign(jwtPayload, {
             expiresIn: '1h',
             secret: process.env.JWT_SECRET,
           }),
-          userData: Object.keys(result).reduce((acc, key) => {
-            if (key !== 'password') {
-              acc[key] = result[key];
-            }
-            return acc;
-          }, {}),
           status: HttpStatus.OK,
           message: 'User logged in successfully',
         };
+
         return response;
       } else {
         this.logger.error('User not found');
@@ -164,12 +159,12 @@ export class AppService extends PrismaClient implements OnModuleInit {
     payload: ProfileUpdateEventMsg,
   ): Promise<ProfileUpdateEventResponse | BasicResponse> {
     try {
-      const checkUser = await this.user.findUnique({
+      const videos = await this.user.findUnique({
         where: {
           userId: payload.userId,
         },
       });
-      if (!checkUser) {
+      if (!videos) {
         const response: BasicResponse = {
           status: HttpStatus.NOT_FOUND,
           message: 'User not found',
@@ -184,10 +179,10 @@ export class AppService extends PrismaClient implements OnModuleInit {
           name: payload.name,
           surname: payload.surname,
           userProfile: payload.userProfile,
-          sex: payload.sex,
+          // sex: payload.sex,
           password: payload.password,
-          userPhone: parseInt(payload.userPhone),
-          userPayment: parseInt(payload.userPayment),
+          // userPhone: parseInt(payload.userPhone),
+          // userPayment: parseInt(payload.userPayment),
           userAddress: payload.userAddress,
         },
       });
@@ -212,6 +207,104 @@ export class AppService extends PrismaClient implements OnModuleInit {
         message: 'Failed to connect to the database',
       };
       return response;
+    }
+  }
+
+  async enrollCourse(payload: UserCourseVideoEventMsg): Promise<BasicResponse> {
+    try {
+      console.log(payload);
+      const result = await this.user.findUnique({
+        where: {
+          userId: payload.userId,
+        },
+      });
+      if (!result) {
+        const response: BasicResponse = {
+          status: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+        };
+        return response;
+      }
+      const course = await this.course.findUnique({
+        where: {
+          courseId: Number(payload.courseId),
+        },
+      });
+      if (!course) {
+        const response: BasicResponse = {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Course not found',
+        };
+        return response;
+      }
+      const enroll = await this.enroll.create({
+        data: {
+          enrollUserId: payload.userId,
+          enrollCourseId: course.courseId,
+        },
+      });
+      if (enroll) {
+        const response: BasicResponse = {
+          status: HttpStatus.CREATED,
+          message: 'Course enrolled successfully',
+        };
+        return response;
+      } else {
+        this.logger.error('Failed to enroll course');
+        const response: BasicResponse = {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Failed to enroll course',
+        };
+        return response;
+      }
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          return {
+            status: HttpStatus.CONFLICT,
+            message: 'User already enrolled in this course',
+          };
+        }
+        return {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Course not found',
+        };
+      }
+    }
+  }
+  async getCourseVideo(userId: number, courseId: any): Promise<any> {
+    try {
+      console.log('getCourseVideo', userId, courseId);
+      const checkUserPermission = await this.enroll.findFirst({
+        where: {
+          enrollUserId: userId,
+          enrollCourseId: courseId,
+        },
+      });
+      if (!checkUserPermission) {
+        return {
+          status: HttpStatus.FORBIDDEN,
+          message: 'You are not enrolled in this course',
+        };
+      }
+      const result = await this.course.findUnique({
+        where: {
+          courseId: courseId,
+        },
+      });
+      return {
+        status: HttpStatus.OK,
+        message: 'Videos retrieved successfully',
+        data: result,
+      };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Videos not found',
+        };
+      }
+      throw error;
     }
   }
 }

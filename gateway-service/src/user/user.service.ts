@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom, Observable } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import {
   ProfileUpdateRequestBody,
   UserLoginRequestBody,
@@ -20,6 +20,7 @@ import {
 export class UserService {
   constructor(
     @Inject('USER_SERVICE') private readonly userClient: ClientProxy,
+    @Inject('VIDEO_SERVICE') private readonly videoClient: ClientProxy,
   ) {}
   logger = new Logger('Gateway User Service');
 
@@ -109,6 +110,65 @@ export class UserService {
         await lastValueFrom(
           this.userClient.send('user/profileUpdate', userUpdateEventMsg),
         );
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
+  }
+
+  async getCourseVideos(userId: number): Promise<any> {
+    try {
+      const result = await lastValueFrom(
+        this.videoClient.send('user/getCourseVideos', { userId }),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
+  }
+
+  async postEnrollCourse(
+    enrollCourseRequestBody: any[],
+    userId: number,
+  ): Promise<any> {
+    try {
+      const enrollCourseEventMsg = {
+        courseId: enrollCourseRequestBody[0].courseId,
+        userId: userId,
+      };
+      const result = await lastValueFrom(
+        this.userClient.send('user/enrollCourse', enrollCourseEventMsg),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Internal Server Error:', error);
+      const response: BasicResponse = {
+        status: 500,
+        message: 'Internal Server Error at Gateway Service',
+      };
+      return response;
+    }
+  }
+
+  async getCourseVideo(userId: any, payload: any): Promise<any> {
+    try {
+      const postCourseVideoMsg = {
+        userId: userId,
+        ...payload[0],
+      };
+      const result = await lastValueFrom(
+        this.videoClient.send('user/getCourseVideo', postCourseVideoMsg),
+      );
       return result;
     } catch (error) {
       this.logger.error('Internal Server Error:', error);

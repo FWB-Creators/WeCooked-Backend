@@ -21,6 +21,7 @@ import {
   UserLoginEventResponse,
   UserSignUpEventResponse,
 } from '@lib/src/user/event-msg.dto';
+import { PostCourseVideoRequestBody } from 'src/video/dto/video-reqbody.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -31,7 +32,7 @@ export class UserController {
   ) {}
   logger = new Logger('Gateway User Controller');
 
-  @Get()
+  @Get('getuser')
   getUser(@Headers('authorization') token: string) {
     try {
       const jwtPayload = this.jwtService.verify(token, {
@@ -111,6 +112,54 @@ export class UserController {
       } else {
         return result;
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+  @ApiTags('Course Video')
+  @Get('coursevideos')
+  async getVideos(@Headers('authorization') token: string) {
+    try {
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+
+      return this.userService.getCourseVideos(jwtPayload.userId);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @ApiTags('Enroll Course')
+  @Post('enrollcourse')
+  async enrollCourse(
+    @Body() payload: any,
+    @Headers('Authorization') token: string,
+  ) {
+    try {
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      return await this.userService.postEnrollCourse(
+        payload,
+        jwtPayload.userId,
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @ApiTags('User')
+  @Post('coursevideo')
+  async getCourseVideo(
+    @Headers('authorization') token: string,
+    @Body() payload: PostCourseVideoRequestBody,
+  ) {
+    try {
+      const jwtPayload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      return this.userService.getCourseVideo(jwtPayload.userId, payload);
     } catch (error) {
       throw error;
     }
