@@ -40,3 +40,43 @@ export class CourseUploadEventMsg {
   courseImage: string
   chefId: number
 }
+
+export class BasicResponse {
+  status: number
+  message: string
+}
+
+export class SignUpChefResponse extends BasicResponse {
+  token: string
+}
+
+export class LoginChefResponse extends BasicResponse {
+  token: string
+}
+export class getProfileChefResponse extends BasicResponse {
+  data: {
+    chefId: number
+    chefName: string
+    chefSurname: string
+    chefEmail: string
+    chefBio: string
+    chefExperience: string
+    chefSpecialty: string
+    chefPhone: string
+    chefImage: string
+  }
+}
+
+export class getProfileChefsResponse extends BasicResponse {
+  data: Array<{
+    chefId: number
+    chefName: string
+    chefSurname: string
+    chefEmail: string
+    chefBio: string
+    chefExperience: string
+    chefSpecialty: string
+    chefPhone: string
+    chefImage: string
+  }>
+}

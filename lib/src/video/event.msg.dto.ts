@@ -11,3 +11,8 @@ export class CourseUpdateEventMsg {
   courseIngredientPrice?: number
   courseImage?: string
 }
+
+export class BasicResponse {
+  status: number
+  message: string
+}

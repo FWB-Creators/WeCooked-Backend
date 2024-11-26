@@ -1,7 +1,14 @@
 import { Injectable, OnModuleInit, Logger, HttpStatus } from '@nestjs/common';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-import { ChefProfileUpdateEventMsg } from '../../lib/src/chef/event-msg.dto';
+import {
+  BasicResponse,
+  ChefProfileUpdateEventMsg,
+  getProfileChefResponse,
+  getProfileChefsResponse,
+  LoginChefResponse,
+  SignUpChefResponse,
+} from '../../lib/src/chef/event-msg.dto';
 import {
   ChefLoginEventMsg,
   ChefSignUpEventMsg,
@@ -23,7 +30,9 @@ export class AppService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async postSignUpChef(payload: ChefSignUpEventMsg): Promise<any> {
+  async postSignUpChef(
+    payload: ChefSignUpEventMsg,
+  ): Promise<SignUpChefResponse | BasicResponse> {
     try {
       const chef = await this.chef.create({
         data: {
@@ -52,9 +61,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         message: 'Chef registered successfully',
       };
     } catch (e) {
-      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // Prisma error code for unique constraint violation
         if (e.code === 'P2002') {
           return {
             status: HttpStatus.CONFLICT,
@@ -62,19 +69,23 @@ export class AppService extends PrismaClient implements OnModuleInit {
           };
         }
       }
-      return e;
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An unexpected error occurred',
+      };
     }
   }
 
-  async postLoginChef(payload: ChefLoginEventMsg): Promise<any> {
-    const { chefEmail, chefPassword } = payload[0];
+  async postLoginChef(
+    payload: ChefLoginEventMsg,
+  ): Promise<LoginChefResponse | BasicResponse> {
     try {
       const chef = await this.chef.findUnique({
         where: {
-          chefEmail,
+          chefEmail: payload.chefEmail,
         },
       });
-      if (chef && chef.chefPassword === chefPassword) {
+      if (chef && chef.chefPassword === payload.chefPassword) {
         const jwtPayload = {
           chefId: chef.chefId,
           chefEmail: chef.chefEmail,
@@ -95,7 +106,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
       }
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // Prisma error code for record not found
         if (e.code === 'P2025') {
           return {
             status: HttpStatus.NOT_FOUND,
@@ -103,11 +113,16 @@ export class AppService extends PrismaClient implements OnModuleInit {
           };
         }
       }
-      return e;
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An unexpected error occurred',
+      };
     }
   }
 
-  async getProfileChef(id: number): Promise<any> {
+  async getProfileChef(
+    id: number,
+  ): Promise<getProfileChefResponse | BasicResponse> {
     try {
       const chef = await this.chef.findUnique({
         where: {
@@ -129,7 +144,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         return {
           status: HttpStatus.NOT_FOUND,
           message: 'Chef not found',
-          data: [],
+          data: null,
         };
       } else {
         return {
@@ -140,21 +155,22 @@ export class AppService extends PrismaClient implements OnModuleInit {
       }
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // Prisma error code for record not found
-        console.log(e);
         if (e.code === 'P2025') {
           return {
             status: HttpStatus.NOT_FOUND,
             message: 'Chef not found',
-            data: [],
+            data: null,
           };
         }
       }
-      return e;
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An unexpected error occurred',
+      };
     }
   }
 
-  async getProfileChefs(): Promise<any> {
+  async getProfileChefs(): Promise<getProfileChefsResponse | BasicResponse> {
     try {
       const chef = await this.chef.findMany();
       if (chef.length === 0) {
@@ -171,7 +187,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
       };
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // Prisma error code for record not found
         if (e.code === 'P2025') {
           return {
             status: HttpStatus.NOT_FOUND,
@@ -180,11 +195,16 @@ export class AppService extends PrismaClient implements OnModuleInit {
           };
         }
       }
-      return e;
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An unexpected error occurred',
+      };
     }
   }
 
-  async updateProfileChef(payload: ChefProfileUpdateEventMsg): Promise<any> {
+  async updateProfileChef(
+    payload: ChefProfileUpdateEventMsg,
+  ): Promise<BasicResponse> {
     const updateData: ChefProfileUpdateEventMsg = {};
     Object.keys(payload).forEach((key) => {
       if (payload[key] !== undefined) {
@@ -211,14 +231,17 @@ export class AppService extends PrismaClient implements OnModuleInit {
           };
         }
       }
-      return e;
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An unexpected error occurred',
+      };
     }
   }
 
   async uploadCourseVideo(
     chefId: number,
     payload: CourseUploadEventMsg,
-  ): Promise<any> {
+  ): Promise<BasicResponse> {
     try {
       await this.course.create({
         data: {
@@ -250,7 +273,10 @@ export class AppService extends PrismaClient implements OnModuleInit {
           };
         }
       }
-      return e;
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An unexpected error occurred',
+      };
     }
   }
 }
