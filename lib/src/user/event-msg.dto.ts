@@ -51,3 +51,8 @@ export class ProfileUpdateEventResponse {
   status: number
   message: string
 }
+
+export class EnrollCourseEventMsg {
+  courseId: number
+  userId: number
+}

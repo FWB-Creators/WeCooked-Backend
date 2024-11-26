@@ -10,6 +10,7 @@ import {
   UserSignUpEventMsg,
   UserSignUpEventResponse,
 } from '@lib/src/user/event-msg.dto';
+import { UserCourseVideoEventMsg } from '@lib/src/video/event.msg.dto';
 
 @Controller()
 export class AppController {
@@ -75,7 +76,9 @@ export class AppController {
   }
 
   @EventPattern('user/enrollCourse')
-  async postEnrollCourse(payload: any): Promise<any> {
+  async postEnrollCourse(
+    payload: UserCourseVideoEventMsg,
+  ): Promise<BasicResponse> {
     try {
       return this.appService.enrollCourse(payload);
     } catch (error) {
@@ -91,7 +94,8 @@ export class AppController {
   @EventPattern('user/getCourseVideo')
   async getCourseVideo(payload: any): Promise<any> {
     try {
-      return this.appService.getCourseVideo(payload.userId, payload.payload[0]);
+      console.log(payload);
+      return this.appService.getCourseVideo(payload.userId, payload.courseId);
     } catch (error) {
       this.logger.error('Internal Server Error:', error);
       const response: BasicResponse = {

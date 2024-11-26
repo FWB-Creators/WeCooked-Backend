@@ -143,7 +143,7 @@ export class UserService {
   ): Promise<any> {
     try {
       const enrollCourseEventMsg = {
-        course: enrollCourseRequestBody[0],
+        courseId: enrollCourseRequestBody[0].courseId,
         userId: userId,
       };
       const result = await lastValueFrom(
@@ -162,8 +162,12 @@ export class UserService {
 
   async getCourseVideo(userId: any, payload: any): Promise<any> {
     try {
+      const postCourseVideoMsg = {
+        userId: userId,
+        ...payload[0],
+      };
       const result = await lastValueFrom(
-        this.videoClient.send('user/getCourseVideo', { userId, payload }),
+        this.videoClient.send('user/getCourseVideo', postCourseVideoMsg),
       );
       return result;
     } catch (error) {

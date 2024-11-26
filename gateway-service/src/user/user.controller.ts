@@ -21,6 +21,7 @@ import {
   UserLoginEventResponse,
   UserSignUpEventResponse,
 } from '@lib/src/user/event-msg.dto';
+import { PostCourseVideoRequestBody } from 'src/video/dto/video-reqbody.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -152,7 +153,7 @@ export class UserController {
   @Post('coursevideo')
   async getCourseVideo(
     @Headers('authorization') token: string,
-    @Body() payload: any,
+    @Body() payload: PostCourseVideoRequestBody,
   ) {
     try {
       const jwtPayload = this.jwtService.verify(token, {
