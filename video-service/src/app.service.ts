@@ -3,6 +3,7 @@ import { Prisma, PrismaClient } from '.prisma/client';
 import {
   BasicResponse,
   CourseUpdateEventMsg,
+  newTutorialEventMsg,
   SignUpChefResponse,
   UserCourseVideoEventMsg,
 } from '../../lib/src/video/event.msg.dto';
@@ -99,6 +100,44 @@ export class AppService extends PrismaClient implements OnModuleInit {
         message: 'Course updated successfully',
       };
     } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw {
+            status: HttpStatus.NOT_FOUND,
+            message: 'Course not found',
+          };
+        }
+      }
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An unexpected error occurred',
+      };
+    }
+  }
+
+  async newTutorial(payload: newTutorialEventMsg): Promise<BasicResponse> {
+    try {
+      const result = await this.tutorialvideo.create({
+        data: {
+          tutorialVideo: payload.tutorialVideo,
+          tutorialTitle: payload.title,
+          tutorialDetail: payload.details,
+          tutorialImage: payload.tutorialImage,
+        },
+      });
+      console.log('result', result);
+      if (result === null) {
+        throw {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'An unexpected error occurred',
+        };
+      }
+      return {
+        status: HttpStatus.OK,
+        message: 'Tutorial created successfully',
+      };
+    } catch (e) {
+      this.logger.error('Error:', e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw {

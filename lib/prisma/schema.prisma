@@ -157,6 +157,8 @@ model tutorialvideo {
   tutorialId     Int              @id @default(autoincrement())
   tutorialVideo  String
   tutorialTitle  String
+  tutorialDetail String
+  tutorialImage  String
   listofTutorial listofTutorial[]
 }
 

@@ -42,3 +42,10 @@ export class UserCourseVideoEventMsg {
   courseId: number
   userId: number
 }
+
+export class newTutorialEventMsg {
+  title: string
+  details: string
+  tutorialVideo: string
+  tutorialImage: string
+}
