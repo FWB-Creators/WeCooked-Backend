@@ -6,7 +6,6 @@ import { PaymentModule } from './payment/payment.module';
 import { WorkshopModule } from './workshop/workshop.module';
 import { VideoModule } from './video/video.module';
 import { ChefModule } from './chef/chef.module';
-import { WorkshopModule } from './workshop/workshop.module';
 
 @Module({
   imports: [
