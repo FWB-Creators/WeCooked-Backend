@@ -13,7 +13,7 @@ import { CreateWorkshopReqBody } from './dto/workshop-reqbody.dto';
 @Injectable()
 export class WorkshopService {
   constructor(
-    @Inject('GROUP_SERVICE') private readonly workshopclient: ClientProxy,
+    @Inject('WORKSHOP_SERVICE') private readonly workshopclient: ClientProxy,
   ) {}
   async Upcoming() {
     try {
