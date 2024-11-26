@@ -1,6 +1,9 @@
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Prisma, PrismaClient } from '.prisma/client';
-import { CourseUpdateEventMsg } from '../../lib/src/video/event.msg.dto';
+import {
+  BasicResponse,
+  CourseUpdateEventMsg,
+} from '../../lib/src/video/event.msg.dto';
 
 @Injectable()
 export class AppService extends PrismaClient implements OnModuleInit {
@@ -67,10 +70,9 @@ export class AppService extends PrismaClient implements OnModuleInit {
     }
   }
 
-  async updateCourseDetails(payload: CourseUpdateEventMsg): Promise<{
-    status: HttpStatus;
-    message: string;
-  }> {
+  async updateCourseDetails(
+    payload: CourseUpdateEventMsg,
+  ): Promise<BasicResponse> {
     try {
       const updateData = {};
       Object.keys(payload).forEach((key) => {
@@ -89,7 +91,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
         message: 'Course updated successfully',
       };
     } catch (e) {
-      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw {
@@ -98,7 +99,10 @@ export class AppService extends PrismaClient implements OnModuleInit {
           };
         }
       }
-      throw e;
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'An unexpected error occurred',
+      };
     }
   }
 }

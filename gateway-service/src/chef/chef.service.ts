@@ -10,11 +10,18 @@ import {
 } from './dto/chef-reqbody.dto';
 import { CourseUpdateEventMsg } from '@lib/src/video/event.msg.dto';
 import {
+  BasicResponse,
   ChefLoginEventMsg,
   ChefProfileUpdateEventMsg,
   ChefSignUpEventMsg,
   CourseUploadEventMsg,
+  getProfileChefResponse,
+  getProfileChefsResponse,
+  LoginChefResponse,
+  SignUpChefResponse,
 } from '@lib/src/chef/event-msg.dto';
+
+import { BasicResponse as VideoBasicResponse } from '@lib/src/video/event.msg.dto';
 
 @Injectable()
 export class ChefService {
@@ -25,7 +32,7 @@ export class ChefService {
 
   async postSignUpChef(
     chefSignUpRequestBody: ChefSignUpRequestBody,
-  ): Promise<any> {
+  ): Promise<SignUpChefResponse | BasicResponse> {
     try {
       const payload: ChefSignUpEventMsg = chefSignUpRequestBody[0];
       const result = await lastValueFrom(
@@ -39,9 +46,9 @@ export class ChefService {
 
   async postLoginChef(
     chefLoginRequestBody: ChefLoginRequestBody,
-  ): Promise<any> {
+  ): Promise<LoginChefResponse | BasicResponse> {
     try {
-      const payload: ChefLoginEventMsg = chefLoginRequestBody;
+      const payload: ChefLoginEventMsg = chefLoginRequestBody[0];
       const result = await lastValueFrom(
         this.chefClient.send('chef/login', payload),
       );
@@ -51,7 +58,9 @@ export class ChefService {
     }
   }
 
-  async getProfileChef(id: number): Promise<any> {
+  async getProfileChef(
+    id: number,
+  ): Promise<getProfileChefResponse | BasicResponse> {
     try {
       const payload: number = id;
       const result = await lastValueFrom(
@@ -63,7 +72,7 @@ export class ChefService {
     }
   }
 
-  async getProfileChefs(): Promise<any> {
+  async getProfileChefs(): Promise<getProfileChefsResponse | BasicResponse> {
     try {
       const result = await lastValueFrom(
         this.chefClient.send('chef/profiles', {}),
@@ -77,7 +86,7 @@ export class ChefService {
   async updateProfileChef(
     chefUpdateProfileRequestBody: ChefProfileUpdateRequestBody,
     chefId: number,
-  ): Promise<any> {
+  ): Promise<BasicResponse> {
     try {
       const payload: ChefProfileUpdateEventMsg = {
         ...chefUpdateProfileRequestBody[0],
@@ -96,7 +105,7 @@ export class ChefService {
   async uploadCourseVideo(
     chefId: number,
     chefUploadCourseVideoRequestBody: CourseUploadRequestBody,
-  ): Promise<any> {
+  ): Promise<BasicResponse> {
     try {
       const payload: CourseUploadEventMsg = {
         ...chefUploadCourseVideoRequestBody[0],
@@ -114,7 +123,7 @@ export class ChefService {
   async updateCourseDetails(
     CourseUpdateDetailsRequestBody: CourseUpdateRequestBody,
     chefId: number,
-  ): Promise<any> {
+  ): Promise<VideoBasicResponse> {
     try {
       const payload: CourseUpdateEventMsg = {
         ...CourseUpdateDetailsRequestBody[0],

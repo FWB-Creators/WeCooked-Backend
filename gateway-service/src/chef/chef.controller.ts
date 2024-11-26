@@ -10,9 +10,9 @@ import {
   Patch,
   Post,
   Headers,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { ChefService } from './chef.service';
-import { Observable } from 'rxjs';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
 import {
@@ -22,7 +22,14 @@ import {
   CourseUpdateRequestBody,
   CourseUploadRequestBody,
 } from './dto/chef-reqbody.dto';
-
+import {
+  getProfileChefResponse,
+  getProfileChefsResponse,
+  LoginChefResponse,
+  SignUpChefResponse,
+} from '@lib/src/chef/event-msg.dto';
+import { BasicResponse } from '@lib/src/user/event-msg.dto';
+import { BasicResponse as VideoBasicResponse } from '@lib/src/video/event.msg.dto';
 @Controller('chef')
 export class ChefController {
   constructor(
@@ -33,7 +40,9 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Get('profile')
-  async profileChef(@Headers('authorization') token: string): Promise<any> {
+  async profileChef(
+    @Headers('authorization') token: string,
+  ): Promise<getProfileChefResponse | BasicResponse> {
     try {
       const jwtPayload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
@@ -43,11 +52,10 @@ export class ChefController {
       );
       if (profile.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(profile.message);
+      } else if (profile.status === HttpStatus.INTERNAL_SERVER_ERROR) {
+        throw new InternalServerErrorException(profile.message);
       }
-      return new Observable((observer) => {
-        observer.next(profile);
-        observer.complete();
-      });
+      return profile;
     } catch (error) {
       throw error;
     }
@@ -55,7 +63,9 @@ export class ChefController {
 
   @ApiTags('Chef')
   @Get('profiles')
-  async profileChefs(@Headers('authorization') token: string): Promise<any> {
+  async profileChefs(
+    @Headers('authorization') token: string,
+  ): Promise<getProfileChefsResponse | BasicResponse> {
     try {
       this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
@@ -63,11 +73,10 @@ export class ChefController {
       const profiles = await this.ChefService.getProfileChefs();
       if (profiles.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(profiles.message);
+      } else if (profiles.status === HttpStatus.INTERNAL_SERVER_ERROR) {
+        throw new InternalServerErrorException(profiles.message);
       }
-      return new Observable((observer) => {
-        observer.next(profiles);
-        observer.complete();
-      });
+      return profiles;
     } catch (error) {
       throw error;
     }
@@ -77,16 +86,16 @@ export class ChefController {
   @Post('signup')
   async signUpChef(
     @Body() payload: ChefSignUpRequestBody,
-  ): Promise<Observable<any>> {
+  ): Promise<SignUpChefResponse | BasicResponse> {
     try {
       const signUp = await this.ChefService.postSignUpChef(payload);
       if (signUp.status === HttpStatus.CONFLICT) {
         throw new ConflictException(signUp.message);
       }
-      return new Observable((observer) => {
-        observer.next(signUp);
-        observer.complete();
-      });
+      if (signUp.status === HttpStatus.INTERNAL_SERVER_ERROR) {
+        throw new InternalServerErrorException(signUp.message);
+      }
+      return signUp;
     } catch (error) {
       throw error;
     }
@@ -96,16 +105,15 @@ export class ChefController {
   @Post('login')
   async loginChef(
     @Body() payload: ChefLoginRequestBody,
-  ): Promise<Observable<any>> {
+  ): Promise<LoginChefResponse | BasicResponse> {
     try {
       const login = await this.ChefService.postLoginChef(payload);
       if (login.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(login.message);
+      } else if (login.status === HttpStatus.INTERNAL_SERVER_ERROR) {
+        throw new InternalServerErrorException(login.message);
       }
-      return new Observable((observer) => {
-        observer.next(login);
-        observer.complete();
-      });
+      return login;
     } catch (error) {
       throw error;
     }
@@ -116,7 +124,7 @@ export class ChefController {
   async updateProfileChef(
     @Headers('authorization') token: string,
     @Body() payload: ChefProfileUpdateRequestBody,
-  ): Promise<Observable<any>> {
+  ): Promise<BasicResponse> {
     try {
       const jwtPayload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
@@ -127,11 +135,10 @@ export class ChefController {
       );
       if (updateProfile.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(updateProfile.message);
+      } else if (updateProfile.status === HttpStatus.INTERNAL_SERVER_ERROR) {
+        throw new InternalServerErrorException(updateProfile.message);
       }
-      return new Observable((observer) => {
-        observer.next(updateProfile);
-        observer.complete();
-      });
+      return updateProfile;
     } catch (error) {
       throw error;
     }
@@ -142,7 +149,7 @@ export class ChefController {
   async uploadCourseVideo(
     @Headers('authorization') token: string,
     @Body() payload: CourseUploadRequestBody,
-  ): Promise<Observable<any>> {
+  ): Promise<BasicResponse> {
     try {
       const jwtPayload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
@@ -155,11 +162,10 @@ export class ChefController {
         throw new NotFoundException(upload.message);
       } else if (upload.status === HttpStatus.BAD_REQUEST) {
         throw new BadRequestException(upload.message);
+      } else if (upload.status === HttpStatus.INTERNAL_SERVER_ERROR) {
+        throw new InternalServerErrorException(upload.message);
       }
-      return new Observable((observer) => {
-        observer.next(upload);
-        observer.complete();
-      });
+      return upload;
     } catch (error) {
       throw error;
     }
@@ -170,7 +176,7 @@ export class ChefController {
   async updateCourseDetails(
     @Headers('authorization') token: string,
     @Body() payload: CourseUpdateRequestBody,
-  ): Promise<Observable<any>> {
+  ): Promise<VideoBasicResponse> {
     try {
       const jwtPayload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
@@ -181,11 +187,10 @@ export class ChefController {
       );
       if (updateCourse.status === HttpStatus.NOT_FOUND) {
         throw new NotFoundException(updateCourse.message);
+      } else if (updateCourse.status === HttpStatus.INTERNAL_SERVER_ERROR) {
+        throw new InternalServerErrorException(updateCourse.message);
       }
-      return new Observable((observer) => {
-        observer.next(updateCourse);
-        observer.complete();
-      });
+      return updateCourse;
     } catch (error) {
       throw error;
     }
