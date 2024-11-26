@@ -38,6 +38,7 @@ export class CourseUploadEventMsg {
   courseVideoPath: string
   courseIngredientPrice: number
   courseImage: string
+  courseIngredientDetail: string
   chefId: number
 }
 

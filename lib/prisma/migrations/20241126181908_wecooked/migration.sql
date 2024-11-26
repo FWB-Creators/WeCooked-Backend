@@ -21,6 +21,7 @@ CREATE TABLE "Course" (
     "courseTitle" TEXT NOT NULL,
     "courseDetail" TEXT NOT NULL,
     "coursePrice" INTEGER NOT NULL,
+    "courseIngredientDetail" TEXT NOT NULL,
     "courseCategory" TEXT NOT NULL,
     "courseVideoPath" TEXT NOT NULL,
     "courseChefId" INTEGER NOT NULL,
@@ -79,7 +80,7 @@ CREATE TABLE "Enroll" (
     "enrollId" SERIAL NOT NULL,
     "enrollUserId" INTEGER NOT NULL,
     "enrollCourseId" INTEGER NOT NULL,
-    "enrollStatus" BOOLEAN NOT NULL DEFAULT false,
+    "isCourseComplete" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Enroll_pkey" PRIMARY KEY ("enrollId")
 );
@@ -155,6 +156,9 @@ CREATE UNIQUE INDEX "User_userPhone_key" ON "User"("userPhone");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_userEmail_key" ON "User"("userEmail");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Enroll_enrollUserId_enrollCourseId_key" ON "Enroll"("enrollUserId", "enrollCourseId");
 
 -- AddForeignKey
 ALTER TABLE "Course" ADD CONSTRAINT "Course_courseChefId_fkey" FOREIGN KEY ("courseChefId") REFERENCES "Chef"("chefId") ON DELETE RESTRICT ON UPDATE CASCADE;

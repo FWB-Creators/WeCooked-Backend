@@ -36,6 +36,7 @@ export class CourseUploadRequestBody {
   coursePackId: string;
   courseVideoPath: string;
   courseIngredientPrice: number;
+  courseIngredientDetail: string;
   courseImage: string;
 }
 
@@ -49,5 +50,6 @@ export class CourseUpdateRequestBody {
   coursePackId?: string;
   courseVideoPath?: string;
   courseIngredientPrice?: number;
+  courseIngredientDetail?: string;
   courseImage?: string;
 }

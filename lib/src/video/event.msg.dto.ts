@@ -9,6 +9,7 @@ export class CourseUpdateEventMsg {
   coursePackId?: string
   courseVideoPath?: string
   courseIngredientPrice?: number
+  courseIngredientDetail?: string
   courseImage?: string
 }
 

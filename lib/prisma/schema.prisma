@@ -5,7 +5,7 @@ generator gatewayServiceClient {
 
 generator userServiceClient {
   provider = "prisma-client-js"
-  output   = "../../user-service/node_modules/@prisma/client"
+  output   = "../../user-service/node_modules/.prisma/client"
 }
 
 generator chefServiceClient {
@@ -20,8 +20,9 @@ generator paymentServiceClient {
 
 generator workshopServiceClient {
   provider = "prisma-client-js"
-  output   = "../../workshop-service/node_modules/@prisma/client"
+  output   = "../../workshop-service/node_modules/.prisma/client"
 }
+
 generator videoServiceClient {
   provider = "prisma-client-js"
   output   = "../../video-service/node_modules/.prisma/client"
@@ -51,15 +52,16 @@ model Chef {
 }
 
 model Course {
-  courseId              Int    @id @default(autoincrement())
-  courseTitle           String
-  courseDetail          String
-  coursePrice           Int
-  courseCategory        String
-  courseVideoPath       String
-  courseChefId          Int
-  courseIngredientPrice Int
-  courseImage           String
+  courseId               Int    @id @default(autoincrement())
+  courseTitle            String
+  courseDetail           String
+  coursePrice            Int
+  courseIngredientDetail String
+  courseCategory         String
+  courseVideoPath        String
+  courseChefId           Int
+  courseIngredientPrice  Int
+  courseImage            String
 
   chef           Chef?            @relation("ChefCourses", fields: [courseChefId], references: [chefId])
   review         review[]

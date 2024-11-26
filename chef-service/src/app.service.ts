@@ -252,6 +252,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
           courseVideoPath: payload.courseVideoPath,
           courseIngredientPrice: payload.courseIngredientPrice,
           courseImage: payload.courseImage,
+          courseIngredientDetail: payload.courseIngredientDetail,
           courseChefId: chefId,
         },
       });
@@ -264,7 +265,7 @@ export class AppService extends PrismaClient implements OnModuleInit {
         if (e.code === 'P2002') {
           return {
             status: HttpStatus.CONFLICT,
-            message: 'Course already uploaded',
+            message: 'Course already uploaded or course Id already exists',
           };
         } else if (e.code === 'P2003') {
           return {
