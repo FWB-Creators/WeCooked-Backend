@@ -1,10 +1,9 @@
-import { Controller, HttpStatus } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern } from '@nestjs/microservices';
 import {
   BasicResponse,
   CourseUpdateEventMsg,
-  CourseVideoEventMsg,
   SignUpChefResponse,
   UserCourseVideoEventMsg,
 } from '../../lib/src/video/event.msg.dto';

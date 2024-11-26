@@ -23,7 +23,6 @@ export class AppService extends PrismaClient implements OnModuleInit {
     payload: UserCourseVideoEventMsg,
   ): Promise<SignUpChefResponse> {
     try {
-      console.log(payload);
       const enrollments = await this.enroll.findMany({
         where: {
           enrollUserId: payload.userId,
@@ -39,6 +38,12 @@ export class AppService extends PrismaClient implements OnModuleInit {
               courseChefId: true,
               courseCategory: true,
               courseIngredientPrice: true,
+              courseIngredientDetail: true,
+              chef: {
+                select: {
+                  chefImage: true,
+                },
+              },
             },
           },
         },
@@ -56,6 +61,8 @@ export class AppService extends PrismaClient implements OnModuleInit {
             courseChefId: enrollment.Course.courseChefId,
             courseCategory: enrollment.Course.courseCategory,
             courseIngredientPrice: enrollment.Course.courseIngredientPrice,
+            courseIngredientDetail: enrollment.Course.courseIngredientDetail,
+            courseChefImage: enrollment.Course.chef.chefImage,
             isCourseCompleted: enrollment.isCourseComplete,
           };
         }),

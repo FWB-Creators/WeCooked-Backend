@@ -56,3 +56,22 @@ export class EnrollCourseEventMsg {
   courseId: number
   userId: number
 }
+
+export class CourseVideoEventResponse {
+  status: number
+  message: string
+  data: {
+    courseId: number
+    courseTitle: string
+    courseDetail: string
+    coursePrice: number
+    courseImage: string
+    courseChefId: number
+    courseCategory: string
+    courseIngredientPrice: number
+    courseIngredientDetail: string
+    courseChefName: string
+    courseChefImage: string
+    isCourseCompleted: boolean
+  }
+}

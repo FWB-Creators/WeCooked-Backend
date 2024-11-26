@@ -32,6 +32,8 @@ export class SignUpChefResponse extends BasicResponse {
     courseChefId: number
     courseIngredientPrice: number
     courseImage: string
+    courseChefImage: string
+    courseIngredientDetail: string
     isCourseCompleted: boolean
   }>
 }

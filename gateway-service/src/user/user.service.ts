@@ -15,6 +15,7 @@ import {
   UserLoginEventResponse,
   ProfileUpdateEventResponse,
 } from '@lib/src/user/event-msg.dto';
+import { SignUpChefResponse } from '@lib/src/video/event.msg.dto';
 
 @Injectable()
 export class UserService {
@@ -121,7 +122,9 @@ export class UserService {
     }
   }
 
-  async getCourseVideos(userId: number): Promise<any> {
+  async getCourseVideos(
+    userId: number,
+  ): Promise<SignUpChefResponse | BasicResponse> {
     try {
       const result = await lastValueFrom(
         this.videoClient.send('user/getCourseVideos', { userId }),

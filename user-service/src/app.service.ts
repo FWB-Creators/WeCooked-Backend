@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleInit, HttpStatus } from '@nestjs/common';
 import {
   BasicResponse,
+  CourseVideoEventResponse,
   GetUserEventResponse,
   ProfileUpdateEventMsg,
   ProfileUpdateEventResponse,
@@ -272,9 +273,11 @@ export class AppService extends PrismaClient implements OnModuleInit {
       }
     }
   }
-  async getCourseVideo(userId: number, courseId: any): Promise<any> {
+  async getCourseVideo(
+    userId: number,
+    courseId: any,
+  ): Promise<CourseVideoEventResponse | BasicResponse> {
     try {
-      console.log('getCourseVideo', userId, courseId);
       const checkUserPermission = await this.enroll.findFirst({
         where: {
           enrollUserId: userId,
@@ -291,11 +294,40 @@ export class AppService extends PrismaClient implements OnModuleInit {
         where: {
           courseId: courseId,
         },
+        include: {
+          Enroll: {
+            where: {
+              enrollUserId: userId,
+            },
+            select: {
+              isCourseComplete: true,
+            },
+          },
+          chef: {
+            select: {
+              chefName: true,
+              chefImage: true,
+            },
+          },
+        },
       });
       return {
         status: HttpStatus.OK,
         message: 'Videos retrieved successfully',
-        data: result,
+        data: {
+          courseId: result.courseId,
+          courseTitle: result.courseTitle,
+          courseDetail: result.courseDetail,
+          coursePrice: result.coursePrice,
+          courseImage: result.courseImage,
+          courseChefId: result.courseChefId,
+          courseCategory: result.courseCategory,
+          courseIngredientPrice: result.courseIngredientPrice,
+          courseIngredientDetail: result.courseIngredientDetail,
+          courseChefName: result.chef.chefName,
+          courseChefImage: result.chef.chefImage,
+          isCourseCompleted: result.Enroll[0].isCourseComplete,
+        },
       };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
