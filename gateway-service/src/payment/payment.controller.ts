@@ -64,7 +64,7 @@ export class PaymentController {
   async createPaymentForWorkshop(
     @Body()
     createPaymentForWorkshopRequestBody: CreatePaymentForWorkshopRequestBody,
-    @Headers('authorization') token: string,
+    @Headers('Authorization') token: string,
   ) {
     try {
       const jwtPayload = this.jwtService.verify(token, {
